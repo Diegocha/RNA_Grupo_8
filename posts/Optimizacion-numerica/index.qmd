@@ -1,0 +1,783 @@
+---
+title: "Optimización Numérica"
+format: 
+  html:
+    fig-width: 8      # Ancho de las figuras en pulgadas para HTML
+    fig-height: 6     # Alto de las figuras en pulgadas para HTML
+    number-sections: true
+    code-fold: true
+    toc: true
+    toc-title: "Tabla de contenido"
+    toc-location: left-body
+    css: custom.css
+author:
+  - name: "Diego Fernando Chávez Henao, dfchavez@unal.edu.co"
+  - name: "Alejandro Feria González, aferiag@unal.edu.co"
+  - name: "Santiago Molina Muñoz, smolinam@unal.edu.co"
+  - name: "Juan Manuel Teherán Machado, jteheranm@unal.edu.co"
+date: "2024-05-02"
+categories: [optimización, Gradiente descendente, Métodos Heurísticos, R]
+image: "image.jpg"
+#bibliography: ref.bib
+page-layout: full
+execute:
+  cache: true
+---
+
+------------------------------------------------------------------------
+
+**ENUCIADO DEL PROBLEMA**
+
+Considere las siguientes funciones de prueba:
+
+-   Función de Rosenbrock
+
+-   Función de Rastrigin
+
+1.  Escoja dos funciones de prueba
+
+2.  Optimice las funciones en dos y tres dimensiones usando un método de descenso por gradiente con condición inicial aleatoria
+
+3.  Optimice las funciones en dos y tres dimensiones usando: algoritmos evolutivos, optimización de partículas y evolución diferencial
+
+4.  Represente con un gif animado o un video el proceso de optimización de descenso por gradiente y el proceso usando el método heurístico.
+
+**Discuta**\
+¿Qué aportaron los métodos de descenso por gradiente y qué aportaron los métodos heurísticos? Para responder a esta pregunta considere el valor final de la función objetivo y el número de evaluaciones de la función objetivo. Para responder a esta pregunta es posible que se requiera hacer varias corridas de los algoritmos.
+
+------------------------------------------------------------------------
+
+# **Introducción**
+
+La optimización numérica es un pilar fundamental en el desarrollo de modelos de inteligencia artificial y aprendizaje automático, ya que permite ajustar parámetros y encontrar soluciones óptimas en problemas donde las soluciones analíticas no son viables. Para evaluar la eficacia de los algoritmos de optimización, es común emplear funciones de prueba que presentan desafíos particulares, como valles estrechos o la presencia de múltiples mínimos locales. En este trabajo se seleccionaron dos funciones representativas: la función de Rosenbrock, caracterizada por su valle parabólico angosto que dificulta la convergencia, y la función de Rastrigin, conocida por su paisaje multimodal con numerosos mínimos locales distribuidos regularmente.
+
+El objetivo principal de este estudio es comparar el desempeño del descenso por gradiente y de los algoritmos bioinspirados en la optimización de las funciones de Rosenbrock y Rastrigin, tanto en dos como en tres dimensiones. Se analizarán aspectos como la calidad de la solución final, el número de evaluaciones de la función objetivo y la eficiencia computacional, con el fin de identificar las fortalezas y limitaciones de cada enfoque en el contexto de problemas relevantes para redes neuronales y algoritmos bioinspirados.
+
+# **Marco Teórico**
+
+## **Funciones de prueba**
+
+En este estudio se seleccionaron dos funciones de prueba ampliamente utilizadas en la literatura de optimización numérica: la función de Rosenbrock y la función de Rastrigin. Ambas presentan retos particulares para los algoritmos de optimización y permiten evaluar el desempeño de métodos clásicos y heurísticos en diferentes escenarios. Mucho de lo expresado a partir de aquí proviene de (Zhang et al., 2024).
+
+### Función de Rosenbrock
+
+La función de Rosenbrock, también conocida como función del valle o del plátano, es una función unimodal que se emplea frecuentemente para probar algoritmos de optimización basados en gradientes. Su principal característica es la presencia de un valle parabólico angosto que contiene el mínimo global, lo cual puede dificultar la convergencia de los algoritmos hacia este punto (Rosenbrock, 1960). La función de Rosenbrock es útil para evaluar la capacidad de los algoritmos para seguir valles estrechos y alcanzar el mínimo global, especialmente cuando la superficie de la función presenta curvaturas pronunciadas. Sin embargo, la convergencia puede ser desafiante debido a la naturaleza del valle.
+
+La forma general en $N$ dimensiones es:
+
+$$f(\mathbf{x})=\sum_{i=1}^{N-1} \left[ 100(x_{i+1} - x_i^2)^2 + (1-x_1)^2 \right] \tag{1}$$donde $\mathbf{x} = (x_1, \dots, x_N) \in \mathbb{R}^N$. La función se suele evaluar en el rango $x_i \in [−5, 10]$ (Picheny et al., 2012).
+
+-   En dos dimensiones, la función se expresa como:
+
+    $$f(x_1, x_2) = 100 (x_2 - x_1^2)^2 + (1 - x_1)^2 \tag{2}$$ y el mínimo global se encuentra en $(x_1, x_2) = (1, 1)$, donde $f(1, 1) = 0$.
+
+    En dos dimensiones, la función de Rosenbrock exhibe un paisaje característico dominado por un valle parabólico estrecho y curvo que se extiende a lo largo del plano. Este valle representa la trayectoria hacia el mínimo global de la función, ubicado en el punto $(1, 1)$, donde el valor de la función es exactamente cero.
+
+    La **Figura 1** muestra una visualización 3D interactiva de la función de Rosenbrock en 2 dimensiones., que se puede mover haciendo clic sostenido con el mouse. Se observa que la función forma un **valle curvo y estrecho** en el espacio $(x_1, x_2, x_3)$, donde el mínimo global está al fondo del valle. Este valle es difícil de seguir para los algoritmos de optimización, especialmente para métodos basados en gradiente, ya que la dirección óptima cambia abruptamente a lo largo del valle.
+
+    ```{r 3DRosenbrock, warning=FALSE, cache=TRUE, message=FALSE}
+    #| width: 100%
+    #| height: auto
+
+    library(plotly)
+    library(ggplot2)
+
+    # Definición de la función Rosenbrock
+    rosenbrock <- function(x, a=1, b=100) {
+      (a - x[1])^2 + b * (x[2] - x[1]^2)^2
+    }
+
+    # Crear la malla de puntos
+    x_seq <- seq(-2.5, 2.5, length.out = 301)
+    y_seq <- seq(-1, 3, length.out = 301)
+    grid <- expand.grid(x = x_seq, y = y_seq)
+
+    # Evaluar la función en cada punto
+    grid$z <- apply(grid, 1, function(row) rosenbrock(c(row['x'], row['y'])))
+
+    # Matriz para el gráfico 3D
+    z_matrix <- matrix(grid$z, nrow = length(x_seq), byrow = TRUE)
+
+    # Calcular el valor exacto en el mínimo global
+    z_min <- rosenbrock(c(1, 1))
+
+    # Gráfico 3D interactivo con plotly
+    fig_3d <- plot_ly(
+    x = ~x_seq, y = ~y_seq, z = ~z_matrix
+    ) %>%
+    add_surface() %>%
+    layout(
+    title = "Función Rosenbrock (3D)",
+    scene = list(
+    xaxis = list(title = "X1", range = c(min(x_seq), max(x_seq))),
+    yaxis = list(title = "X2", range = c(min(y_seq), max(y_seq))),
+    zaxis = list(title = "f(X1, X2)")
+    )
+    ) %>%
+    add_markers(x = 1, y = 1, z = z_min, marker = list(color = 'red', size = 5), name = "Mínimo global")
+
+    # Mostrar gráfico 3D
+    fig_3d
+
+    ```
+
+    **Figura 1.** *Representación gráfica interactiva de la función de Rosenbrock.*
+
+    La **Figura 2** muestra el gráfico de contorno de la **Figura 1**. Se observan curvas alargadas y cerradas que se agrupan densamente alrededor del mínimo, evidenciando una fuerte curvatura en una dirección y suavidad en la otra. Por ello, la función de Rosenbrock es un banco de pruebas exigente para métodos de optimización, poniendo a prueba su capacidad para navegar regiones con cambios rápidos en la dirección de descenso.
+
+    ```{r contornoRosenbrock, warning=FALSE, cache=TRUE, message=FALSE}
+    # Gráfico de contorno con ggplot2
+    library(ggplot2)
+    library(viridis) # Para paleta de colores atractiva
+    contour_plot <- ggplot(grid, aes(x = x, y = y, z = z)) +
+    geom_contour_filled(bins = 30) + # Contornos rellenos con color
+    geom_contour(color = "black", alpha = 0.3, bins = 30) + # Líneas de contorno semi-transparentes
+    geom_point(aes(x = 1, y = 1), color = "red", size = 3) + # Mínimo global
+    scale_fill_viridis_d(option = "viridis") + # Paleta viridis discreta
+    coord_fixed(ratio = 1) + # Escala igual en x e y
+    xlim(min(x_seq), max(x_seq)) +
+    ylim(min(y_seq), max(y_seq)) +
+    labs(title = "Gráfico de Contorno coloreado de la función Rosenbrock",
+    x = "X1", y = "X2", fill = "f(X1, X2)") +
+    theme_minimal()
+
+    print(contour_plot)
+    ```
+
+    **Figura 2.** *Gráfico de* *Contorno de la función de Rosenbrock.*
+
+-   En tres dimensiones, la función se expresa como:
+
+    $$f(x_1, x_2, x_3) = 100 (x_2 - x_1^2)^2 + (1 - x_1)^2 + 100 (x_3 - x_2^2)^2 + (1 - x_2)^2 \tag{3}$$y el mínimo global se encuentra en $(x_1, x_2, x_3) = (1, 1, 1)$, donde $f(1, 1, 1) = 0$.
+
+### Función de Rastrigin
+
+La función de Rastrigin es una función altamente multimodal, caracterizada por la presencia de numerosos mínimos locales distribuidos de manera regular en el dominio de búsqueda. Esto la convierte en un reto para los algoritmos de optimización, ya que es fácil que queden atrapados en óptimos locales (Törn & Žilinskas, 1989). Su topografía se asemeja a un paraboloide cuadrático sobre el que se superponen ondulaciones sinusoidales, generando un patrón regular de picos y valles. Esta función es ampliamente utilizada para evaluar la capacidad de los algoritmos de optimización para escapar de mínimos locales y encontrar el óptimo global en paisajes de búsqueda complejos y repetitivos.
+
+La forma general en $N$ dimensiones es:
+
+$$
+f(\mathbf{x}) = 10N + \sum_{i=1}^{N} \left[ x_i^2 - 10 \cos(2\pi x_i) \right] \tag{4}
+$$
+
+donde $\mathbf{x} = (x_1, \dots, x_N) \in \mathbb{R}^N$. El rango de evaluación recomendado es $x_i \in [-5.12, 5.12]$ (Mühlenbein et al., 1991).
+
+-   En dos dimensiones, la función se expresa como:
+
+    $$
+    f(x_1, x_2) = 20 + x_1^2 - 10\cos(2\pi x_1) + x_2^2 - 10\cos(2\pi x_2) \tag{5}
+    $$
+
+    El mínimo global se encuentra en $(x_1, x_2) = (0, 0)$, donde $f(0, 0) = 0$.
+
+    En dos dimensiones, la función de Rastrigin presenta una superficie caracterizada por un patrón ondulatorio regular de picos y valles, con el mínimo global situado en el centro del dominio.
+
+    La **Figura 3** muestra una visualización 3D interactiva de la función de Rastrigin en dos dimensiones que se puede mover haciendo clic sostenido con el mouse. En esta representación, se observa cómo los mínimos locales forman un patrón de cuadrícula regular, creando una superficie que se asemeja a un "tablero de huevos" con numerosas depresiones. Esta característica multimodal es inherente a la función de Rastrigin y presenta un desafío significativo para los algoritmos de optimización.
+
+    ```{r 3DRastrigin, warning=FALSE, cache=TRUE, message=FALSE}
+    library(plotly)
+
+    # Definir la función de Rastrigin en 2D
+    rastrigin_2d <- function(x, y, a=10) {
+      a*2 + (x^2 - a*cos(2*pi*x)) + (y^2 - a*cos(2*pi*y))
+    }
+
+    # Crear la malla de puntos (usar número impar para incluir 0 exactamente)
+    x_seq <- seq(-5.12, 5.12, length.out = 301)
+    y_seq <- seq(-5.12, 5.12, length.out = 301)
+    grid <- expand.grid(x = x_seq, y = y_seq)
+
+    # Evaluar la función en cada punto
+    grid$z <- with(grid, rastrigin_2d(x, y))
+
+    # Matriz para gráfico 3D
+    z_matrix <- matrix(grid$z, nrow = length(x_seq), byrow = TRUE)
+
+    # Valor exacto en el mínimo global
+    z_min <- rastrigin_2d(0, 0)
+
+    # Gráfico 3D interactivo con plotly
+    fig_3d <- plot_ly(
+      x = ~x_seq, y = ~y_seq, z = ~z_matrix
+    ) %>%
+      add_surface() %>%
+      layout(
+        title = "Función de Rastrigin (3D)",
+        scene = list(
+          xaxis = list(title = "x1", range = c(min(x_seq), max(x_seq))),
+          yaxis = list(title = "x2", range = c(min(y_seq), max(y_seq))),
+          zaxis = list(title = "f(x1, x2)")
+        )
+      ) %>%
+      add_markers(
+        x = 0, y = 0, z = z_min,
+        marker = list(color = 'red', size = 5),
+        name = "Mínimo global"
+      )
+
+    fig_3d
+
+    ```
+
+    **Figura 3.** *Representación gráfica de la función de Rastrigin.*
+
+    La **Figura 4** muestra el gráfico de contorno de la función de Rastrigin. En esta visualización, se revelan anillos concéntricos alrededor del mínimo global, con pequeñas depresiones distribuidas uniformemente. Esta estructura regular de óptimos locales hace que los algoritmos de optimización basados en gradiente queden frecuentemente atrapados lejos del óptimo global, convirtiéndola en una excelente función de prueba para métodos de optimización global.
+
+    ```{r contornoRastrigin, warning=FALSE, cache=TRUE, message=FALSE}
+    library(ggplot2)
+    library(viridis)
+
+    # Usar la misma cuadrícula y valores calculados en el chunk anterior (grid)
+
+    # Gráfico de contorno con relleno de color y líneas de nivel
+    contour_plot <- ggplot(grid, aes(x = x, y = y, z = z)) +
+      geom_contour_filled(bins = 30) +                # Áreas coloreadas
+      geom_contour(color = "black", alpha = 0.3, bins = 30) +  # Líneas de nivel
+      geom_point(aes(x = 0, y = 0), color = "red", size = 3) + # Mínimo global
+      scale_fill_viridis_d(option = "viridis") +                 # Paleta viridis
+      coord_fixed(ratio = 1) +
+      xlim(min(x_seq), max(x_seq)) +
+      ylim(min(y_seq), max(y_seq)) +
+      labs(title = "Gráfico de contorno coloreado de la función de Rastrigin",
+           x = "x1", y = "x2", fill = "f(x1, x2)") +
+      theme_minimal()
+
+    print(contour_plot)
+
+    ```
+
+    **Figura 4.** *Gráfico de* *Contorno de la función de Rastrigin.*
+
+-   En tres dimensiones, la función se expresa como:
+
+    $$f(x_1, x_2, x_3) = 30 + x_1^2 - 10\cos(2\pi x_1) + x_2^2 - 10\cos(2\pi x_2) + x_3^2 - 10\cos(2\pi x_3) \tag{6}$$
+
+    y el mínimo global se entra en $(x_1, x_2, x_3) = (0, 0, 0)$, donde $f(0, 0, 0) = 0$.
+
+    En tres dimensiones, la función mantiene su característica multimodal, con numerosos mínimos locales distribuidos regularmente, lo que incrementa la dificultad para los algoritmos de encontrar el óptimo global.
+
+Con ambas funciones se realizarán experimentos en espacios de dos y tres dimensiones para analizar el comportamiento de los algoritmos en diferentes niveles de complejidad.
+
+## Métodos de Optimización
+
+### Descenso por Gradiente
+
+El descenso del gradiente es un algoritmo iterativo que busca encontrar el mínimo local de una función diferenciable, desplazándose en la dirección opuesta al gradiente de la función en cada punto, el cual indica la pendiente de mayor incremento (Bishop, 2006). Lo anterior se basa en el hecho de que el gradiente apunta en la dirección de máximo crecimiento, y desplazarse opuesto a este es apuntar en la dirección de mínimo crecfimiento. Este método puede quedar atrapado en mínimos locales, especialmente en funciones multimodales como Rastrigin (Törn & Žilinskas, 1989).
+
+Para una función $f(\mathbf{x})$, con $\mathbf{x} = (x_1, x_2, \dots, x_N)$, la actualización iterativa se expresa como:
+
+$$ 
+x_{t+1} = x_t - \eta \nabla f(x_t) \tag{7}
+$$
+
+donde
+
+\- $\mathbf{x}_t$ es el vector de variables en la iteración $t$, - $\eta$ es la tasa de aprendizaje,
+
+-   $\nabla f(\mathbf{x}_t)$ es el vector gradiente en $\mathbf{x}_t$.
+
+En el caso de dos dimensiones el gradiente es un vector de derivadas parciales:
+
+$$
+\nabla f(x_1, x_2) = \begin{bmatrix} \frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2} \end{bmatrix} \tag{8}
+$$
+
+Cuando el gradiente analítico no está disponible o es complejo de calcular, se puede aproximar numéricamente usando diferencias centrales simétricas, que ofrecen mayor precisión que las diferencias hacia adelante o hacia atrás (Goodfellow, Bengio & Courville, 2016). Para una función $f(x_1, x_2)$, las derivadas parciales se aproximan como:
+
+$$ 
+\frac{\partial f}{\partial x_1} \approx \frac{f(x_1 + h, x_2) - f(x_1 - h, x_2)}{2h} \tag{9}
+$$
+
+$$ 
+\frac{\partial f}{\partial x_2} \approx \frac{f(x_1, x_2 + h) - f(x_1, x_2 - h)}{2h} \tag{10}
+$$
+
+donde $h$ es un pequeño incremento (e.g., $10^{-7}$ o menor).
+
+El método del gradiente descendente puede visualizarse como el proceso de una persona que desciende por la superficie de una colina, donde la forma de la colina representa la función objetivo. El punto de partida corresponde a la posición inicial, y la tasa de aprendizaje es análoga a la magnitud de cada paso en el descenso. Si la tasa de aprendizaje es demasiado elevada, el algoritmo puede saltar sobre valles o incluso alejarse del mínimo, mientras que una tasa demasiado baja puede hacer que el avance sea excesivamente lento. Por ello, la eficiencia del gradiente descendente depende críticamente de:
+
+-   **Tasa de aprendizaje:** Un valor muy grande puede provocar divergencia, mientras que uno muy pequeño ralentiza la convergencia.
+
+-   **Punto inicial:** La ubicación desde la que se inicia el algoritmo afecta la trayectoria y la probabilidad de alcanzar el mínimo global.
+
+-   **Criterio de parada:** Es fundamental definir cuándo detener el proceso, ya sea al alcanzar un número máximo de iteraciones o cuando la mejora entre pasos sucesivos sea insignificante, indicando convergencia.
+
+Esta analogía y consideraciones son ampliamente discutidas en la literatura sobre aprendizaje automático (Zhang et al., 2024; Bishop, 2006).
+
+## Métodos Bioinspirados
+
+Los algoritmos evolutivos, la optimización por enjambre de partículas (PSO) y la evolución diferencial (DE) son métodos heurísticos inspirados en procesos naturales. Estos algoritmos exploran el espacio de soluciones mediante mecanismos aleatorios y reglas flexibles, permitiendo escapar de mínimos locales y abordar problemas complejos (Goodfellow et al., 2016; Zhang et al., 2023).
+
+Los algoritmos evolutivos constituyen una familia de métodos de optimización inspirados en los procesos de selección natural y evolución biológica. Estos algoritmos emplean mecanismos como la selección, el cruzamiento y la mutación para explorar el espacio de soluciones y mejorar progresivamente la calidad de las mismas a lo largo de generaciones. Entre los algoritmos evolutivos, el algoritmo genético (GA) es uno de los más populares y ampliamente utilizados, debido a su simplicidad y eficacia en la búsqueda de óptimos en problemas complejos y multimodales. En este trabajo, se eligió el algoritmo genético como representante de los métodos evolutivos para comparar su desempeño frente a técnicas clásicas como el descenso por gradiente, aprovechando su capacidad para escapar de mínimos locales y abordar funciones objetivo con paisajes irregulares o múltiples óptimos.
+
+### **Algoritmos Genéticos (GA) en Optimización Numérica**
+
+Los algoritmos genéticos (Genetic Algorithms, GA) son métodos de optimización bioinspirados que emulan los principios de la selección natural y la evolución biológica, propuestos inicialmente por John Holland en la década de 1970 (Holland, 1975). Los GA han demostrado ser efectivos para abordar problemas complejos de optimización, especialmente cuando las funciones objetivo presentan múltiples mínimos locales o carecen de derivadas analíticas, como ocurre con muchas funciones de prueba en optimización numérica (Goodfellow et al., 2016; Zhang et al., 2023).
+
+En el contexto de la optimización numérica, los GA destacan por su capacidad para explorar espacios de búsqueda de alta dimensión y escapar de mínimos locales, superando así algunas limitaciones de los métodos clásicos basados en gradiente. Esto los hace especialmente útiles en funciones como Rosenbrock y Rastrigin, que presentan valles angostos o paisajes multimodales, respectivamente.
+
+#### **Componentes clave de un Algoritmo Genético**
+
+-   **Representación cromosómica:** Cada solución candidata se codifica como un cromosoma, que en el caso de funciones continuas suele ser un vector de números reales que representa una posición en el espacio de búsqueda (Zhang et al., 2024).
+
+-   **Función de aptitud (fitness):** Evalúa la calidad de cada solución. Para problemas de minimización, la aptitud puede definirse como el valor negativo de la función objetivo, de modo que soluciones con menor valor de la función objetivo tengan mayor aptitud.
+
+-   **Operadores genéticos:**
+
+    -   **Selección:** Favorece la reproducción de individuos con mayor aptitud, utilizando métodos como la selección por torneo o la ruleta (Holland, 1975).
+
+    -   **Cruzamiento (crossover):** Combina segmentos de dos padres para generar descendencia, permitiendo explorar nuevas regiones del espacio de búsqueda (Gonçalves et al., 2005).
+
+    -   **Mutación:** Introduce cambios aleatorios en los cromosomas para mantener la diversidad genética y evitar la convergencia prematura (Villalba Fernández de Castro, 2004).
+
+El algoritmo opera sobre una población de soluciones candidatas, que evoluciona iterativamente mediante los operadores mencionados. El objetivo es mejorar progresivamente la aptitud de las soluciones a lo largo de las generaciones, acercándose al mínimo global de la función objetivo (Goodfellow et al., 2016).
+
+#### **Evaluación de la calidad de la solución**
+
+La evaluación de la calidad de las soluciones obtenidas mediante GA en funciones de prueba numéricas requiere considerar dos aspectos fundamentales:
+
+-   **Convergencia del fitness:** Se monitorea el historial del valor de la función objetivo a lo largo de las generaciones. Una estabilización del valor en un rango reducido (por ejemplo, variaciones menores al 0.5% en 50 generaciones consecutivas) sugiere que el algoritmo ha alcanzado un óptimo local o global (Gonçalves et al., 2005).
+
+-   **Reproducibilidad:** Ejecuciones independientes con diferentes semillas aleatorias deben producir soluciones de calidad comparable, lo que indica la robustez del algoritmo frente a la estocasticidad inherente a los GA (Zhang et al., 2024).
+
+Debido a la naturaleza estocástica de los GA y la complejidad de las funciones de prueba seleccionadas, no siempre es posible garantizar la obtención del óptimo global. Sin embargo, los GA permiten aproximarse a soluciones de alta calidad en tiempos computacionales razonables, especialmente en comparación con métodos deterministas que pueden verse atrapados en mínimos locales o requerir el cálculo exacto de derivadas.
+
+En síntesis, los algoritmos genéticos constituyen una herramienta versátil y robusta para la optimización numérica de funciones complejas, complementando a los métodos clásicos y ampliando el abanico de estrategias disponibles para abordar problemas relevantes en inteligencia artificial y aprendizaje automático.
+
+### Optimización por Enjambre de Partículas (PSO)
+
+La Optimización por Enjambre de Partículas (Particle Swarm Optimization, PSO) es un algoritmo metaheurístico inspirado en el comportamiento social de los enjambres, como bandadas de aves o cardúmenes de peces (Kennedy & Eberhart, 1995). En PSO, cada solución potencial se representa como una "partícula" en un espacio de búsqueda multidimensional. Cada partícula mantiene información sobre su posición actual, su velocidad y la mejor posición que ha encontrado hasta el momento (conocida como *pbest*). Además, cada partícula conoce la mejor posición global encontrada por todo el enjambre (*gbest*).
+
+En cada iteración, las partículas ajustan su velocidad y posición basándose en su propia experiencia (su *pbest*) y en la experiencia del enjambre (el *gbest*). La actualización de la velocidad y posición se rige por las siguientes ecuaciones:
+
+$$
+v_{i}(t+1) = w \cdot v_{i}(t) + c_1 \cdot r_1 \cdot (pbest_i - x_i(t)) + c_2 \cdot r_2 \cdot (gbest - x_i(t)) \tag{11}
+$$
+
+$$
+x_{i}(t+1) = x_i(t) + v_{i}(t+1) \tag{12}
+$$
+
+donde:
+
+\- $v_{i}(t)$ es la velocidad de la partícula $i$ en el tiempo $t$,
+
+\- $x_{i}(t)$ es la posición de la partícula $i$ en el tiempo $t$,
+
+\- $w$ es el peso de inercia, que controla la influencia de la velocidad anterior,
+
+\- $c_1$ y $c_2$ son los coeficientes de aceleración, que controlan la influencia de *pbest* y *gbest*, respectivamente,
+
+\- $r_1$ y $r_2$ son números aleatorios uniformemente distribuidos en \[0, 1\],
+
+\- $pbest_i$ es la mejor posición encontrada por la partícula $i$,
+
+\- $gbest$ es la mejor posición encontrada por todo el enjambre.
+
+PSO es un algoritmo relativamente simple de implementar y requiere pocos parámetros, lo que lo hace atractivo para una amplia variedad de problemas de optimización (Poli et al., 2007). Sin embargo, su desempeño puede ser sensible a la elección de los parámetros $w$, $c_1$ y $c_2$, que deben ajustarse cuidadosamente para equilibrar la exploración y la explotación del espacio de búsqueda.
+
+### Evolución Diferencial (DE)
+
+La Evolución Diferencial (Differential Evolution, DE) es un algoritmo evolutivo que genera nuevos vectores de prueba mediante la combinación de vectores de la población actual (Storn & Price, 1997). DE es particularmente eficaz para optimizar funciones continuas no diferenciables y multimodales.
+
+El algoritmo DE comienza con una población inicial de vectores aleatorios. En cada generación, para cada vector objetivo $x_i$, se genera un vector mutante $v_i$ mediante la siguiente ecuación:
+
+$$
+v_i = x_{r1} + F \cdot (x_{r2} - x_{r3}) \tag{13}
+$$
+
+donde:
+
+\- $x_{r1}$, $x_{r2}$ y $x_{r3}$ son vectores aleatorios distintos de la población actual,
+
+\- $F$ es el factor de mutación, un parámetro que controla la amplificación de la diferencia entre los vectores.
+
+A continuación, se realiza un cruce (crossover) entre el vector objetivo $x_i$ y el vector mutante $v_i$ para generar un vector de prueba $u_i$. El cruce se realiza con una probabilidad $CR$:
+
+$$
+u_{ij} = \begin{cases} v_{ij} & \text{si } rand(0,1) \leq CR \text{ o } j = j_{rand} \\ x_{ij} & \text{en caso contrario} \end{cases} \tag{14}
+$$
+
+donde:
+
+\- $u_{ij}$ es el $j$-ésimo componente del vector de prueba $u_i$,
+
+\- $x_{ij}$ es el $j$-ésimo componente del vector objetivo $x_i$,
+
+\- $v_{ij}$ es el $j$-ésimo componente del vector mutante $v_i$,
+
+\- $rand(0,1)$ es un número aleatorio uniformemente distribuido en \[0, 1\],
+
+\- $CR$ es la tasa de cruce, un parámetro que controla la proporción de componentes que se toman del vector mutante,
+
+\- $j_{rand}$ es un índice aleatorio elegido para asegurar que al menos un componente del vector mutante se incluya en el vector de prueba.
+
+Finalmente, el vector de prueba $u_i$ se compara con el vector objetivo $x_i$, y el mejor de los dos se selecciona para la siguiente generación. Este proceso se repite hasta que se alcanza un criterio de parada, como un número máximo de generaciones o una tolerancia en la mejora de la función objetivo.
+
+DE es conocido por su robustez y su capacidad para encontrar soluciones óptimas en problemas complejos, con una convergencia relativamente rápida (Das & Suganthan, 2011).
+
+# Resultados y Análisis
+
+En esta sección se presentan los resultados obtenidos al aplicar diferentes métodos de optimización sobre las funciones de Rosenbrock y Rastrigin, tanto en dos como en tres dimensiones. El objetivo fue comparar el desempeño del descenso por gradiente y de tres algoritmos heurísticos: algoritmo genético (GA), optimización por enjambre de partículas (PSO) y evolución diferencial (DE), considerando la calidad de la solución final, el número de evaluaciones de la función objetivo y la robustez frente a condiciones iniciales aleatorias.
+
+## Proceso Experimental
+
+El procedimiento seguido para resolver la optimización de las funciones de prueba fue el siguiente:
+
+1.  **Definición de las funciones objetivo:** Se implementaron las funciones de Rosenbrock y Rastrigin en R, considerando sus formulaciones estándar y los rangos de búsqueda recomendados en la literatura (Zhang et al., 2024).
+
+2.  **Configuración de experimentos:** Para cada función y dimensión (2D y 3D), se realizaron optimizaciones independientes utilizando descenso por gradiente, GA, PSO y DE. Las condiciones iniciales fueron seleccionadas aleatoriamente dentro del dominio permitido.
+
+3.  **Implementación de los algoritmos:**
+
+    -   **Descenso por gradiente:** Se utilizó una versión con gradiente numérico, ajustando la tasa de aprendizaje y el número máximo de iteraciones para cada función.
+    -   **Algoritmo genético (GA):** Se empleó la librería `GA` de R, configurando la población, número de generaciones y operadores genéticos estándar.
+    -   **PSO y DE:** Se utilizaron las librerías `pso` y `DEoptim`, respectivamente, ajustando los parámetros principales para cada función.
+
+4.  **Visualización y análisis:** Se graficó la evolución del valor de la función objetivo a lo largo de las iteraciones/generaciones y se compararon los resultados finales alcanzados por cada método.
+
+5.  **Verificación de la calidad de la solución:** Se analizaron la convergencia, la estabilidad y la reproducibilidad de los resultados, repitiendo los experimentos con diferentes semillas aleatorias.
+
+## Visualización de las Funciones
+
+A continuación, se muestran las visualizaciones de las funciones de Rosenbrock y Rastrigin en dos dimensiones, lo que permite apreciar la dificultad inherente a cada función para los algoritmos de optimización.
+
+La **Figura 5** muestra una visualización interactiva de la superficie de la función de Rosenbrock en dos dimensiones que se puede mover haciendo clic sostenido con el mouse.
+
+```{r rosenbrock2D, warning=FALSE, message=FALSE}
+library(plotly)
+
+# Definir la función de Rosenbrock para dos variables
+rosenbrock <- function(v, a = 1, b = 100) {
+  x <- v[1]
+  y <- v[2]
+  (a - x)^2 + b * (y - x^2)^2
+}
+
+
+x_seq <- seq(-2.5, 2.5, length.out = 200)
+y_seq <- seq(-1, 3, length.out = 200)
+grid <- expand.grid(x = x_seq, y = y_seq)
+grid$z <- with(grid, rosenbrock(x, y))
+z_matrix <- matrix(grid$z, nrow = length(x_seq), byrow = FALSE)
+
+plot_ly(
+  x = ~x_seq, y = ~y_seq, z = ~z_matrix
+) %>%
+  add_surface() %>%
+  add_markers(x = 1, y = 1, z = rosenbrock(1, 1), marker = list(color = 'red', size = 5), name = "Mínimo global") %>%
+  layout(
+    title = "Función de Rosenbrock (2D, 3D plot)",
+    scene = list(
+      xaxis = list(title = "x1"),
+      yaxis = list(title = "x2"),
+      zaxis = list(title = "f(x1, x2)")
+    )
+  )
+
+```
+
+**Figura 5.** *Superficie de la función de Rosenbrock en dos dimensiones (interactiva).*
+
+La **Figura 6** muestra una visualización interactiva de la superficie de la función de Rastrigin en dos dimensiones que se puede mover haciendo clic sostenido con el mouse.
+
+```{r rastrigin2D, warning=FALSE, message=FALSE}
+# Definir la función de rastrigin
+rastrigin <- function(v, a = 10) {
+  n <- length(v)
+  a * n + sum(v^2 - a * cos(2 * pi * v))
+}
+
+
+rastrigin_2d <- function(x, y) {
+20 + (x^2 - 10 * cos(2 * pi * x)) + (y^2 - 10 * cos(2 * pi * y))
+}
+
+x_seq <- seq(-5.12, 5.12, length.out = 200)
+y_seq <- seq(-5.12, 5.12, length.out = 200)
+grid_ras <- expand.grid(x = x_seq, y = y_seq)
+grid_ras$z <- with(grid_ras, rastrigin_2d(x, y))
+z_matrix_ras <- matrix(grid_ras$z, nrow = length(x_seq), byrow = TRUE)
+
+plot_ly(
+x = ~x_seq, y = ~y_seq, z = ~z_matrix_ras
+) %>%
+add_surface() %>%
+add_markers(x = 0, y = 0, z = rastrigin_2d(0, 0), marker = list(color = 'red', size = 5), name = "Mínimo global") %>%
+layout(
+title = "Función de Rastrigin (2D, 3D plot)",
+scene = list(
+xaxis = list(title = "x1"),
+yaxis = list(title = "x2"),
+zaxis = list(title = "f(x1, x2)")
+)
+)
+```
+
+**Figura 6.** *Superficie de la función de Rastrigin en dos dimensiones (interactiva).*
+
+## Optimización con Descenso por Gradiente
+
+Se implementó el descenso por gradiente utilizando derivadas numéricas para aproximar el gradiente en cada punto. Se realizaron múltiples ejecuciones con condiciones iniciales aleatorias para ambas funciones y dimensiones.
+
+La **Tabla 1** muestra un resultado típico de descenso por gradiente para la función de Rosenbrock en dos dimensiones.
+
+**Tabla 1.** *Resultado típico de descenso por gradiente para la función de Rosenbrock en dos dimensiones.*
+
+```{r descensoGradiente, warning=FALSE, message=FALSE}
+partial_derivative <- function(x0, func, i, h = 1e-7, ...) {
+  e <- rep(0, length(x0))
+  e[i] <- 1
+  (func(x0 + h * e, ...) - func(x0 - h * e, ...)) / (2 * h)
+}
+
+numerical_gradient <- function(x0, func, h = 1e-7, ...) {
+  sapply(seq_along(x0), function(i) partial_derivative(x0, func, i, h, ...))
+}
+
+gradient_descent <- function(x0, eta, func, h = 1e-7, max_iter = 1000, tol = 1e-6, ...) {
+  x <- x0
+  history <- list(x = list(), f = numeric())
+  for (i in 1:max_iter) {
+    grad <- numerical_gradient(x, func, h, ...)
+    x_new <- x - eta * grad
+    history$x[[i]] <- x_new
+    history$f[i] <- func(x_new, ...)
+    if (sqrt(sum((x_new - x)^2)) < tol) break
+    x <- x_new
+  }
+  data.frame(do.call(rbind, history$x), f = history$f)
+}
+
+set.seed(42)
+x0_rb <- runif(2, -2, 2)
+hist_rb <- gradient_descent(x0_rb, eta = 0.002, func = rosenbrock)
+tail(hist_rb, 1)
+
+```
+
+### Animación del Descenso por Gradiente en la función Rosenbrock
+
+La **Figura 7** muestra una animación del proceso iterativo del descenso por gradiente optimizando la función de Rosenbrock en dos dimensiones.
+
+![](GD_rosenbrock2D.gif){alt="Optimización con Descenso por Gradiente en Rastrigin 2D"}
+
+**Figura 7.** *Animación del proceso iterativo del descenso por gradiente optimizando la función de Rosenbrock en dos dimensiones.*
+
+**¿Por qué el algoritmo no llega a la solución ideal (1,1)?**
+
+El GIF evidencia claramente el desafío que representa la optimización de la función de Rosenbrock mediante descenso por gradiente. A pesar de tratarse de una función unimodal, su forma estrecha y alargada —con un valle curvo que conduce al mínimo global en (1,1)— dificulta el avance directo hacia la solución óptima.
+
+En el video, se observa cómo el algoritmo, iniciado lejos del mínimo, avanza lentamente y realiza correcciones graduales de dirección para intentar seguir la curvatura del valle. Este comportamiento es característico de funciones mal condicionadas, donde el gradiente apunta en direcciones muy inclinadas y la tasa de aprendizaje debe ser cuidadosamente ajustada para evitar oscilaciones o estancamientos.
+
+La animación permite visualizar cómo el descenso por gradiente se adapta a la geometría del problema, pero también cómo puede requerir muchas iteraciones para acercarse a la solución cuando el paisaje es estrecho y curvado, como en este caso. Esto resalta la importancia de técnicas como preacondicionamiento, tasas de aprendizaje adaptativas, o el uso de algoritmos más robustos cuando se optimizan funciones con topologías complejas.
+
+La **Tabla 2** muestra un resultado típico de descenso por gradiente para la función de Rastrigin en 2D.
+
+**Tabla 2.** *Resultado típico de descenso por gradiente para la función de Rastrigin en 2D.*
+
+```{r tabla2, warning=FALSE, message=FALSE}
+set.seed(100)
+x0_ras <- runif(2, -5, 5)
+hist_ras <- gradient_descent(x0_ras, eta = 0.01, func = rastrigin)
+tail(hist_ras, 1)
+```
+
+### Animación del Descenso por Gradiente en la función Rastrigin
+
+La **Figura 8** muestra una animación del proceso iterativo del descenso por gradiente optimizando la función de Rastrigin en dos dimensiones.
+
+![](GD_rastrigin2D.gif){width="70%"}
+
+**Figura 8.** *Animación del proceso iterativo del descenso por gradiente optimizando la función de Rastrigin en dos dimensiones.*
+
+**¿Por qué el algoritmo no llega a la solución ideal (0,0)?**
+
+La principal razón es que la función de Rastrigin es altamente multimodal, es decir, presenta una gran cantidad de mínimos locales además del mínimo global ubicado en (0,0). Cuando se aplica el descenso por gradiente, el algoritmo tiende a detenerse en el mínimo local más cercano al punto de inicio, especialmente si se utiliza un paso fijo y un criterio de parada basado en la norma del gradiente.
+
+## Optimización con Algoritmos Heurísticos
+
+A continuación, se presentan los resultados de los algoritmos heurísticos implementados en R. Los parámetros de cada algoritmo se ajustaron experimentalmente para lograr una buena convergencia en ambas funciones.
+
+### Algoritmo Genético (GA)
+
+La Tabla 3 muestestra la mejor solución encontrada por GA para *la función de Rosenbrock en dos dimensiones.*
+
+**Tabla 3.** *Mejor solución encontrada por el algoritmo genético para la función de Rosenbrock en dos dimensiones.*
+
+```{r GA, warning=FALSE, message=FALSE}
+library(GA)
+ga_rb <- ga(
+type = "real-valued",
+fitness = function(x) -rosenbrock(x),
+lower = c(-2, -1), upper = c(2.5, 3),
+popSize = 40, maxiter = 150, run = 50, seed = 123
+)
+ga_rb@solution
+-ga_rb@fitnessValue
+```
+
+### Optimización por Enjambre de Partículas (PSO)
+
+La **Tabla 4** muestra la mejor solución encontrada por PSO para la función de Rosenbrock en dos dimensiones.
+
+**Tabla 4.** *Mejor solución encontrada por PSO para la función de Rosenbrock en dos dimensiones.*
+
+```{r optimizacionPSO, warning=FALSE, message=FALSE}
+library(pso)
+pso_rb <- psoptim(
+par = c(0, 0),
+fn = rosenbrock,
+lower = c(-2, -1), upper = c(2.5, 3),
+control = list(maxit = 150, s = 30, trace = 0)
+)
+pso_rb$par
+pso_rb$value
+```
+
+### Evolución Diferencial (DE)
+
+La **Tabla 5** muestra la mejor solución encontrada por DE para la función de Rosenbrock en dos dimensiones.
+
+**Tabla 5.** *Mejor solución encontrada por DE para la función de Rosenbrock en dos dimensiones.*
+
+```{r DE, warning=FALSE, message=FALSE}
+library(DEoptim)
+de_rb <- DEoptim(
+fn = rosenbrock,
+lower = c(-2, -1), upper = c(2.5, 3),
+control = DEoptim.control(itermax = 150, NP = 40, trace = FALSE)
+)
+de_rb$optim$bestmem
+de_rb$optim$bestval
+```
+
+## Comparación de Resultados
+
+Los métodos de descenso por gradiente demostraron rapidez y precisión en funciones suaves y unimodales, alcanzando valores muy cercanos al mínimo global con pocas evaluaciones. Sin embargo, su desempeño disminuye notablemente en funciones multimodales, donde tienden a quedar atrapados en mínimos locales. Por el contrario, los métodos heurísticos, aunque requieren un mayor número de evaluaciones, mostraron una mayor capacidad para explorar el espacio de búsqueda y evitar mínimos locales, logrando mejores soluciones en funciones complejas. Estas diferencias se confirmaron mediante múltiples ejecuciones con condiciones iniciales aleatorias, evidenciando la robustez y estabilidad de los métodos bioinspirados frente a la sensibilidad del descenso por gradiente.
+
+Se realizaron múltiples ejecuciones para cada algoritmo y función, y se registraron los mejores valores alcanzados, así como el número de evaluaciones de la función objetivo. Los resultados típicos se resumen en la **Tabla 6**.
+
+**Tabla 6.** *Comparación de resultados típicos de los métodos de optimización.*
+
+```{r tablaComparacion, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+
+# Crear el data frame con los datos de la tabla
+tabla_resultados <- data.frame(
+  Método = c("Descenso Gradiente", "Descenso Gradiente", "GA", "PSO", "DE"),
+  Función = c("Rosenbrock", "Rastrigin", "Rosenbrock", "Rosenbrock", "Rosenbrock"),
+  Dimensión = c("2", "2", "2", "2", "2"),
+  `Mejor valor típico` = c("~$10^{-5}$", "8", "~$10^{-3}$", "~$10^{-4}$", "~$10^{-5}$"),
+  `Nº evaluaciones` = c("200-500", "200-500", "6000-10000", "3000-6000", "3000-6000"),
+  Observaciones = c(
+    "Rápido si el inicio es bueno",
+    "Suele quedar atrapado en mínimos",
+    "Explora más, pero menos preciso",
+    "Buen equilibrio exploración/explotación",
+    "Robusto, converge bien"
+  ),
+  check.names = FALSE,
+  stringsAsFactors = FALSE
+)
+
+knitr::kable(
+  tabla_resultados,
+  col.names = c("Método", "Función", "Dimensión", "Mejor valor típico", "Nº evaluaciones", "Observaciones"),
+  escape = FALSE,  # importante para que no escape los símbolos LaTeX
+) %>%
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    position = "center"
+  ) %>%
+  kableExtra::column_spec(1, bold = TRUE, width = "12em") %>%
+  kableExtra::column_spec(2, width = "10em") %>%
+  kableExtra::column_spec(3, width = "6em") %>%
+  kableExtra::column_spec(4, width = "10em") %>%
+  kableExtra::column_spec(5, width = "10em") %>%
+  kableExtra::column_spec(6, width = "18em") %>%
+  kableExtra::row_spec(0, bold = TRUE, color = "white", background = "#4682B4")
+
+
+
+```
+
+**Nota:** Los métodos heurísticos requieren más evaluaciones de la función objetivo, pero son menos sensibles a la condición inicial y pueden escapar de mínimos locales, lo cual es especialmente ventajoso en funciones multimodales como Rastrigin.
+
+## Análisis de Convergencia y Robustez
+
+En general, el descenso por gradiente mostró una rápida convergencia en la función de Rosenbrock cuando la condición inicial estaba cerca del mínimo global, pero tuvo dificultades en la función de Rastrigin debido a la presencia de múltiples mínimos locales. Los algoritmos heurísticos, en cambio, lograron encontrar soluciones cercanas al óptimo global en ambos casos, aunque a costa de un mayor número de evaluaciones. La evolución diferencial se destacó por su robustez y capacidad de convergencia en ambas funciones, mientras que PSO y GA ofrecieron buenos resultados, especialmente en términos de exploración del espacio de búsqueda.
+
+Para evaluar la robustez, se repitieron los experimentos con diferentes semillas aleatorias, observando que los métodos heurísticos presentaron menor variabilidad en la calidad de la solución final en comparación con el descenso por gradiente, que puede verse muy afectado por la elección de la condición inicial.
+
+------------------------------------------------------------------------
+
+En la siguiente sección se presentan las conclusiones generales del estudio y recomendaciones para la selección de métodos de optimización en función de la naturaleza del problema.
+
+# Conclusiones
+
+En este trabajo se compararon métodos clásicos y bioinspirados para la optimización numérica de funciones de prueba complejas, específicamente las funciones de Rosenbrock y Rastrigin en dos y tres dimensiones. A partir de los resultados obtenidos, se pueden destacar las siguientes conclusiones principales:
+
+-   **Eficiencia del descenso por gradiente:**\
+    Este método demostró ser rápido y eficiente para funciones suaves y unimodales, como Rosenbrock, siempre que la condición inicial esté relativamente cerca del mínimo global. En estos casos, alcanza valores óptimos con pocas evaluaciones de la función objetivo.
+
+-   **Limitaciones en funciones multimodales:**\
+    El descenso por gradiente presenta dificultades en funciones como Rastrigin, caracterizadas por múltiples mínimos locales, donde tiende a quedar atrapado y no logra encontrar soluciones óptimas globales.
+
+-   **Ventajas de los algoritmos bioinspirados:**\
+    Los métodos heurísticos evaluados -algoritmo genético, optimización por enjambre de partículas y evolución diferencial- mostraron una mayor capacidad para explorar el espacio de búsqueda y evitar mínimos locales, alcanzando soluciones de mejor calidad en funciones multimodales. Esta capacidad exploratoria se traduce en un mayor número de evaluaciones y un costo computacional superior.
+
+-   **Robustez y convergencia de los heurísticos:**\
+    Entre los algoritmos bioinspirados, la evolución diferencial destacó por su robustez y consistencia en la convergencia, mientras que el algoritmo genético y PSO ofrecieron un equilibrio efectivo entre exploración y explotación, siendo adecuados para problemas que requieren flexibilidad y adaptabilidad.
+
+-   **Importancia de la naturaleza del problema para la selección del método:**\
+    La elección del algoritmo de optimización debe considerar la complejidad y características de la función objetivo, así como los recursos computacionales disponibles. Para funciones diferenciables y unimodales, el descenso por gradiente es recomendable por su eficiencia. Para funciones con múltiples óptimos locales o paisajes complejos, los algoritmos bioinspirados constituyen alternativas más robustas y versátiles.
+
+-   **Recomendaciones para asegurar estabilidad y reproducibilidad:**\
+    Se sugiere complementar la aplicación de estos métodos con análisis de sensibilidad y múltiples ejecuciones con diferentes condiciones iniciales para garantizar la estabilidad y reproducibilidad de las soluciones obtenidas.
+
+En resumen, este estudio reafirma que no existe un método universalmente superior, sino que la selección adecuada depende del problema específico y del balance entre eficiencia y calidad de la solución que se requiera.
+
+# Contribuciones individuales
+
+-   ***Diego Chávez:*** Mis contribuciones al proyecto se centraron principalmente en la casi totalidad de la optimización numérica, y en aportes en la optimización combinatoria. Diseñé, implementé y corregí los códigos en R para los métodos de Optimización numérica, asegurando su correcto funcionamiento y adaptándolos a las funciones de prueba seleccionadas (solo no hice los gifs). Además, estructuré y di forma al reporte académico de ésta. En la optimización combinatoria modifiqué algunos chunks (para mostrar tablas de rutas y algunas mejoras en los gráficos) y estructuré adecuadamente los aportes de los otros miembros, seccionando y mejorando la redacción y coherencia de los contenidos técnicos. Realicé la búsqueda, selección y aplicación rigurosa de referencias bibliográficas para ambas optimizaciones, aplicando correctamente las normas APA 7 para su citación. Finalmente, monté y configuré todo el blog en Quarto, integrando los textos, códigos y visualizaciones para una presentación clara y profesional del trabajo.
+
+-   ***Alejandro Feria:*** Redaccion y formulacion del documento y blog, selección de bibliografía, Pruebas de calidad, optimización de partículas, colonia de hormigas.
+
+-   ***Santiago Molina*****:** Diseñar e implementar los algoritmos de colonia de hormigas y genético para resolver el TSP en R, incluyendo la construcción de la matriz de costos con variables relevantes y la programación con codificación por permutaciones. Ajusté parámetros clave, evalué el desempeño con gráficos de convergencia y visualicé rutas óptimas con leaflet. Además, creé animaciones que ilustran el funcionamiento del algoritmo genético y el descenso por gradiente, y redacté las secciones del informe sobre verificación, análisis y comparación de resultados, fortaleciendo mi comprensión de heurísticas, análisis espacial y comunicación científica visual.
+
+-   ***Juan Teherán:*** Los aportes al proyecto fueron los de revisión y corroboración de las fuentes junto con el apoyo en la generación de los GIF, ilustrando las rutas óptimas conseguidas mediante algoritmos evolutivos y colonias de hormigas en el problema del vendedor viajero.
+
+# Referencias
+
+::: bibliografia-apa
+Bishop, C. M. (2006). *Pattern Recognition and Machine Learning*. Springer.<br>
+
+Das, S., & Suganthan, P. N. (2011). Differential evolution: A survey of the state-of-the-art. *IEEE Transactions on Evolutionary Computation*, *15*(1), 4-31.<br>
+
+Gonçalves, J. F., Mendes, J. M., & Resende, M. G. C. (2005). A genetic algorithm for the resource constrained multi-project scheduling problem. *European Journal of Operational Research*, 169(2), 561-578.<br>
+
+Goodfellow, I., Bengio, Y., & Courville, A. (2016). *Deep Learning*. MIT Press. <https://www.deeplearningbook.org/><br>
+
+Holland, J. H. (1975). *Adaptation in Natural and Artificial Systems*. MIT Press.<br>
+
+Kennedy, J., & Eberhart, R. (1995). Particle swarm optimization. *Proceedings of ICNN’95 - International Conference on Neural Networks*, 4, 1942–1948.<br>
+
+Mühlenbein, H., Schomisch, M., & Born, J. (1991). The parallel genetic algorithm as function optimizer. *Parallel Computing*, 17(6-7), 619-632.<br>
+
+Picheny, V., Wagner, T., & Ginsbourger, D. (2012). A benchmark of kriging-based infill criteria for noisy optimization. *Structural and Multidisciplinary Optimization*, 48(3), 607-626.<br>
+
+Poli, R., Kennedy, J., & Blackwell, T. (2007). Particle swarm optimization. *Swarm Intelligence*, *1*(1), 33-57.<br>
+
+Rosenbrock, H. H. (1960). An automatic method for finding the greatest or least value of a function. *The Computer Journal*, 3(3), 175-184.<br>
+
+Storn, R., & Price, K. (1997). Differential evolution–a simple and efficient heuristic for global optimization over continuous spaces. *Journal of Global Optimization*, 11(4), 341–359.<br>
+
+Törn, A., & Žilinskas, A. (1989). *Global Optimization* (Vol. 350). Springer-Verlag.<br>
+
+Villalba Fernández de Castro, L. J. (2004). *Algoritmos Genéticos: Fundamentos y Aplicaciones*. Universidad de Granada.<br>
+
+Zhang, A., Lipton, Z. C., Li, M., & Smola, A. J. (2024). *Dive into deep learning*. Cambridge University Press. <https://d2l.ai/index.html><br>
+:::

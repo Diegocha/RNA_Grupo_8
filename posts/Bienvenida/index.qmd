@@ -1,0 +1,44 @@
+---
+title: "Bienvenidos a nuestro Blog"
+author:
+  - name: "Diego Fernando Chávez Henao, dfchavez@unal.edu.co"
+  - name: "Alejandro Feria González, aferiag@unal.edu.co"
+  - name: "Santiago Molina Muñoz, smolinam@unal.edu.co"
+  - name: "Juan Manuel Teherán Machado, jteheranm@unal.edu.co"
+date: "2024-05-02"
+categories: [Redes Neuronales, Algoritmos Bioinspirados, R]
+---
+
+# Welcome!
+
+![](thumbnail.jpg)
+
+# Bienvenidos a nuestro blog de Redes Neuronales y Algoritmos Bioinspirados
+
+En este espacio se publicarán los trabajos de la materia **Redes Neuronales y Algoritmos Bioinspirados**. Podrás encontrar diferentes proyectos prácticos donde se explican algoritmos famosos inspirados en la naturaleza.
+
+![Bandada de aves migratorias](https://img.rtve.es/i/bandada-aves-migratorias-formacion-uve_1298649597308.jpg)
+
+## ¿Por qué este enfoque?
+
+Los algoritmos inspirados en la naturaleza no solo son poderosos: también nos invitan a mirar la inteligencia desde una perspectiva diferente. Comprender cómo el cerebro aprende, cómo una colonia de hormigas optimiza su comportamiento, o cómo los genes evolucionan en poblaciones puede darnos ideas innovadoras para resolver problemas complejos en ciencia, ingeniería y sociedad.
+
+## ¿A quién está dirigido este Blog?
+
+Este blog está dirigido a todas las personas interesadas en aprender de una manera teórica, pero también práctica como funcionan los modelos inspirados en la inteligencia natural. Es un blog hecho por estudiantes para estudiantes.
+
+## ¿Porque son importantes los algoritmos bioinspirados?
+
+Existen muchos problemas que son muy caros computacionalmente y no pueden ser resueltos con fuerza bruta, pues demorarían días (¡o incluso años!), por eso se han buscado soluciones más óptimas que aunque tengan un pequeño margen de error, son mucho más rápidas.
+
+### Problemas populares que se han abordado con algoritmos bioinspirados\*\*
+
+🧭 1. \*\*El problema del viajante (TSP)\*\*
+
+🧠 2. \*\*Diseño de arquitecturas de redes neuronales (Neuroevolution)\*\*
+
+🚦 4. \*\*Control de tráfico o sistemas multiagente\*\*
+
+👁️ 5. \*\*Visión artificial\*\*
+
+![¿Qué es Deep Learning?](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgpkChAz70AWS93Pd6EK3VNQNO-ha6Vb3sqFUN9Y2goJgrjHGLEPVeYlg6pW6si3ch8tXe01kB-gJVMmrrL-vm1GOlnPHlp90gH3voKFuJvSyQFohDZzV8CKq-f6-Pr6b9p52c38xhmqNM/s1600/Deep-Neural-Network-What-is-Deep-Learning-Edureka.png)

@@ -1,0 +1,2088 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Diego Fernando Chávez Henao, dfchavez@unal.edu.co">
+<meta name="author" content="Alejandro Feria González, aferiag@unal.edu.co">
+<meta name="author" content="Santiago Molina Muñoz, smolinam@unal.edu.co">
+<meta name="author" content="Juan Manuel Teherán Machado, jteheranm@unal.edu.co">
+<meta name="dcterms.date" content="2024-05-02">
+
+<title>Optimización Combinatoria – Redes Neuronales y Algoritmos Bioinspirados. Grupo 8</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../../site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="../../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+<link href="../../site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+
+<script src="../../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+
+<link href="../../site_libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+
+<script src="../../site_libs/leaflet-1.3.1/leaflet.js"></script>
+
+<link href="../../site_libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+
+<script src="../../site_libs/proj4-2.6.2/proj4.min.js"></script>
+
+<script src="../../site_libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+
+<link href="../../site_libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+
+<script src="../../site_libs/leaflet-binding-2.2.2/leaflet.js"></script>
+
+<script src="../../site_libs/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script>
+
+<script src="../../site_libs/leaflet-providers-plugin-2.2.2/leaflet-providers-plugin.js"></script>
+
+<link href="../../site_libs/leaflet-awesomemarkers-2.0.3/leaflet.awesome-markers.css" rel="stylesheet">
+
+<script src="../../site_libs/leaflet-awesomemarkers-2.0.3/leaflet.awesome-markers.min.js"></script>
+
+<link href="../../site_libs/fontawesome-4.7.0/font-awesome.min.css" rel="stylesheet">
+
+<link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="custom.css">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Redes Neuronales y Algoritmos Bioinspirados. Grupo 8</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-right">
+      <h1 class="title">Optimización Combinatoria</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">optimización</div>
+                <div class="quarto-category">Colonia de Hormigas</div>
+                <div class="quarto-category">Algorítmos Genéticos</div>
+                <div class="quarto-category">R</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta column-page-right">
+
+      <div>
+      <div class="quarto-title-meta-heading">Authors</div>
+      <div class="quarto-title-meta-contents">
+               <p>Diego Fernando Chávez Henao, dfchavez@unal.edu.co </p>
+               <p>Alejandro Feria González, aferiag@unal.edu.co </p>
+               <p>Santiago Molina Muñoz, smolinam@unal.edu.co </p>
+               <p>Juan Manuel Teherán Machado, jteheranm@unal.edu.co </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">May 2, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenido</h2>
+   
+  <ul>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción"><span class="header-section-number">1</span> <strong>Introducción</strong></a></li>
+  <li><a href="#marco-teórico" id="toc-marco-teórico" class="nav-link" data-scroll-target="#marco-teórico"><span class="header-section-number">2</span> <strong>Marco Teórico</strong></a>
+  <ul class="collapse">
+  <li><a href="#el-problema-del-viajante-de-comercio-tsp" id="toc-el-problema-del-viajante-de-comercio-tsp" class="nav-link" data-scroll-target="#el-problema-del-viajante-de-comercio-tsp"><span class="header-section-number">2.1</span> <strong>El Problema del Viajante de Comercio (TSP)</strong></a>
+  <ul class="collapse">
+  <li><a href="#supuestos-para-el-salario" id="toc-supuestos-para-el-salario" class="nav-link" data-scroll-target="#supuestos-para-el-salario"><span class="header-section-number">2.1.1</span> Supuestos para el Salario</a></li>
+  <li><a href="#supuestos-paro-los-peajes" id="toc-supuestos-paro-los-peajes" class="nav-link" data-scroll-target="#supuestos-paro-los-peajes"><span class="header-section-number">2.1.2</span> Supuestos paro los Peajes</a></li>
+  <li><a href="#supuestos-para-el-combustible" id="toc-supuestos-para-el-combustible" class="nav-link" data-scroll-target="#supuestos-para-el-combustible"><span class="header-section-number">2.1.3</span> Supuestos para el combustible</a></li>
+  <li><a href="#matriz-de-costos" id="toc-matriz-de-costos" class="nav-link" data-scroll-target="#matriz-de-costos"><span class="header-section-number">2.1.4</span> Matriz de Costos</a></li>
+  </ul></li>
+  <li><a href="#algoritmos-genéticos-ga" id="toc-algoritmos-genéticos-ga" class="nav-link" data-scroll-target="#algoritmos-genéticos-ga"><span class="header-section-number">2.2</span> <strong>Algoritmos Genéticos (GA)</strong></a></li>
+  <li><a href="#algoritmo-de-colonia-de-hormigas-aco" id="toc-algoritmo-de-colonia-de-hormigas-aco" class="nav-link" data-scroll-target="#algoritmo-de-colonia-de-hormigas-aco"><span class="header-section-number">2.3</span> Algoritmo de Colonia de Hormigas (ACO)</a></li>
+  </ul></li>
+  <li><a href="#resultados-y-análisis" id="toc-resultados-y-análisis" class="nav-link" data-scroll-target="#resultados-y-análisis"><span class="header-section-number">3</span> Resultados y Análisis</a>
+  <ul class="collapse">
+  <li><a href="#construcción-de-la-matriz-de-costos" id="toc-construcción-de-la-matriz-de-costos" class="nav-link" data-scroll-target="#construcción-de-la-matriz-de-costos"><span class="header-section-number">3.1</span> Construcción de la Matriz de Costos</a></li>
+  <li><a href="#ga-aplicado-al-tsp" id="toc-ga-aplicado-al-tsp" class="nav-link" data-scroll-target="#ga-aplicado-al-tsp"><span class="header-section-number">3.2</span> GA aplicado al TSP</a>
+  <ul class="collapse">
+  <li><a href="#implementación-del-ga-aplicado-al-tsp" id="toc-implementación-del-ga-aplicado-al-tsp" class="nav-link" data-scroll-target="#implementación-del-ga-aplicado-al-tsp"><span class="header-section-number">3.2.1</span> <strong>Implementación del GA aplicado al TSP</strong></a></li>
+  <li><a href="#visualización-de-resultados-del-ga-aplicado-al-tsp" id="toc-visualización-de-resultados-del-ga-aplicado-al-tsp" class="nav-link" data-scroll-target="#visualización-de-resultados-del-ga-aplicado-al-tsp"><span class="header-section-number">3.2.2</span> <strong>Visualización de resultados del GA aplicado al TSP</strong></a></li>
+  <li><a href="#recorrido-óptimo-animado-mejor-ruta-ga" id="toc-recorrido-óptimo-animado-mejor-ruta-ga" class="nav-link" data-scroll-target="#recorrido-óptimo-animado-mejor-ruta-ga"><span class="header-section-number">3.2.3</span> Recorrido óptimo animado mejor ruta GA</a></li>
+  <li><a href="#verificación-de-la-calidad-de-la-solución-del-ga-aplicado-al-tsp" id="toc-verificación-de-la-calidad-de-la-solución-del-ga-aplicado-al-tsp" class="nav-link" data-scroll-target="#verificación-de-la-calidad-de-la-solución-del-ga-aplicado-al-tsp"><span class="header-section-number">3.2.4</span> Verificación de la calidad de la solución del GA aplicado al TSP</a></li>
+  </ul></li>
+  <li><a href="#aco-aplicado-al-tsp" id="toc-aco-aplicado-al-tsp" class="nav-link" data-scroll-target="#aco-aplicado-al-tsp"><span class="header-section-number">3.3</span> ACO aplicado al TSP</a>
+  <ul class="collapse">
+  <li><a href="#implementación-del-aco-aplicado-al-tsp" id="toc-implementación-del-aco-aplicado-al-tsp" class="nav-link" data-scroll-target="#implementación-del-aco-aplicado-al-tsp"><span class="header-section-number">3.3.1</span> <strong>Implementación del ACO aplicado al TSP</strong></a></li>
+  <li><a href="#visualización-de-resultados-del-aco-aplicado-al-tsp" id="toc-visualización-de-resultados-del-aco-aplicado-al-tsp" class="nav-link" data-scroll-target="#visualización-de-resultados-del-aco-aplicado-al-tsp"><span class="header-section-number">3.3.2</span> <strong>Visualización de resultados del ACO aplicado al TSP</strong></a></li>
+  <li><a href="#recorrido-óptimo-animado-mejor-ruta-aco" id="toc-recorrido-óptimo-animado-mejor-ruta-aco" class="nav-link" data-scroll-target="#recorrido-óptimo-animado-mejor-ruta-aco"><span class="header-section-number">3.3.3</span> Recorrido óptimo animado mejor ruta ACO</a></li>
+  <li><a href="#verificación-de-la-calidad-de-la-solución-del-aco-aplicado-al-tsp" id="toc-verificación-de-la-calidad-de-la-solución-del-aco-aplicado-al-tsp" class="nav-link" data-scroll-target="#verificación-de-la-calidad-de-la-solución-del-aco-aplicado-al-tsp"><span class="header-section-number">3.3.4</span> Verificación de la calidad de la solución del ACO aplicado al TSP</a></li>
+  </ul></li>
+  <li><a href="#comparación-entre-el-ga-y-aco-aplicados-al-tsg" id="toc-comparación-entre-el-ga-y-aco-aplicados-al-tsg" class="nav-link" data-scroll-target="#comparación-entre-el-ga-y-aco-aplicados-al-tsg"><span class="header-section-number">3.4</span> Comparación entre el GA y ACO aplicados al TSG</a></li>
+  </ul></li>
+  <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones"><span class="header-section-number">4</span> <strong>Conclusiones</strong></a></li>
+  <li><a href="#referencias" id="toc-referencias" class="nav-link" data-scroll-target="#referencias"><span class="header-section-number">5</span> <strong>Referencias</strong></a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-right" id="quarto-document-content">
+
+
+
+
+<nav id="TOC-body" role="doc-toc">
+    <h2 id="toc-title">Tabla de contenido</h2>
+   
+  <ul>
+  <li><a href="#introducción" id="toc-introducción"><span class="header-section-number">1</span> <strong>Introducción</strong></a></li>
+  <li><a href="#marco-teórico" id="toc-marco-teórico"><span class="header-section-number">2</span> <strong>Marco Teórico</strong></a>
+  <ul>
+  <li><a href="#el-problema-del-viajante-de-comercio-tsp" id="toc-el-problema-del-viajante-de-comercio-tsp"><span class="header-section-number">2.1</span> <strong>El Problema del Viajante de Comercio (TSP)</strong></a>
+  <ul>
+  <li><a href="#supuestos-para-el-salario" id="toc-supuestos-para-el-salario"><span class="header-section-number">2.1.1</span> Supuestos para el Salario</a></li>
+  <li><a href="#supuestos-paro-los-peajes" id="toc-supuestos-paro-los-peajes"><span class="header-section-number">2.1.2</span> Supuestos paro los Peajes</a></li>
+  <li><a href="#supuestos-para-el-combustible" id="toc-supuestos-para-el-combustible"><span class="header-section-number">2.1.3</span> Supuestos para el combustible</a></li>
+  <li><a href="#matriz-de-costos" id="toc-matriz-de-costos"><span class="header-section-number">2.1.4</span> Matriz de Costos</a></li>
+  </ul></li>
+  <li><a href="#algoritmos-genéticos-ga" id="toc-algoritmos-genéticos-ga"><span class="header-section-number">2.2</span> <strong>Algoritmos Genéticos (GA)</strong></a></li>
+  <li><a href="#algoritmo-de-colonia-de-hormigas-aco" id="toc-algoritmo-de-colonia-de-hormigas-aco"><span class="header-section-number">2.3</span> Algoritmo de Colonia de Hormigas (ACO)</a></li>
+  </ul></li>
+  <li><a href="#resultados-y-análisis" id="toc-resultados-y-análisis"><span class="header-section-number">3</span> Resultados y Análisis</a>
+  <ul>
+  <li><a href="#construcción-de-la-matriz-de-costos" id="toc-construcción-de-la-matriz-de-costos"><span class="header-section-number">3.1</span> Construcción de la Matriz de Costos</a></li>
+  <li><a href="#ga-aplicado-al-tsp" id="toc-ga-aplicado-al-tsp"><span class="header-section-number">3.2</span> GA aplicado al TSP</a>
+  <ul>
+  <li><a href="#implementación-del-ga-aplicado-al-tsp" id="toc-implementación-del-ga-aplicado-al-tsp"><span class="header-section-number">3.2.1</span> <strong>Implementación del GA aplicado al TSP</strong></a></li>
+  <li><a href="#visualización-de-resultados-del-ga-aplicado-al-tsp" id="toc-visualización-de-resultados-del-ga-aplicado-al-tsp"><span class="header-section-number">3.2.2</span> <strong>Visualización de resultados del GA aplicado al TSP</strong></a></li>
+  <li><a href="#recorrido-óptimo-animado-mejor-ruta-ga" id="toc-recorrido-óptimo-animado-mejor-ruta-ga"><span class="header-section-number">3.2.3</span> Recorrido óptimo animado mejor ruta GA</a></li>
+  <li><a href="#verificación-de-la-calidad-de-la-solución-del-ga-aplicado-al-tsp" id="toc-verificación-de-la-calidad-de-la-solución-del-ga-aplicado-al-tsp"><span class="header-section-number">3.2.4</span> Verificación de la calidad de la solución del GA aplicado al TSP</a></li>
+  </ul></li>
+  <li><a href="#aco-aplicado-al-tsp" id="toc-aco-aplicado-al-tsp"><span class="header-section-number">3.3</span> ACO aplicado al TSP</a>
+  <ul>
+  <li><a href="#implementación-del-aco-aplicado-al-tsp" id="toc-implementación-del-aco-aplicado-al-tsp"><span class="header-section-number">3.3.1</span> <strong>Implementación del ACO aplicado al TSP</strong></a></li>
+  <li><a href="#visualización-de-resultados-del-aco-aplicado-al-tsp" id="toc-visualización-de-resultados-del-aco-aplicado-al-tsp"><span class="header-section-number">3.3.2</span> <strong>Visualización de resultados del ACO aplicado al TSP</strong></a></li>
+  <li><a href="#recorrido-óptimo-animado-mejor-ruta-aco" id="toc-recorrido-óptimo-animado-mejor-ruta-aco"><span class="header-section-number">3.3.3</span> Recorrido óptimo animado mejor ruta ACO</a></li>
+  <li><a href="#verificación-de-la-calidad-de-la-solución-del-aco-aplicado-al-tsp" id="toc-verificación-de-la-calidad-de-la-solución-del-aco-aplicado-al-tsp"><span class="header-section-number">3.3.4</span> Verificación de la calidad de la solución del ACO aplicado al TSP</a></li>
+  </ul></li>
+  <li><a href="#comparación-entre-el-ga-y-aco-aplicados-al-tsg" id="toc-comparación-entre-el-ga-y-aco-aplicados-al-tsg"><span class="header-section-number">3.4</span> Comparación entre el GA y ACO aplicados al TSG</a></li>
+  </ul></li>
+  <li><a href="#conclusiones" id="toc-conclusiones"><span class="header-section-number">4</span> <strong>Conclusiones</strong></a></li>
+  <li><a href="#referencias" id="toc-referencias"><span class="header-section-number">5</span> <strong>Referencias</strong></a></li>
+  </ul>
+</nav>
+<hr>
+<p><strong>ENUCIADO DEL PROBLEMA</strong></p>
+<p>Un vendedor debe hacer un recorrido por todas y cada de las 13 ciudades principales de Colombia.</p>
+<p>Utilice colonias de hormigas y algoritmos genéticos para encontrar el orden óptimo. El costo de desplazamiento entre ciudades es la suma del valor de la hora del vendedor (es un parámetro que debe estudiarse), el costo de los peajes y el costo del combustible. Cada equipo debe definir en qué carro hace el recorrido el vendedor y de allí extraer el costo del combustible.</p>
+<p>Adicionalmente represente con un gif animado o un video cómo se comporta la mejor solución usando un gráfico del recorrido en el mapa de Colombia.</p>
+<hr>
+<section id="introducción" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> <strong>Introducción</strong></h1>
+<p>El Problema del Viajante de Comercio (<em>Traveling Salesman Problem</em>, TSP) es uno de los problemas más clásicos y estudiados en el campo de la optimización combinatoria (Goodfellow et al., 2016; Zhang et al., 2020). Plantea el reto de encontrar la ruta de menor costo que permita a un vendedor visitar exactamente una vez cada ciudad de un conjunto y retornar al punto de partida. En el contexto colombiano, la optimización de rutas es especialmente relevante debido a la complejidad de la red vial, la alta densidad de peajes y los elevados costos logísticos (Infobae, 2025).</p>
+<p>Este trabajo busca determinar la ruta óptima para un vendedor que debe recorrer las 13 ciudades principales del país, minimizando el costo total que incluye costos de salario, peajes y combustible. Para ello se implementan dos enfoques bioinspirados: <em>algoritmos genéticos</em> (GA) y <em>algoritmos de colonia de hormigas</em> (ACO), comparando su desempeño, analizando la calidad de las soluciones y visualizando los recorridos óptimos sobre el mapa de Colombia.</p>
+</section>
+<section id="marco-teórico" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> <strong>Marco Teórico</strong></h1>
+<section id="el-problema-del-viajante-de-comercio-tsp" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="el-problema-del-viajante-de-comercio-tsp"><span class="header-section-number">2.1</span> <strong>El Problema del Viajante de Comercio (TSP)</strong></h2>
+<p>El Problema del Viajante de Comercio (TSP, por sus siglas en inglés) es uno de los problemas más emblemáticos de la optimización combinatoria y de la investigación de operaciones. Consiste en encontrar la ruta de menor costo que permita a un viajante visitar una vez cada ciudad de un conjunto dado y regresar al punto de partida (Zhang et al., 2020). Este problema es <em>NP-hard</em>, lo que significa que el número de posibles rutas crece factorialmente con el número de ciudades, volviendo inviable la búsqueda exhaustiva para instancias de tamaño moderado (Goodfellow et al., 2016).</p>
+<p>Matemáticamente, el TSP se modela mediante un grafo completo donde cada nodo representa una ciudad y cada arista tiene un costo asociado (Goodfellow et al., 2016). Como ejemplo de costo asociado tenemos distancia, tiempo, dinero, etc. El objetivo es encontrar el ciclo hamiltoniano de menor costo, es decir, un camino que pase una única vez por cada ciudad, retorne al origen, y minimice la suma de los costos (Zhang et al., 2020).</p>
+<section id="supuestos-para-el-salario" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="supuestos-para-el-salario"><span class="header-section-number">2.1.1</span> Supuestos para el Salario</h3>
+<p><strong>Se asume un valor monetario por hora de trabajo de $25.000 COP/hora</strong>, definido según parámetros del mercado laboral colombiano, Con este valor se puede estimar el costo del salario que debe pagarse al viajante por ir desde la ciudad <span class="math inline">\(i\)</span> a la ciudad <span class="math inline">\(j\)</span>, mediante la siguiente expresión:</p>
+<p><span class="math inline">\(\text{Costo del salario del viajante}_{ij} = V_h \cdot T_{ij} \tag{1}\)</span></p>
+<p>donde</p>
+<ul>
+<li><p><span class="math inline">\(V_h\)</span>: Valor de la hora de trabajo del vendedor (COP/hora), asumido como $25.000 COP/hora</p></li>
+<li><p><span class="math inline">\(T_{ij}\)</span>: Tiempo de viaje desde la ciudad <span class="math inline">\(i\)</span> a la ciudad <span class="math inline">\(j\)</span> (horas)</p></li>
+</ul>
+</section>
+<section id="supuestos-paro-los-peajes" class="level3" data-number="2.1.2">
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="supuestos-paro-los-peajes"><span class="header-section-number">2.1.2</span> Supuestos paro los Peajes</h3>
+<p>Colombia cuenta con 180 peajes en la red vial nacional (Infobae, 2025). Aunque existe un proyecto de ley para que los peajes no puedan ubicarse a menos de 150 kilómetros entre sí (Infobae, 2025), en la práctica la distancia promedio entre peajes es de 50 a 70 km. Por ejemplo, el trayecto Medellín–Bogotá (415 km) tiene 8 peajes, y el trayecto Cali–Barranquilla (1000 km) tiene 15 peajes.</p>
+<p><strong>Asumiendo un peaje cada 60 km recorridos</strong>, se estima el número de peajes entre las ciudades <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span> como:</p>
+<p><span class="math inline">\(P_{ij}= \mathrm{Redondear}\left(\frac{\text{Distancia (km)}}{60\,\text{km}}\right) \tag{2}\)</span></p>
+<p><strong>Suponiendo un costo promedio por peaje de</strong> $25.000 COP, el costo de los peajes entre las ciudades <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span> se calcula como:</p>
+<p><span class="math inline">\(\text{Costo de los peajes}_{ij} = P_{ij} \cdot C_p \tag{3}\)</span></p>
+<p>donde</p>
+<ul>
+<li><p><span class="math inline">\(P_{ij}\)</span>: Número estimado de peajes entre las ciudades <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span></p></li>
+<li><p><span class="math inline">\(C_p\)</span>: Costo promedio de cada peaje (COP), asumido como $25.000 COP</p></li>
+</ul>
+<p>Esta aproximación busca representar de forma razonable las condiciones actuales de la red vial colombiana y su impacto económico en los recorridos del viajante.</p>
+</section>
+<section id="supuestos-para-el-combustible" class="level3" data-number="2.1.3">
+<h3 data-number="2.1.3" class="anchored" data-anchor-id="supuestos-para-el-combustible"><span class="header-section-number">2.1.3</span> Supuestos para el combustible</h3>
+<p>Para este estudio se seleccionó el <strong><em>Chevrolet Spark GT</em></strong>, un vehículo compacto ampliamente utilizado en Colombia por su eficiencia en carretera y bajo costo operativo. Según especificaciones técnicas reportadas por C3 Care Car Center (2025) y Yahoo Finanzas (2025), este modelo ofrece un <strong>rendimiento promedio de 40 km/galón</strong> en condiciones reales de conducción interurbana, valor asumido para el cálculo de costos en este estudio.</p>
+<p>Según Yahoo Finanzas (2025), el Spark GT combina eficiencia energética (hasta 20.7 km/L en carretera según pruebas homologadas) con una red nacional de soporte técnico, garantizando asistencia en las 13 ciudades contempladas en este estudio. Su diseño compacto facilita la movilidad en zonas urbanas (C3 Care Car Center, 2025), mientras que el rendimiento de 40 km/galón refleja condiciones reales de tráfico y carga (Ministerio de Minas y Energía, 2025).</p>
+<p>Los parámetros técnicos relevantes para este automóvil son:</p>
+<ul>
+<li><p><em>Motor:</em> 1.2L DOHC de 4 cilindros, 80.5 HP y 108 Nm de torque (C3 Care Car Center, 2025).</p></li>
+<li><p><em>Transmisión:</em> Mecánica, de 5 velocidades, optimizada para topografía colombiana (Yahoo Finanzas, 2025).</p></li>
+<li><p><em>Capacidad de carga</em>: 402 kg, ideal para transporte de muestrarios comerciales (C3 Care Car Center, 2025).</p></li>
+</ul>
+<p><strong>Asumiendo que el precio de la gasolina es de</strong> $16.259 COP por galón (Ministerio de Minas y Energía, 2025), el costo del combustible para desplazarse de la ciudad <span class="math inline">\(i\)</span> a la ciudad <span class="math inline">\(j\)</span> se estima como:</p>
+<p><span class="math inline">\(\text{Costo del combustible}_{ij} = \left( \frac{D_{ij}}{R} \right) \cdot C_g  \tag{4}\)</span></p>
+<p>donde</p>
+<ul>
+<li><p><span class="math inline">\(D_{ij}\)</span>: Distancia entre las ciudades <span class="math inline">\(i\)</span> y <span class="math inline">\(j\)</span> (km)</p></li>
+<li><p><span class="math inline">\(R\)</span>: Rendimiento del vehículo (km/galón), asumido como 40 km/galón</p></li>
+<li><p><span class="math inline">\(C_g\)</span>: Costo del galón de gasolina (COP), asumido como $16.259 COP por galón</p></li>
+</ul>
+</section>
+<section id="matriz-de-costos" class="level3" data-number="2.1.4">
+<h3 data-number="2.1.4" class="anchored" data-anchor-id="matriz-de-costos"><span class="header-section-number">2.1.4</span> Matriz de Costos</h3>
+<p>La matriz de costos <span class="math inline">\(C\)</span> es una matriz cuadrada de tamaño <span class="math inline">\(n \times n\)</span>, donde <span class="math inline">\(n\)</span> es el número de ciudades, y cada elemento <span class="math inline">\(C_{ij}\)</span>, <span class="math inline">\(i, j = 1, \dots, n\)</span>, representa el costo de desplazarse de la ciudad <span class="math inline">\(i\)</span> a la ciudad <span class="math inline">\(j\)</span>, y se calcula como:</p>
+<p><span class="math inline">\(C_{ij} = \text{Costo del salario del viajante}_{ij} + \text{Costo de los peajes}_{ij} + \text{Costo del combustible}_{ij}  \tag{5}\)</span></p>
+<p>Generalmente, los elementos en la diagonal <span class="math inline">\(C_{ii}\)</span> son cero o un valor muy alto para evitar que el vendedor permanezca en la misma ciudad. La matriz puede ser simétrica o asimétrica, dependiendo de si los costos de ida y regreso entre ciudades son iguales o diferentes (Zhang et al., 2024).</p>
+</section>
+</section>
+<section id="algoritmos-genéticos-ga" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="algoritmos-genéticos-ga"><span class="header-section-number">2.2</span> <strong>Algoritmos Genéticos (GA)</strong></h2>
+<p>Los algoritmos genéticos (Genetic Algorithms, GA) son métodos de optimización bioinspirados que emulan los principios de la selección natural y la evolución biológica, propuestos inicialmente por John Holland en la década de 1970 (Holland, 1975). Los GA se han aplicado exitosamente a una amplia variedad de problemas complejos, especialmente aquellos donde los métodos exactos son demasiado costosos o inviables. Destacan en problemas combinatorios NP-hard, como el Problema del Viajante de Comercio (TSP), donde el espacio de soluciones crece factorialmente con el número de ciudades, volviendo impracticable la búsqueda exhaustiva (Villalba Fernández de Castro, 2004; Zhang et al., 2020).</p>
+<p>La eficacia de los GA radica en su capacidad para equilibrar la explotación de soluciones prometedoras y la exploración de nuevas regiones del espacio de búsqueda mediante mecanismos estocásticos (Dorigo &amp; Stützle, 2004).</p>
+<p>Los componentes clave de un algoritmo genético son:</p>
+<ul>
+<li><p><strong>Representación cromosómica:</strong> Cada solución se codifica como un cromosoma, generalmente un vector que especifica el orden de visita de las ciudades (Zhang et al., 2024).</p></li>
+<li><p><strong>Función de aptitud (fitness):</strong> Evalúa la calidad de cada solución. Para el TSP, suele calcularse como el inverso o el negativo del costo total de la ruta (Zhang et al., 2020).</p></li>
+<li><p><strong>Operadores genéticos:</strong></p>
+<ul>
+<li><p><strong>Selección:</strong> Prioriza individuos con mayor aptitud, utilizando métodos como la selección por torneo o ruleta (Holland, 1975).</p></li>
+<li><p><strong>Cruzamiento (crossover):</strong> Combina segmentos de dos padres para generar descendencia, empleando operadores como el order crossover para preservar permutaciones válidas (Gonçalves et al., 2005).</p></li>
+<li><p><strong>Mutación:</strong> Introduce cambios aleatorios, como el intercambio de dos ciudades, para mantener la diversidad genética (Villalba Fernández de Castro, 2004).</p></li>
+</ul></li>
+</ul>
+<p>Estos algoritmos operan sobre una población de soluciones candidatas (individuos o cromosomas), que evolucionan iterativamente mediante los operadores genéticos mencionados. El objetivo es mejorar progresivamente la aptitud (fitness) de las soluciones a lo largo de las generaciones (Goodfellow et al., 2016).</p>
+<p>En el contexto del TSP, cada individuo representa una ruta que recorre todas las ciudades, y la función objetivo consiste en minimizar el costo total del recorrido. Debido a la naturaleza combinatoria del problema, los algoritmos genéticos ofrecen una estrategia eficiente para encontrar buenas soluciones aproximadas en tiempos razonables, aunque no garantizan hallar siempre la solución óptima. El proceso evolutivo permite que, generación tras generación, la población tienda a encontrar rutas cada vez más eficientes.</p>
+<p><strong>Verificación de la calidad de la solución</strong></p>
+<p>Evaluar la calidad de la solución obtenida es fundamental en el contexto del Problema del Viajante de Comercio (TSP), especialmente cuando se emplean métodos metaheurísticos como los algoritmos genéticos (GA). Los enfoques exactos, como la enumeración exhaustiva de todas las posibles rutas, resultan computacionalmente inviables debido al crecimiento factorial del número de combinaciones a medida que aumenta la cantidad de ciudades (Applegate et al., 2006; Zhang et al., 2020).</p>
+<p>Ante esta intratabilidad, se optó por aplicar un algoritmo genético, que permite aproximarse a soluciones de alta calidad mediante múltiples iteraciones y el ajuste de parámetros como el tamaño de la población y el número de generaciones (Mitchell, 1998). Los GA superan a los métodos exactos al reducir la complejidad computacional a <span class="math inline">\(O(g \cdot n)\)</span>, donde <span class="math inline">\(g\)</span> es el número de generaciones y <span class="math inline">\(n\)</span> el tamaño de la población (Applegate et al., 2006).</p>
+<p>La evaluación de la calidad de las soluciones obtenidas mediante GA en el TSP requiere abordar dos desafíos clave: la naturaleza estocástica del algoritmo y la imposibilidad de validar la optimalidad global en instancias grandes. Por ello, se emplean dos pilares fundamentales para la verificación:</p>
+<ul>
+<li><p><strong>Convergencia del fitness:</strong> Se monitorea el historial del costo a través de las generaciones. Una estabilización de la función objetivo en un rango reducido (por ejemplo, variaciones menores al 0.5% en 50 generaciones consecutivas) sugiere proximidad a un óptimo local o global (Gonçalves et al., 2005).</p></li>
+<li><p><strong>Reproducibilidad:</strong> Ejecuciones independientes con diferentes semillas aleatorias deben generar soluciones de calidad comparable, lo que confirma la robustez del algoritmo (Zhang et al., 2020).</p></li>
+</ul>
+</section>
+<section id="algoritmo-de-colonia-de-hormigas-aco" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="algoritmo-de-colonia-de-hormigas-aco"><span class="header-section-number">2.3</span> Algoritmo de Colonia de Hormigas (ACO)</h2>
+<p>El algoritmo de colonia de hormigas (<em>Ant Colony Optimization</em>, ACO) es una técnica de optimización bioinspirada en el comportamiento colectivo de las colonias de hormigas reales durante la búsqueda de alimento (Dorigo et al., 1996; Dorigo &amp; Stützle, 2004). En la naturaleza, las hormigas encuentran caminos cortos entre su nido y una fuente de alimento depositando una sustancia química llamada feromona. A medida que más hormigas siguen un camino y lo refuerzan con feromonas, ese camino se vuelve más atractivo para otras hormigas, lo que conduce a una optimización distribuida y adaptativa.</p>
+<p>Basado en este principio, Marco Dorigo propuso en la década de 1990 el ACO como un algoritmo metaheurístico para resolver problemas combinatorios complejos, tales como el Problema del Viajante de Comercio (TSP), la programación de tareas y la planificación de rutas (Dorigo &amp; Stützle, 2004).</p>
+<p>En el contexto del TSP, cada hormiga construye una solución probabilísticamente, guiada por dos factores principales:</p>
+<ul>
+<li>La intensidad de feromonas depositadas en los caminos (memoria colectiva).</li>
+<li>Una heurística local, generalmente el inverso del costo o la distancia entre ciudades.</li>
+</ul>
+<p>Cada hormiga construye una solución completa seleccionando las ciudades a visitar con una probabilidad proporcional a estos dos factores. Tras cada iteración, el algoritmo actualiza las feromonas:</p>
+<ul>
+<li>Evaporando parte de la feromona para evitar la convergencia prematura.</li>
+<li>Refuerzando las rutas más exitosas depositando más feromona en los caminos que produjeron soluciones de bajo costo.</li>
+</ul>
+<p>Este mecanismo balancea la exploración (búsqueda de nuevas soluciones) y la explotación (refinamiento de soluciones prometedoras), permitiendo que el algoritmo encuentre soluciones cercanas al óptimo en problemas donde los métodos exactos son computacionalmente inviables (Dorigo et al., 1996; Dorigo &amp; Stützle, 2004).</p>
+<p>En este estudio, el ACO fue utilizado para resolver la instancia del TSP correspondiente a las 13 ciudades principales de Colombia, minimizando el costo total del trayecto, que incluye tiempo de desplazamiento, peajes y combustible. Mediante la configuración de parámetros clave como el número de hormigas, la importancia relativa de la heurística y la tasa de evaporación, el algoritmo logró encontrar soluciones estables y de bajo costo, comparables con las obtenidas mediante algoritmos genéticos.</p>
+</section>
+</section>
+<section id="resultados-y-análisis" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Resultados y Análisis</h1>
+<p>El proceso seguido para resolver el Problema del Viajante de Comercio (TSP) con algoritmos genéticos (GA) y colonia de hormigas (ACO) fue el siguiente:</p>
+<ol type="1">
+<li><p><strong>Construcción de la matriz de costos:</strong> Se recopilaron datos de distancia y tiempo entre las 13 ciudades principales de Colombia, utilizando fuentes confiables como el portal <a href="https://colombia.mejoresrutas.com/tabla-de-distancias/co/">Mejores Rutas</a> (Mejores rutas Colombia, s.f.) y el portal <a href="https://www.geodatos.net/distancias/ciudades/colombia">Geodatos</a> (Geodatos.net, s.f.). A partir de estos datos y los parámetros definidos (salario, rendimiento del vehículo, precio del combustible y peajes), se calculó el costo total para cada trayecto entre ciudades.</p></li>
+<li><p><strong>Implementación de los algoritmos:</strong></p>
+<p><strong>Algoritmo genético:</strong> Se utilizó la librería <strong><code>GA</code></strong> en R para modelar el problema como una permutación de ciudades. La función de aptitud fue definida como el negativo del costo total, para así minimizar el recorrido. Se experimentó con diferentes tamaños de población y número de generaciones para observar el comportamiento del algoritmo.</p>
+<p><strong>Algoritmo de colonia de hormigas</strong>: Se desarrolló un modelo ACO adaptado al TSP, donde cada hormiga construye una ruta completa a través de todas las ciudades. Los parámetros clave incluyeron el número de hormigas, la importancia relativa de la feromona (α) y la heurística (β), y la tasa de evaporación de feromona (ρ).</p></li>
+<li><p><strong>Visualización de resultados:</strong> Se graficó la evolución del costo total a lo largo de las generaciones (GA) o de las iteraciones (ACO), y se representó la mejor ruta encontrada sobre el mapa de Colombia, utilizando la librería <strong><code>leaflet</code></strong> para mostrar el recorrido óptimo.</p></li>
+<li><p><strong>Verificación de la calidad de la solución:</strong> Se analizaron los patrones de ambos algoritmos, observando como evolucionaba el costo total, en cuántas iteracciones se estabilizaba y si alcanzaba una solución robusta. La solución final se seleccionó como la ruta de menor costo histórico registrado durante la ejecución, considerando la estabilización de la función objetivo y la ausencia de mejoras sustanciales en las iteraciones finales.</p></li>
+</ol>
+<section id="construcción-de-la-matriz-de-costos" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="construcción-de-la-matriz-de-costos"><span class="header-section-number">3.1</span> Construcción de la Matriz de Costos</h2>
+<p>Para este estudio, se utilizó el portal <a href="https://colombia.mejoresrutas.com/tabla-de-distancias/co/">Mejores Rutas</a> (Mejores rutas Colombia, s.f.) para generar la matriz de distancia correspondiente a las 13 ciudades principales de Colombia. Estas ciudades son: Bogotá, Cali, Medellín, Barranquilla, Cartagena, Cúcuta, Bucaramanga, Pereira, Santa Marta, Ibagué, Pasto, Manizales y Neiva.</p>
+<p>Además, la plataforma ofrecía una estimación del tiempo de viaje entre ciudades, calculado con base en un tiempo promedio de desplazamiento de aproximadamente 73 km/h. La selección de estas ciudades se basó en el criterio de su población.</p>
+<p>Para complementar este análisis, se utilizó la plataforma <a href="https://simplemaps.com/data/co-cities">Simple Maps</a> para obtener las coordenadas centrales de cada ciudad, facilitando su localización en el mapa y la visualización de la información geográfica.</p>
+<p>La <strong>Tabla 1</strong> muestra la matriz de costos entre ciudades <span class="math inline">\(C\)</span> calculada para el análisis.</p>
+<p><strong>Tabla1.</strong> <em>Matriz de costo entre ciudades.</em></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Librerías necesarias</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GA)  <span class="co"># Librería genética optimizada</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaflet)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Lectura de datos</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>Ciudades <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/Distancias.csv"</span>, <span class="at">row.names=</span><span class="dv">1</span>, <span class="at">na.strings=</span><span class="st">"0"</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">13</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">13</span>] </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>Tiempo_Recorrido <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/Tiempos.csv"</span>, <span class="at">row.names=</span><span class="dv">1</span>, <span class="at">na.strings=</span><span class="st">"0"</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">13</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">13</span>] </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>CiudadesUbicacion <span class="ot">&lt;-</span> readxl<span class="sc">::</span><span class="fu">read_excel</span>(<span class="st">"data/CiudadesUbicacion.xlsx"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertimos los datos que están en formato texto (h:mm) a horas decimales</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>convertir_horas <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {   </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.na</span>(x)) <span class="fu">return</span>(<span class="cn">NA</span>)   </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  partes <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(x, <span class="st">":"</span>)[[<span class="dv">1</span>]]</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  horas <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(partes[<span class="dv">1</span>])</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  minutos <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(partes[<span class="dv">2</span>])</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(horas <span class="sc">+</span> minutos<span class="sc">/</span><span class="dv">60</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>Tiempo_Recorrido <span class="ot">&lt;-</span> <span class="fu">apply</span>(Tiempo_Recorrido, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), convertir_horas)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>Ciudades <span class="ot">&lt;-</span> <span class="fu">apply</span>(Ciudades, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), as.numeric)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="do">## Cálculo de la Matriz de Costos</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Parámetros de costos</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>valor_hora <span class="ot">&lt;-</span> <span class="dv">25000</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>rendimiento_carro <span class="ot">&lt;-</span> <span class="dv">40</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>precio_galon <span class="ot">&lt;-</span> <span class="dv">16259</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Costo de combustible entre cada par de ciudades</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>costo_combustible <span class="ot">&lt;-</span> (Ciudades <span class="sc">/</span> rendimiento_carro) <span class="sc">*</span> precio_galon</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Número estimado de peajes entre cada par de ciudades</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>costo_peajes <span class="ot">&lt;-</span> <span class="fu">round</span>(Ciudades <span class="sc">/</span> <span class="dv">60</span>) <span class="sc">*</span> <span class="dv">25000</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Costo del vendedor</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>costo_vendedor <span class="ot">&lt;-</span> (valor_hora <span class="sc">*</span> Tiempo_Recorrido)</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>CostoTotal <span class="ot">&lt;-</span> costo_vendedor <span class="sc">+</span> costo_peajes <span class="sc">+</span> costo_combustible</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrando la matriz de costos</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(CostoTotal) <span class="sc">%&gt;%</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span>), <span class="at">full_width =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="table-responsive">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Bogotá</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Cali</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Medellín</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Barranquilla</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Cartagena</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Cúcuta</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Bucaramanga</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Pereira</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Santa.Marta</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Ibagué</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Pasto</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Manizales</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Neiva</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Bogotá</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">403314.8</td>
+<td style="text-align: right;">349840.0</td>
+<td style="text-align: right;">806526.49</td>
+<td style="text-align: right;">880001.3</td>
+<td style="text-align: right;">483708.7</td>
+<td style="text-align: right;">330328.0</td>
+<td style="text-align: right;">273795.00</td>
+<td style="text-align: right;">782197.95</td>
+<td style="text-align: right;">165027.0</td>
+<td style="text-align: right;">668909.0</td>
+<td style="text-align: right;">262575.58</td>
+<td style="text-align: right;">246427.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cali</td>
+<td style="text-align: right;">402908.3</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">379290.8</td>
+<td style="text-align: right;">948587.06</td>
+<td style="text-align: right;">899715.9</td>
+<td style="text-align: right;">809179.4</td>
+<td style="text-align: right;">652120.0</td>
+<td style="text-align: right;">170717.65</td>
+<td style="text-align: right;">1013870.04</td>
+<td style="text-align: right;">241600.8</td>
+<td style="text-align: right;">376679.9</td>
+<td style="text-align: right;">226214.66</td>
+<td style="text-align: right;">356751.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Medellín</td>
+<td style="text-align: right;">348600.2</td>
+<td style="text-align: right;">379717.7</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">570119.38</td>
+<td style="text-align: right;">546248.3</td>
+<td style="text-align: right;">496666.1</td>
+<td style="text-align: right;">340013.2</td>
+<td style="text-align: right;">185250.02</td>
+<td style="text-align: right;">644965.32</td>
+<td style="text-align: right;">323967.1</td>
+<td style="text-align: right;">721916.2</td>
+<td style="text-align: right;">176591.75</td>
+<td style="text-align: right;">495009.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Barranquilla</td>
+<td style="text-align: right;">804880.2</td>
+<td style="text-align: right;">944034.3</td>
+<td style="text-align: right;">565556.4</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">102975.4</td>
+<td style="text-align: right;">565343.6</td>
+<td style="text-align: right;">535100.2</td>
+<td style="text-align: right;">774983.32</td>
+<td style="text-align: right;">81857.93</td>
+<td style="text-align: right;">797471.9</td>
+<td style="text-align: right;">1312055.9</td>
+<td style="text-align: right;">741325.04</td>
+<td style="text-align: right;">951289.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cartagena</td>
+<td style="text-align: right;">890254.9</td>
+<td style="text-align: right;">898079.9</td>
+<td style="text-align: right;">545008.5</td>
+<td style="text-align: right;">102131.91</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">649895.2</td>
+<td style="text-align: right;">595068.4</td>
+<td style="text-align: right;">729018.68</td>
+<td style="text-align: right;">183573.17</td>
+<td style="text-align: right;">867735.7</td>
+<td style="text-align: right;">1265684.8</td>
+<td style="text-align: right;">720360.41</td>
+<td style="text-align: right;">1036257.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cúcuta</td>
+<td style="text-align: right;">481229.1</td>
+<td style="text-align: right;">808783.1</td>
+<td style="text-align: right;">492093.0</td>
+<td style="text-align: right;">565343.60</td>
+<td style="text-align: right;">646561.8</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">157486.2</td>
+<td style="text-align: right;">639721.91</td>
+<td style="text-align: right;">515608.58</td>
+<td style="text-align: right;">568452.7</td>
+<td style="text-align: right;">1144762.1</td>
+<td style="text-align: right;">584621.18</td>
+<td style="text-align: right;">722687.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bucaramanga</td>
+<td style="text-align: right;">328254.8</td>
+<td style="text-align: right;">652953.3</td>
+<td style="text-align: right;">336273.4</td>
+<td style="text-align: right;">535516.86</td>
+<td style="text-align: right;">592558.2</td>
+<td style="text-align: right;">158309.4</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">483485.67</td>
+<td style="text-align: right;">486188.32</td>
+<td style="text-align: right;">412633.2</td>
+<td style="text-align: right;">988932.4</td>
+<td style="text-align: right;">428384.95</td>
+<td style="text-align: right;">566450.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Pereira</td>
+<td style="text-align: right;">274628.3</td>
+<td style="text-align: right;">171134.3</td>
+<td style="text-align: right;">186063.0</td>
+<td style="text-align: right;">780775.88</td>
+<td style="text-align: right;">731488.1</td>
+<td style="text-align: right;">641368.2</td>
+<td style="text-align: right;">484308.8</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">845642.20</td>
+<td style="text-align: right;">113320.8</td>
+<td style="text-align: right;">538739.3</td>
+<td style="text-align: right;">57997.01</td>
+<td style="text-align: right;">277869.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Santa Marta</td>
+<td style="text-align: right;">780551.7</td>
+<td style="text-align: right;">1013463.6</td>
+<td style="text-align: right;">640808.8</td>
+<td style="text-align: right;">81441.26</td>
+<td style="text-align: right;">184000.0</td>
+<td style="text-align: right;">540598.4</td>
+<td style="text-align: right;">485771.7</td>
+<td style="text-align: right;">818995.92</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">772726.7</td>
+<td style="text-align: right;">1349036.1</td>
+<td style="text-align: right;">788895.19</td>
+<td style="text-align: right;">926961.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ibagué</td>
+<td style="text-align: right;">165037.2</td>
+<td style="text-align: right;">242423.9</td>
+<td style="text-align: right;">323956.9</td>
+<td style="text-align: right;">797878.41</td>
+<td style="text-align: right;">870946.8</td>
+<td style="text-align: right;">568452.7</td>
+<td style="text-align: right;">411799.8</td>
+<td style="text-align: right;">112904.09</td>
+<td style="text-align: right;">773143.39</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">590343.6</td>
+<td style="text-align: right;">170880.72</td>
+<td style="text-align: right;">167862.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pasto</td>
+<td style="text-align: right;">668502.5</td>
+<td style="text-align: right;">375856.8</td>
+<td style="text-align: right;">721906.0</td>
+<td style="text-align: right;">1316202.21</td>
+<td style="text-align: right;">1267331.1</td>
+<td style="text-align: right;">1144345.5</td>
+<td style="text-align: right;">987692.6</td>
+<td style="text-align: right;">537916.13</td>
+<td style="text-align: right;">1348619.48</td>
+<td style="text-align: right;">590343.6</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">593423.33</td>
+<td style="text-align: right;">421648.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Manizales</td>
+<td style="text-align: right;">261346.0</td>
+<td style="text-align: right;">226641.5</td>
+<td style="text-align: right;">176591.8</td>
+<td style="text-align: right;">745887.99</td>
+<td style="text-align: right;">722423.4</td>
+<td style="text-align: right;">585037.8</td>
+<td style="text-align: right;">428385.0</td>
+<td style="text-align: right;">57173.87</td>
+<td style="text-align: right;">789311.86</td>
+<td style="text-align: right;">170474.2</td>
+<td style="text-align: right;">593840.0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">335023.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Neiva</td>
+<td style="text-align: right;">247687.7</td>
+<td style="text-align: right;">356751.2</td>
+<td style="text-align: right;">489756.1</td>
+<td style="text-align: right;">952539.70</td>
+<td style="text-align: right;">1026014.5</td>
+<td style="text-align: right;">723520.5</td>
+<td style="text-align: right;">566867.6</td>
+<td style="text-align: right;">278703.28</td>
+<td style="text-align: right;">928211.16</td>
+<td style="text-align: right;">169935.3</td>
+<td style="text-align: right;">423721.3</td>
+<td style="text-align: right;">336679.90</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+</section>
+<section id="ga-aplicado-al-tsp" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="ga-aplicado-al-tsp"><span class="header-section-number">3.2</span> GA aplicado al TSP</h2>
+<section id="implementación-del-ga-aplicado-al-tsp" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="implementación-del-ga-aplicado-al-tsp"><span class="header-section-number">3.2.1</span> <strong>Implementación del GA aplicado al TSP</strong></h3>
+<p>Se utilizó la librería&nbsp;<code>GA</code>&nbsp;en R para modelar el problema TSP como una permutación de ciudades. La función de aptitud fue definida como el negativo del costo total, para así minimizar el recorrido.</p>
+<p>Para la simulación del GA se utilizaron los siguientes <em>Hiperparámetros críticos</em> (basado en implementaciones prácticas):</p>
+<ul>
+<li><p>Tamaño de población: 50 individuos, balanceando diversidad y costo computacional (Revistas Uniboyacá, s.f.).</p></li>
+<li><p>Generaciones: 500 iteraciones, suficientes para converger hacia soluciones cercanas al óptimo (Gonçalves et al., 2005).</p></li>
+<li><p>Tasa de mutación: 20%, equilibrando exploración y estabilidad (Revistas Uniboyacá, s.f.).</p></li>
+</ul>
+<p><strong><em>La mejor solución encontrada por GA presentó un costo total mínimo de $3.369.197, lograda en la generación 253.</em></strong></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Función para calcular el costo total de una ruta</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>evaluar_ruta <span class="ot">&lt;-</span> <span class="cf">function</span>(ruta, matriz_costos) {</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  costo <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(ruta) <span class="sc">-</span> <span class="dv">1</span>)) {</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    costo <span class="ot">&lt;-</span> costo <span class="sc">+</span> matriz_costos[ruta[i], ruta[i <span class="sc">+</span> <span class="dv">1</span>]]</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Cerrar el ciclo regresando a la ciudad inicial</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  costo <span class="ot">&lt;-</span> costo <span class="sc">+</span> CostoTotal[ruta[<span class="fu">length</span>(ruta)], ruta[<span class="dv">1</span>]]</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(costo)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Número de ciudades</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>n_ciudades <span class="ot">&lt;-</span> <span class="fu">nrow</span>(CostoTotal)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Implementar el algoritmo</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># modelo_GA &lt;- ga(</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#   type = "permutation",</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#   fitness = function(ruta) -evaluar_ruta(ruta, CostoTotal),  # Negativo para minimizar</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#   lower = 1,</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#   upper = n_ciudades,</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#   popSize = 50,            # Tamaño de la población</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#   maxiter = 500,           # Número máximo de generaciones</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">#   pmutation = 0.2,        # Probabilidad de mutación</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co">#   monitor = FALSE</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>historial_fitness <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>modelo_GA <span class="ot">&lt;-</span> <span class="fu">ga</span>(</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"permutation"</span>,</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">fitness =</span> <span class="cf">function</span>(ruta) <span class="sc">-</span><span class="fu">evaluar_ruta</span>(ruta, CostoTotal),  <span class="co"># Negativo para minimizar</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower =</span> <span class="dv">1</span>,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">upper =</span> n_ciudades,</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">popSize =</span> <span class="dv">50</span>,            <span class="co"># Tamaño de la población</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">500</span>,           <span class="co"># Número máximo de generaciones</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">pmutation =</span> <span class="fl">0.2</span>,        <span class="co"># Probabilidad de mutación</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">monitor =</span> <span class="cf">function</span>(obj) {</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    historial_fitness <span class="ot">&lt;&lt;-</span> <span class="fu">c</span>(historial_fitness, <span class="sc">-</span><span class="fu">max</span>(obj<span class="sc">@</span>fitness))</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Mejor ruta</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>mejor_ruta <span class="ot">&lt;-</span> modelo_GA<span class="sc">@</span>solution[<span class="dv">1</span>,]</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Mejor costo</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>mejor_costo <span class="ot">&lt;-</span> <span class="sc">-</span>modelo_GA<span class="sc">@</span>fitnessValue  <span class="co"># Recuerda que lo negamos antes</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar resultados</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear dataframe del historial</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>df_historial <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>  <span class="at">Generacion =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(historial_fitness),</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>  <span class="at">CostoTotal =</span> historial_fitness</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="co"># Encontrar el mejor costo</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="co">#mejor_costo &lt;- min(df_historial$CostoTotal)</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>mejor_generacion <span class="ot">&lt;-</span> df_historial<span class="sc">$</span>Generacion[<span class="fu">which.min</span>(df_historial<span class="sc">$</span>CostoTotal)]</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar resultados</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">La mejor ruta se obtuvo en la generación "</span>, mejor_generacion, <span class="st">"</span><span class="sc">\n</span><span class="st">El costo total de la mejor ruta fue de $"</span>, <span class="fu">format</span>(mejor_costo, <span class="at">big.mark=</span><span class="st">","</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+La mejor ruta se obtuvo en la generación  253 
+El costo total de la mejor ruta fue de $ 3,369,197 </code></pre>
+</div>
+</div>
+</section>
+<section id="visualización-de-resultados-del-ga-aplicado-al-tsp" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="visualización-de-resultados-del-ga-aplicado-al-tsp"><span class="header-section-number">3.2.2</span> <strong>Visualización de resultados del GA aplicado al TSP</strong></h3>
+<section id="evolución-del-costo-total-a-través-de-las-generaciones" class="level4" data-number="3.2.2.1">
+<h4 data-number="3.2.2.1" class="anchored" data-anchor-id="evolución-del-costo-total-a-través-de-las-generaciones"><span class="header-section-number">3.2.2.1</span> <strong>Evolución del costo total a través de las generaciones</strong></h4>
+<p>La <strong>Figura 1</strong> muestra cómo evolucionó el Costo Total a través de 500 generaciones. Se observa en ella que el algoritmo genético mostró una mejora significativa en el costo total durante las primeras generaciones, encontrando soluciones de menor costo de forma rápida. A partir de la generación 250 aproximadamente, el algoritmo estabilizó su desempeño, indicando que había alcanzado una solución cercana al óptimo.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Graficar la evolucion del Costo en el AG</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear el texto que quieres mostrar</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>texto_anotacion <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Generación: "</span>, mejor_generacion, <span class="st">"</span><span class="sc">\n</span><span class="st">Costo: "</span>, <span class="fu">format</span>(<span class="fu">round</span>(mejor_costo, <span class="dv">0</span>), <span class="at">big.mark =</span> <span class="st">","</span>))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Graficar</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_historial, <span class="fu">aes</span>(<span class="at">x =</span> Generacion, <span class="at">y =</span> CostoTotal)) <span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"darkgreen"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"forestgreen"</span>, <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"point"</span>, </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>           <span class="at">x =</span> mejor_generacion, </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> mejor_costo, </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> <span class="st">"red"</span>, </span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>           <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>           <span class="at">x =</span> mejor_generacion <span class="sc">+</span> <span class="dv">20</span>,  <span class="co"># desplazamos un poco para que no tape el punto</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> mejor_costo,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> texto_anotacion,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>           <span class="at">hjust =</span> <span class="dv">0</span>,                  <span class="co"># alineación horizontal</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>           <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>,               <span class="co"># alineación vertical</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>           <span class="at">size =</span> <span class="dv">4</span>,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>           <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Evolución del Costo Total en el Algoritmo Genético (AG)"</span>,</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Generación"</span>,</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Costo Total"</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/evolucionCostoGA-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Figura 1.</strong> <em>Evolución del Costo Total en el GA a través de 500 generaciones.</em></p>
+</section>
+<section id="visualización-de-la-mejor-ruta" class="level4" data-number="3.2.2.2">
+<h4 data-number="3.2.2.2" class="anchored" data-anchor-id="visualización-de-la-mejor-ruta"><span class="header-section-number">3.2.2.2</span> <strong>Visualización de la mejor ruta</strong></h4>
+<p>La <strong>Tabla 2</strong> muestra la mejor ruta hallada por GA, que corresponde al <em>costo total mínimo de $3.369.197,</em> entre las 13 ciudades de Colombia en el orden que deben recorrerse.</p>
+<p><strong>Tabla 2.</strong> <em>Orden en que deben recorrerse las 13 ciudades en la mejor ruta obtenida por GA.</em></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mejor ruta (ya teníamos mejor_ruta)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>ruta_completa <span class="ot">&lt;-</span> <span class="fu">c</span>(mejor_ruta, mejor_ruta[<span class="dv">1</span>])</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Extraer ciudades en orden de la ruta</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>ruta_ciudades <span class="ot">&lt;-</span> CiudadesUbicacion[ruta_completa, ]</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Agregar el orden de visita</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>ruta_ciudades<span class="sc">$</span>Orden <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(ruta_ciudades)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrando la mejor ruta</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  ruta_ciudades[, <span class="fu">c</span>(<span class="st">"Ciudad"</span>, <span class="st">"Orden"</span>)],</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Ciudad"</span>, <span class="st">"Orden de visita"</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span>),</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">"center"</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">width =</span> <span class="st">"10em"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">2</span>, <span class="at">width =</span> <span class="st">"5em"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">row_spec</span>(<span class="dv">0</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">background =</span> <span class="st">"#4682B4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="table-responsive">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: white !important; background-color: rgba(70, 130, 180, 255) !important;">Ciudad</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(70, 130, 180, 255) !important;">Orden de visita</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Santa Marta</td>
+<td style="text-align: right; width: 5em;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;">Barranquilla</td>
+<td style="text-align: right; width: 5em;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Cartagena</td>
+<td style="text-align: right; width: 5em;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;">Medellín</td>
+<td style="text-align: right; width: 5em;">4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Manizales</td>
+<td style="text-align: right; width: 5em;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;">Pereira</td>
+<td style="text-align: right; width: 5em;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Ibagué</td>
+<td style="text-align: right; width: 5em;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;">Cali</td>
+<td style="text-align: right; width: 5em;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Pasto</td>
+<td style="text-align: right; width: 5em;">9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;">Neiva</td>
+<td style="text-align: right; width: 5em;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Bogotá</td>
+<td style="text-align: right; width: 5em;">11</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;">Bucaramanga</td>
+<td style="text-align: right; width: 5em;">12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Cúcuta</td>
+<td style="text-align: right; width: 5em;">13</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;">Santa Marta</td>
+<td style="text-align: right; width: 5em;">14</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+<p>La <strong>Figura 2</strong> muestra la superposición de la mejor ruta hallada por GA en el mapa de Colombia.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear texto de costo</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>costo_texto <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Costo total mínimo: $"</span>, <span class="fu">format</span>(<span class="fu">round</span>(mejor_costo, <span class="dv">0</span>), <span class="at">big.mark =</span> <span class="st">","</span>))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Íconos personalizados para inicio y fin</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>icono_inicio <span class="ot">&lt;-</span> <span class="fu">awesomeIcons</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">icon =</span> <span class="st">'flag'</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">iconColor =</span> <span class="st">'white'</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">markerColor =</span> <span class="st">'green'</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">library =</span> <span class="st">'fa'</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>icono_fin <span class="ot">&lt;-</span> <span class="fu">awesomeIcons</span>(</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">icon =</span> <span class="st">'flag'</span>,</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">iconColor =</span> <span class="st">'white'</span>,</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">markerColor =</span> <span class="st">'red'</span>,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">library =</span> <span class="st">'fa'</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Texto del costo total</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>costo_texto <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Costo total mínimo: $"</span>, <span class="fu">format</span>(<span class="fu">round</span>(mejor_costo, <span class="dv">0</span>), <span class="at">big.mark =</span> <span class="st">","</span>))</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear el mapa</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="fu">leaflet</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addProviderTiles</span>(providers<span class="sc">$</span>CartoDB.Positron) <span class="sc">%&gt;%</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Marcar la ciudad de inicio (primer ciudad de la ruta)</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addAwesomeMarkers</span>(</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">lng =</span> ruta_ciudades<span class="sc">$</span>Longitud[<span class="dv">1</span>],</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">lat =</span> ruta_ciudades<span class="sc">$</span>Latitud[<span class="dv">1</span>],</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">icon =</span> icono_inicio,</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">popup =</span> <span class="fu">paste</span>(<span class="st">"Inicio:"</span>, ruta_ciudades<span class="sc">$</span>Ciudad[<span class="dv">1</span>])</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Marcar la ciudad final (última ciudad de la ruta)</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addAwesomeMarkers</span>(</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">lng =</span> ruta_ciudades<span class="sc">$</span>Longitud[<span class="fu">nrow</span>(ruta_ciudades)<span class="sc">-</span><span class="dv">1</span>],</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">lat =</span> ruta_ciudades<span class="sc">$</span>Latitud[<span class="fu">nrow</span>(ruta_ciudades)<span class="sc">-</span><span class="dv">1</span>],</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">icon =</span> icono_fin,</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">popup =</span> <span class="fu">paste</span>(<span class="st">"Fin:"</span>, ruta_ciudades<span class="sc">$</span>Ciudad[<span class="fu">nrow</span>(ruta_ciudades)<span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Marcar todas las demás ciudades normales</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addCircleMarkers</span>(</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ruta_ciudades,</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">lng =</span> <span class="sc">~</span>Longitud,</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">lat =</span> <span class="sc">~</span>Latitud,</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">radius =</span> <span class="dv">6</span>,</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"blue"</span>,</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">fillColor =</span> <span class="st">"blue"</span>,</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">fillOpacity =</span> <span class="fl">0.8</span>,</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="sc">~</span><span class="fu">paste0</span>(Orden, <span class="st">". "</span>, Ciudad),</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">popup =</span> <span class="sc">~</span><span class="fu">paste</span>(<span class="st">"Ciudad:"</span>, Ciudad, <span class="st">"&lt;br&gt;"</span>, <span class="st">"Orden de visita:"</span>, Orden)</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Agregar la ruta conectando las ciudades</span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addPolylines</span>(</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">lng =</span> <span class="sc">~</span>Longitud,</span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">lat =</span> <span class="sc">~</span>Latitud,</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ruta_ciudades,</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"red"</span>,</span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">weight =</span> <span class="dv">3</span>,</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">opacity =</span> <span class="fl">0.8</span></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Mostrar el costo total en una esquina</span></span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addControl</span>(</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">html =</span> <span class="fu">paste0</span>(<span class="st">"&lt;b&gt;"</span>, costo_texto, <span class="st">"&lt;/b&gt;"</span>),</span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">"bottomleft"</span></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="leaflet html-widget html-fill-item" id="htmlwidget-f153291709f234e3eee7" style="width:100%;height:487px;"></div>
+<script type="application/json" data-for="htmlwidget-f153291709f234e3eee7">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["CartoDB.Positron",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addAwesomeMarkers","args":[11.2419,-74.20529999999999,{"icon":"flag","markerColor":"green","iconColor":"white","spin":false,"squareMarker":false,"iconRotate":0,"font":"monospace","prefix":"fa"},null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},"Inicio: Santa Marta",null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addAwesomeMarkers","args":[7.8942,-72.5039,{"icon":"flag","markerColor":"red","iconColor":"white","spin":false,"squareMarker":false,"iconRotate":0,"font":"monospace","prefix":"fa"},null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},"Fin: Cúcuta",null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addCircleMarkers","args":[[11.2419,10.9833,10.4,6.2308,5.1,4.8143,4.4333,3.4206,1.2078,2.9345,4.7111,7.1333,7.8942,11.2419],[-74.20529999999999,-74.8019,-75.5,-75.59059999999999,-75.55,-75.69459999999999,-75.2333,-76.5222,-77.27719999999999,-75.2809,-74.0722,-73,-72.5039,-74.20529999999999],6,null,null,{"interactive":true,"className":"","stroke":true,"color":"blue","weight":5,"opacity":0.5,"fill":true,"fillColor":"blue","fillOpacity":0.8},null,null,["Ciudad: Santa Marta <br> Orden de visita: 1","Ciudad: Barranquilla <br> Orden de visita: 2","Ciudad: Cartagena <br> Orden de visita: 3","Ciudad: Medellín <br> Orden de visita: 4","Ciudad: Manizales <br> Orden de visita: 5","Ciudad: Pereira <br> Orden de visita: 6","Ciudad: Ibagué <br> Orden de visita: 7","Ciudad: Cali <br> Orden de visita: 8","Ciudad: Pasto <br> Orden de visita: 9","Ciudad: Neiva <br> Orden de visita: 10","Ciudad: Bogotá <br> Orden de visita: 11","Ciudad: Bucaramanga <br> Orden de visita: 12","Ciudad: Cúcuta <br> Orden de visita: 13","Ciudad: Santa Marta <br> Orden de visita: 14"],null,["1. Santa Marta","2. Barranquilla","3. Cartagena","4. Medellín","5. Manizales","6. Pereira","7. Ibagué","8. Cali","9. Pasto","10. Neiva","11. Bogotá","12. Bucaramanga","13. Cúcuta","14. Santa Marta"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addPolylines","args":[[[[{"lng":[-74.20529999999999,-74.8019,-75.5,-75.59059999999999,-75.55,-75.69459999999999,-75.2333,-76.5222,-77.27719999999999,-75.2809,-74.0722,-73,-72.5039,-74.20529999999999],"lat":[11.2419,10.9833,10.4,6.2308,5.1,4.8143,4.4333,3.4206,1.2078,2.9345,4.7111,7.1333,7.8942,11.2419]}]]],null,null,{"interactive":true,"className":"","stroke":true,"color":"red","weight":3,"opacity":0.8,"fill":false,"fillColor":"red","fillOpacity":0.2,"smoothFactor":1,"noClip":false},null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addControl","args":["<b>Costo total mínimo: $3,369,197<\/b>","bottomleft",null,"info legend"]}],"limits":{"lat":[1.2078,11.2419],"lng":[-77.27719999999999,-72.5039]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p><strong>Figura 2.</strong> Superposición de la mejor ruta obtenida por GA en el mapa de Colombia.</p>
+</section>
+</section>
+<section id="recorrido-óptimo-animado-mejor-ruta-ga" class="level3" data-number="3.2.3">
+<h3 data-number="3.2.3" class="anchored" data-anchor-id="recorrido-óptimo-animado-mejor-ruta-ga"><span class="header-section-number">3.2.3</span> Recorrido óptimo animado mejor ruta GA</h3>
+<p>La <strong>Figura 3</strong> muestra una animación del recorrido a través de la mejor ruta encontrada usando GA aplicado al TSG.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="GifGA.gif" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p><strong>Figura 3.</strong> <em>Animación del recorrido óptima encontrada usando GA aplicado al TSG</em>.</p>
+</section>
+<section id="verificación-de-la-calidad-de-la-solución-del-ga-aplicado-al-tsp" class="level3" data-number="3.2.4">
+<h3 data-number="3.2.4" class="anchored" data-anchor-id="verificación-de-la-calidad-de-la-solución-del-ga-aplicado-al-tsp"><span class="header-section-number">3.2.4</span> Verificación de la calidad de la solución del GA aplicado al TSP</h3>
+<p>Durante la ejecución del algoritmo, se observó un comportamiento típico de convergencia: inicialmente, el costo total disminuyó rápidamente, mostrando mejoras significativas en las primeras generaciones; posteriormente, el costo se estabilizó, oscilando alrededor de una media relativamente constante. Este patrón es consistente con el comportamiento esperado en métodos de optimización metaheurística, indicando que el AG convergió hacia un conjunto de soluciones cercanas al óptimo.</p>
+<p>Por lo tanto, se seleccionó como solución final la ruta correspondiente al menor costo alcanzado durante las iteraciones. Dado que las funciones de costo tienden a estabilizarse en un rango limitado y que no se observaron mejoras sustanciales tras cierto número de generaciones, se concluye que la solución obtenida es razonablemente buena, considerando las limitaciones inherentes a los métodos no determinísticos y la complejidad del problema (Gonçalves et al., 2005; Zhang et al., 2020).</p>
+</section>
+</section>
+<section id="aco-aplicado-al-tsp" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="aco-aplicado-al-tsp"><span class="header-section-number">3.3</span> ACO aplicado al TSP</h2>
+<section id="implementación-del-aco-aplicado-al-tsp" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="implementación-del-aco-aplicado-al-tsp"><span class="header-section-number">3.3.1</span> <strong>Implementación del ACO aplicado al TSP</strong></h3>
+<p>Para la simulación del ACO se utilizaron los siguientes hiperparámetros críticos, basados en recomendaciones de la literatura y experimentación práctica:</p>
+<ul>
+<li><p><strong>Número de hormigas:</strong> 13, buscando un equilibrio entre la diversidad de soluciones exploradas y el costo computacional (Dorigo &amp; Stützle, 2004).</p></li>
+<li><p><strong>Iteraciones:</strong> 500, suficientes para permitir la convergencia hacia soluciones de bajo costo (Gambardella &amp; Dorigo, 1995).</p></li>
+<li><p><strong>Importancia relativa de la feromona (</strong><span class="math inline">\(\alpha\)</span><strong>):</strong> 1, para que la información histórica de las rutas influya en la toma de decisiones.</p></li>
+<li><p><strong>Importancia de la heurística (</strong><span class="math inline">\(\beta\)</span><strong>):</strong> 5, dando mayor peso al costo inmediato de los trayectos (Dorigo &amp; Stützle, 2004).</p></li>
+<li><p><strong>Tasa de evaporación de feromona (</strong><span class="math inline">\(\rho\)</span><strong>):</strong> 0.5, permitiendo un balance entre la explotación de buenas rutas y la exploración de nuevas alternativas.</p></li>
+<li><p><strong>Constante para el depósito de feromona ($Q$):</strong> 1.</p></li>
+</ul>
+<p><strong><em>La mejor solución encontrada por ACO presentó un costo total mínimo de $3,271,872, lograda en la iteración 96.</em></strong></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Número de ciudades</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>n_ciudades <span class="ot">&lt;-</span> <span class="fu">nrow</span>(CostoTotal)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Parámetros del ACO</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>n_hormigas <span class="ot">&lt;-</span> n_ciudades       <span class="co"># Una hormiga por ciudad</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>n_iteraciones <span class="ot">&lt;-</span> <span class="dv">500</span>           <span class="co"># Número de generaciones</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="dv">1</span>                     <span class="co"># Importancia de la feromona</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="dv">5</span>                      <span class="co"># Importancia de la visibilidad (1/distancia)</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>rho <span class="ot">&lt;-</span> <span class="fl">0.5</span>                     <span class="co"># Tasa de evaporación</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>Q <span class="ot">&lt;-</span> <span class="dv">1</span>                         <span class="co"># Constante para el depósito de feromona</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Inicializar feromonas (matriz llena de 1's)</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>feromonas <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span>, n_ciudades, n_ciudades)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Visibilidad: inversa del costo (matriz de distancias)</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>visibilidad <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> CostoTotal</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="fu">diag</span>(visibilidad) <span class="ot">&lt;-</span> <span class="dv">0</span>   <span class="co"># No queremos loops sobre sí mismo</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>construir_ruta <span class="ot">&lt;-</span> <span class="cf">function</span>(feromonas, visibilidad, alpha, beta) {</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  ruta <span class="ot">&lt;-</span> <span class="fu">integer</span>(n_ciudades)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  ruta[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>n_ciudades, <span class="dv">1</span>)   <span class="co"># Escoge ciudad inicial aleatoria</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  no_visitadas <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="dv">1</span><span class="sc">:</span>n_ciudades, ruta[<span class="dv">1</span>])</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n_ciudades) {</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    ultimo <span class="ot">&lt;-</span> ruta[i<span class="dv">-1</span>]</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">length</span>(no_visitadas) <span class="sc">==</span> <span class="dv">1</span>) {</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>      siguiente <span class="ot">&lt;-</span> no_visitadas  <span class="co"># Solo queda una opción</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>      probabilidades <span class="ot">&lt;-</span> (feromonas[ultimo, no_visitadas]<span class="sc">^</span>alpha) <span class="sc">*</span> (visibilidad[ultimo, no_visitadas]<span class="sc">^</span>beta)</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>      probabilidades <span class="ot">&lt;-</span> probabilidades <span class="sc">/</span> <span class="fu">sum</span>(probabilidades)</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>      siguiente <span class="ot">&lt;-</span> <span class="fu">sample</span>(no_visitadas, <span class="dv">1</span>, <span class="at">prob =</span> probabilidades)</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    ruta[i] <span class="ot">&lt;-</span> siguiente</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>    no_visitadas <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(no_visitadas, siguiente)</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ruta)</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Función para calcular el costo de una ruta</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>costo_ruta <span class="ot">&lt;-</span> <span class="cf">function</span>(ruta, costo_total) {</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>  costo <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(ruta)<span class="sc">-</span><span class="dv">1</span>)) {</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>    costo <span class="ot">&lt;-</span> costo <span class="sc">+</span> costo_total[ruta[i], ruta[i<span class="sc">+</span><span class="dv">1</span>]]</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Cerrar el ciclo (regresar al origen)</span></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>  costo <span class="ot">&lt;-</span> costo <span class="sc">+</span> costo_total[ruta[<span class="fu">length</span>(ruta)], ruta[<span class="dv">1</span>]]</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(costo)</span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="co"># Guardar el mejor resultado</span></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a>mejor_ruta_aco <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>mejor_costo_aco <span class="ot">&lt;-</span> <span class="cn">Inf</span></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>historial_costo_aco <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>mejor_iteracion_aco <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_iteraciones) {</span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>  rutas <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>  costos <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_hormigas)</span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Cada hormiga construye su ruta</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_hormigas) {</span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>    rutas[[k]] <span class="ot">&lt;-</span> <span class="fu">construir_ruta</span>(feromonas, visibilidad, alpha, beta)</span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a>    costos[k] <span class="ot">&lt;-</span> <span class="fu">costo_ruta</span>(rutas[[k]], CostoTotal)</span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Actualizar mejor solución</span></span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">min</span>(costos) <span class="sc">&lt;</span> mejor_costo_aco) {</span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a>    mejor_costo_aco <span class="ot">&lt;-</span> <span class="fu">min</span>(costos)</span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a>    mejor_ruta_aco <span class="ot">&lt;-</span> rutas[[<span class="fu">which.min</span>(costos)]]</span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a>    mejor_iteracion_aco <span class="ot">&lt;-</span> iter </span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Actualizar feromonas</span></span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a>  feromonas <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> rho) <span class="sc">*</span> feromonas   <span class="co"># Evaporación</span></span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_hormigas) {</span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a>    ruta_k <span class="ot">&lt;-</span> rutas[[k]]</span>
+<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a>    costo_k <span class="ot">&lt;-</span> costos[k]</span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(ruta_k)<span class="sc">-</span><span class="dv">1</span>)) {</span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a>      feromonas[ruta_k[i], ruta_k[i<span class="sc">+</span><span class="dv">1</span>]] <span class="ot">&lt;-</span> feromonas[ruta_k[i], ruta_k[i<span class="sc">+</span><span class="dv">1</span>]] <span class="sc">+</span> Q <span class="sc">/</span> costo_k</span>
+<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Cerrar el ciclo</span></span>
+<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a>    feromonas[ruta_k[<span class="fu">length</span>(ruta_k)], ruta_k[<span class="dv">1</span>]] <span class="ot">&lt;-</span> feromonas[ruta_k[<span class="fu">length</span>(ruta_k)], ruta_k[<span class="dv">1</span>]] <span class="sc">+</span> Q <span class="sc">/</span> costo_k</span>
+<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Guardar evolución</span></span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a>  historial_costo_aco <span class="ot">&lt;-</span> <span class="fu">c</span>(historial_costo_aco, mejor_costo_aco)</span>
+<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (Opcional: ver progreso)</span></span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a>  <span class="co">#if (iter %% 50 == 0) cat("Iteración:", iter, "- Mejor costo hasta ahora:", mejor_costo_aco, "\n")</span></span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostar resultados</span></span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">La mejor ruta se obtuvo en la iteración "</span>, mejor_iteracion_aco, <span class="st">"</span><span class="sc">\n</span><span class="st">El costo total de la mejor ruta fue de $"</span>, <span class="fu">format</span>(mejor_costo_aco, <span class="at">big.mark=</span><span class="st">","</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+La mejor ruta se obtuvo en la iteración  96 
+El costo total de la mejor ruta fue de $ 3,271,872 </code></pre>
+</div>
+</div>
+</section>
+<section id="visualización-de-resultados-del-aco-aplicado-al-tsp" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="visualización-de-resultados-del-aco-aplicado-al-tsp"><span class="header-section-number">3.3.2</span> <strong>Visualización de resultados del ACO aplicado al TSP</strong></h3>
+<section id="evolución-del-costo-total-a-través-de-las-iteraciones" class="level4" data-number="3.3.2.1">
+<h4 data-number="3.3.2.1" class="anchored" data-anchor-id="evolución-del-costo-total-a-través-de-las-iteraciones"><span class="header-section-number">3.3.2.1</span> <strong>Evolución del costo total a través de las iteraciones</strong></h4>
+<p>La <strong>Figura 4</strong> muestra cómo evolucionó el Costo Total a través de 500 generaciones. Se observa que el algoritmo de colonia de hormigas presentó una rápida convergencia en las primeras generaciones, alcanzando una solución estable alrededor de la iteración 96. A partir de ese momento, el costo total se mantuvo constante, lo que indica que el conjunto de hormigas ha refinado su búsqueda alrededor de una solución de bajo costo.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear dataframe del historial de costos del ACO</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df_historial_aco <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Iteracion =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(historial_costo_aco),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">CostoTotal =</span> historial_costo_aco</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Encontrar el mejor costo y la iteración donde se logró</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>mejor_costo_aco <span class="ot">&lt;-</span> <span class="fu">min</span>(df_historial_aco<span class="sc">$</span>CostoTotal)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>mejor_iteracion_aco <span class="ot">&lt;-</span> df_historial_aco<span class="sc">$</span>Iteracion[<span class="fu">which.min</span>(df_historial_aco<span class="sc">$</span>CostoTotal)]</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear el texto para la anotación</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>texto_anotacion_aco <span class="ot">&lt;-</span> <span class="fu">paste0</span>(</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Iteración: "</span>, mejor_iteracion_aco, </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span><span class="sc">\n</span><span class="st">Costo: "</span>, <span class="fu">format</span>(<span class="fu">round</span>(mejor_costo_aco, <span class="dv">0</span>), <span class="at">big.mark =</span> <span class="st">","</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Graficar la evolución del costo en el ACO</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_historial_aco, <span class="fu">aes</span>(<span class="at">x =</span> Iteracion, <span class="at">y =</span> CostoTotal)) <span class="sc">+</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"darkgreen"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"forestgreen"</span>, <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"point"</span>, </span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>           <span class="at">x =</span> mejor_iteracion_aco, </span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> mejor_costo_aco, </span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> <span class="st">"red"</span>, </span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>           <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>,</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>           <span class="at">x =</span> mejor_iteracion_aco <span class="sc">+</span> <span class="dv">20</span>,  <span class="co"># desplazar el texto para que no tape el punto</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> mejor_costo_aco,</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> texto_anotacion_aco,</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>           <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>           <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>,</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>           <span class="at">size =</span> <span class="dv">4</span>,</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>           <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Evolución del Costo Total en el Algoritmo de Colonia de Hormigas (ACO)"</span>,</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Iteración"</span>,</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Costo Total"</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>)</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/evolucionCostoACO-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Figura 4.</strong> <em>Evolución del Costo Total en el ACO a través de 500 iteraciones.</em></p>
+</section>
+<section id="visualización-de-la-mejor-ruta-1" class="level4" data-number="3.3.2.2">
+<h4 data-number="3.3.2.2" class="anchored" data-anchor-id="visualización-de-la-mejor-ruta-1"><span class="header-section-number">3.3.2.2</span> <strong>Visualización de la mejor ruta</strong></h4>
+<p>La <strong>Tabla 3</strong> muestra la mejor ruta hallada por ACO, que corresponde al <em>costo total mínimo de $3.271.872,</em> entre las 13 ciudades de Colombia en el orden que deben recorrerse.</p>
+<p><strong>Tabla 3.</strong> <em>Orden en que deben recorrerse las 13 ciudades en la mejor ruta obtenida por ACO.</em></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ruta completa (cerrando el ciclo)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>ruta_completa_aco <span class="ot">&lt;-</span> <span class="fu">c</span>(mejor_ruta_aco, mejor_ruta_aco[<span class="dv">1</span>])</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Extraer ciudades según el orden</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>ruta_ciudades_aco <span class="ot">&lt;-</span> CiudadesUbicacion[ruta_completa_aco, ]</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Agregar orden de visita</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>ruta_ciudades_aco<span class="sc">$</span>Orden <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(ruta_ciudades_aco)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar la mejor ruta en una tabla</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(ruta_ciudades_aco[, <span class="fu">c</span>(<span class="st">"Ciudad"</span>, <span class="st">"Orden"</span>)], </span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Ciudad"</span>, <span class="st">"Orden de visita"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">position =</span> <span class="st">"center"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">width =</span> <span class="st">"10em"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">2</span>, <span class="at">width =</span> <span class="st">"5em"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">row_spec</span>(<span class="dv">0</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">background =</span> <span class="st">"#4682B4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="table-responsive">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: white !important; background-color: rgba(70, 130, 180, 255) !important;">Ciudad</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(70, 130, 180, 255) !important;">Orden de visita</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Pasto</td>
+<td style="text-align: right; width: 5em;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;">Neiva</td>
+<td style="text-align: right; width: 5em;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Ibagué</td>
+<td style="text-align: right; width: 5em;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;">Bogotá</td>
+<td style="text-align: right; width: 5em;">4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Bucaramanga</td>
+<td style="text-align: right; width: 5em;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;">Cúcuta</td>
+<td style="text-align: right; width: 5em;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Santa Marta</td>
+<td style="text-align: right; width: 5em;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;">Barranquilla</td>
+<td style="text-align: right; width: 5em;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Cartagena</td>
+<td style="text-align: right; width: 5em;">9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;">Medellín</td>
+<td style="text-align: right; width: 5em;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Manizales</td>
+<td style="text-align: right; width: 5em;">11</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;">Pereira</td>
+<td style="text-align: right; width: 5em;">12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 10em; font-weight: bold;">Cali</td>
+<td style="text-align: right; width: 5em;">13</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 10em; font-weight: bold;">Pasto</td>
+<td style="text-align: right; width: 5em;">14</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+<p>La <strong>Figura 5</strong> muestra la superposición de la mejor ruta hallada por ACO en el mapa de Colombia.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Texto para mostrar el costo total</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>costo_aco_texto <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Costo total (ACO): $"</span>, <span class="fu">format</span>(<span class="fu">round</span>(mejor_costo_aco, <span class="dv">0</span>), <span class="at">big.mark =</span> <span class="st">","</span>))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Íconos personalizados</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>icono_inicio <span class="ot">&lt;-</span> <span class="fu">awesomeIcons</span>(<span class="at">icon =</span> <span class="st">'flag'</span>, <span class="at">markerColor =</span> <span class="st">'green'</span>, <span class="at">iconColor =</span> <span class="st">'white'</span>, <span class="at">library =</span> <span class="st">'fa'</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>icono_fin    <span class="ot">&lt;-</span> <span class="fu">awesomeIcons</span>(<span class="at">icon =</span> <span class="st">'flag'</span>, <span class="at">markerColor =</span> <span class="st">'red'</span>, <span class="at">iconColor =</span> <span class="st">'white'</span>, <span class="at">library =</span> <span class="st">'fa'</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear el mapa</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="fu">leaflet</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addProviderTiles</span>(providers<span class="sc">$</span>CartoDB.Positron) <span class="sc">%&gt;%</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Marcar ciudad de inicio</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addAwesomeMarkers</span>(</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">lng =</span> ruta_ciudades_aco<span class="sc">$</span>Longitud[<span class="dv">1</span>],</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">lat =</span> ruta_ciudades_aco<span class="sc">$</span>Latitud[<span class="dv">1</span>],</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">icon =</span> icono_inicio,</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">popup =</span> <span class="fu">paste</span>(<span class="st">"Inicio:"</span>, ruta_ciudades_aco<span class="sc">$</span>Ciudad[<span class="dv">1</span>])</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Marcar ciudad final (última antes de cerrar el ciclo)</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addAwesomeMarkers</span>(</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">lng =</span> ruta_ciudades_aco<span class="sc">$</span>Longitud[<span class="fu">nrow</span>(ruta_ciudades_aco) <span class="sc">-</span> <span class="dv">1</span>],</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">lat =</span> ruta_ciudades_aco<span class="sc">$</span>Latitud[<span class="fu">nrow</span>(ruta_ciudades_aco) <span class="sc">-</span> <span class="dv">1</span>],</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">icon =</span> icono_fin,</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">popup =</span> <span class="fu">paste</span>(<span class="st">"Fin:"</span>, ruta_ciudades_aco<span class="sc">$</span>Ciudad[<span class="fu">nrow</span>(ruta_ciudades_aco) <span class="sc">-</span> <span class="dv">1</span>])</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Puntos azules para las demás ciudades</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addCircleMarkers</span>(</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ruta_ciudades_aco,</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">lng =</span> <span class="sc">~</span>Longitud,</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">lat =</span> <span class="sc">~</span>Latitud,</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">radius =</span> <span class="dv">6</span>,</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"blue"</span>,</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">fillOpacity =</span> <span class="fl">0.8</span>,</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="sc">~</span><span class="fu">paste0</span>(Orden, <span class="st">". "</span>, Ciudad),</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">popup =</span> <span class="sc">~</span><span class="fu">paste</span>(<span class="st">"Ciudad:"</span>, Ciudad, <span class="st">"&lt;br&gt;"</span>, <span class="st">"Orden:"</span>, Orden)</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ruta roja</span></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addPolylines</span>(</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ruta_ciudades_aco,</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">lng =</span> <span class="sc">~</span>Longitud,</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">lat =</span> <span class="sc">~</span>Latitud,</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"red"</span>,</span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">weight =</span> <span class="dv">3</span>,</span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">opacity =</span> <span class="fl">0.8</span></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Costo total</span></span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addControl</span>(</span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">html =</span> <span class="fu">paste0</span>(<span class="st">"&lt;b&gt;Costo total ACO: $"</span>, <span class="fu">format</span>(<span class="fu">round</span>(mejor_costo_aco, <span class="dv">0</span>), <span class="at">big.mark =</span> <span class="st">","</span>), <span class="st">"&lt;/b&gt;"</span>),</span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">"bottomleft"</span></span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="leaflet html-widget html-fill-item" id="htmlwidget-b19a6bd2e19d63a01106" style="width:100%;height:487px;"></div>
+<script type="application/json" data-for="htmlwidget-b19a6bd2e19d63a01106">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["CartoDB.Positron",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addAwesomeMarkers","args":[1.2078,-77.27719999999999,{"icon":"flag","markerColor":"green","iconColor":"white","spin":false,"squareMarker":false,"iconRotate":0,"font":"monospace","prefix":"fa"},null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},"Inicio: Pasto",null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addAwesomeMarkers","args":[3.4206,-76.5222,{"icon":"flag","markerColor":"red","iconColor":"white","spin":false,"squareMarker":false,"iconRotate":0,"font":"monospace","prefix":"fa"},null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},"Fin: Cali",null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addCircleMarkers","args":[[1.2078,2.9345,4.4333,4.7111,7.1333,7.8942,11.2419,10.9833,10.4,6.2308,5.1,4.8143,3.4206,1.2078],[-77.27719999999999,-75.2809,-75.2333,-74.0722,-73,-72.5039,-74.20529999999999,-74.8019,-75.5,-75.59059999999999,-75.55,-75.69459999999999,-76.5222,-77.27719999999999],6,null,null,{"interactive":true,"className":"","stroke":true,"color":"blue","weight":5,"opacity":0.5,"fill":true,"fillColor":"blue","fillOpacity":0.8},null,null,["Ciudad: Pasto <br> Orden: 1","Ciudad: Neiva <br> Orden: 2","Ciudad: Ibagué <br> Orden: 3","Ciudad: Bogotá <br> Orden: 4","Ciudad: Bucaramanga <br> Orden: 5","Ciudad: Cúcuta <br> Orden: 6","Ciudad: Santa Marta <br> Orden: 7","Ciudad: Barranquilla <br> Orden: 8","Ciudad: Cartagena <br> Orden: 9","Ciudad: Medellín <br> Orden: 10","Ciudad: Manizales <br> Orden: 11","Ciudad: Pereira <br> Orden: 12","Ciudad: Cali <br> Orden: 13","Ciudad: Pasto <br> Orden: 14"],null,["1. Pasto","2. Neiva","3. Ibagué","4. Bogotá","5. Bucaramanga","6. Cúcuta","7. Santa Marta","8. Barranquilla","9. Cartagena","10. Medellín","11. Manizales","12. Pereira","13. Cali","14. Pasto"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addPolylines","args":[[[[{"lng":[-77.27719999999999,-75.2809,-75.2333,-74.0722,-73,-72.5039,-74.20529999999999,-74.8019,-75.5,-75.59059999999999,-75.55,-75.69459999999999,-76.5222,-77.27719999999999],"lat":[1.2078,2.9345,4.4333,4.7111,7.1333,7.8942,11.2419,10.9833,10.4,6.2308,5.1,4.8143,3.4206,1.2078]}]]],null,null,{"interactive":true,"className":"","stroke":true,"color":"red","weight":3,"opacity":0.8,"fill":false,"fillColor":"red","fillOpacity":0.2,"smoothFactor":1,"noClip":false},null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addControl","args":["<b>Costo total ACO: $3,271,872<\/b>","bottomleft",null,"info legend"]}],"limits":{"lat":[1.2078,11.2419],"lng":[-77.27719999999999,-72.5039]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p><strong>Figura 5.</strong> Superposición de la mejor ruta obtenida por ACO en el mapa de Colombia.</p>
+</section>
+</section>
+<section id="recorrido-óptimo-animado-mejor-ruta-aco" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="recorrido-óptimo-animado-mejor-ruta-aco"><span class="header-section-number">3.3.3</span> Recorrido óptimo animado mejor ruta ACO</h3>
+<p>La <strong>Figura 6</strong> muestra una animación del recorrido a través de la mejor ruta encontrada usando ACO aplicado al TSG.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="GifACO.gif" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p><strong>Figura 6.</strong> <em>Animación del recorrido óptima encontrada usando ACO aplicado al TSG</em>.</p>
+</section>
+<section id="verificación-de-la-calidad-de-la-solución-del-aco-aplicado-al-tsp" class="level3" data-number="3.3.4">
+<h3 data-number="3.3.4" class="anchored" data-anchor-id="verificación-de-la-calidad-de-la-solución-del-aco-aplicado-al-tsp"><span class="header-section-number">3.3.4</span> Verificación de la calidad de la solución del ACO aplicado al TSP</h3>
+<p>Aunque los algoritmos metaheurísticos no garantizan la optimalidad global, el comportamiento observado en la evolución del costo sugiere que el algoritmo de colonia de hormigas (ACO) fue eficiente para encontrar una solución competitiva al problema del viajante bajo condiciones realistas.</p>
+<p>El ACO se aplicó para resolver una instancia del problema del viajante, con el objetivo de minimizar el costo total de recorrer todas las ciudades y regresar al punto de partida. Dado que el número de rutas posibles crece factorialmente con la cantidad de ciudades, una evaluación exhaustiva por fuerza bruta es impracticable, lo que hace esencial analizar la calidad de la solución obtenida a partir de los resultados empíricos del algoritmo.</p>
+<p>Durante las 500 iteraciones ejecutadas, el ACO mostró un patrón típico de convergencia eficiente: el costo total disminuyó rápidamente en las primeras iteraciones y se estabilizó alrededor de la iteración 90. A partir de ese punto, el algoritmo mantuvo consistentemente la mejor solución, lo que indica que las feromonas guiaron a las hormigas hacia una ruta sólida, iterativamente reforzada como la mejor alternativa encontrada.</p>
+<p>Este patrón de estabilización sugiere que el algoritmo alcanzó un óptimo local robusto. Si bien los métodos metaheurísticos no garantizan encontrar la solución óptima global, la combinación de una rápida convergencia, la estabilidad mantenida durante más del 90% de las iteraciones y la coherencia en los resultados permiten concluir que la solución obtenida es razonablemente buena en términos de eficiencia y costo.</p>
+<p>El valor final alcanzado fue de $3,271,872, el cual se mantuvo inalterado en todas las iteraciones posteriores a la convergencia. Este comportamiento, junto con la tendencia descendente y estable de la función objetivo, respalda la confiabilidad y solidez de la solución obtenida mediante este enfoque bioinspirado.</p>
+</section>
+</section>
+<section id="comparación-entre-el-ga-y-aco-aplicados-al-tsg" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="comparación-entre-el-ga-y-aco-aplicados-al-tsg"><span class="header-section-number">3.4</span> Comparación entre el GA y ACO aplicados al TSG</h2>
+<p>Tanto el Algoritmo Genético (GA) como la Colonia de Hormigas (ACO) son enfoques metaheurísticos inspirados en procesos naturales, aplicados en este trabajo a la resolución del Problema del Viajante de Comercio (TSP). Ambos buscan encontrar rutas óptimas minimizando el costo total del recorrido, que considera tiempo de desplazamiento, consumo de combustible y peajes. Aunque ambos métodos son de naturaleza estocástica y no garantizan la optimalidad global, presentan diferencias notables en su enfoque, comportamiento y resultados.</p>
+<p>Desde el punto de vista computacional, el GA emplea operadores de evolución genética -como selección, cruce y mutación- para explorar el espacio de soluciones, generando diversidad entre generaciones y favoreciendo combinaciones prometedoras. Por su parte, el ACO simula el comportamiento colectivo de las hormigas depositando y evaporando feromonas, construyendo soluciones de manera probabilística e incremental, guiadas por la experiencia acumulada.</p>
+<p>En cuanto a los resultados obtenidos, ambos algoritmos convergieron a soluciones estables en un número razonable de iteraciones. El ACO se destacó por su rápida convergencia, alcanzando su mejor solución alrededor de la iteración 96 y manteniéndola constante durante el resto del proceso. El GA, en cambio, mostró una mejora más progresiva y continua, permitiendo pequeñas optimizaciones incluso en etapas avanzadas del ciclo evolutivo.</p>
+<p>En términos de calidad de la solución, ambos métodos arrojaron rutas de costo muy similar, aunque no necesariamente idénticas. Esto sugiere que, pese a sus diferencias internas, cada algoritmo fue capaz de explorar zonas similares del espacio de soluciones, lo que refuerza la solidez de los resultados encontrados. Además, la convergencia de ambos métodos hacia soluciones estables ofrece evidencia empírica de que dichas soluciones se ubican en regiones de alta calidad dentro del espacio del problema.</p>
+<p>En cuanto a interpretabilidad y ajuste, el GA ofrece una mayor flexibilidad en la manipulación de operadores genéticos y estrategias de cruce, mientras que el ACO se beneficia de una dinámica colectiva más estable una vez ajustados correctamente sus parámetros (<span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span>, evaporación y número de hormigas).</p>
+<p>Ambos algoritmos resultaron efectivos en la resolución del problema propuesto, y la comparación de sus resultados evidencia que, con configuraciones adecuadas, tanto el enfoque evolutivo como el bioinspirado pueden alcanzar soluciones de alta calidad. La elección entre uno u otro dependerá del contexto, la facilidad de ajuste, la sensibilidad a los parámetros y el tipo de convergencia deseado en problemas similares.</p>
+<p>En resumen, ambos algoritmos permiten abordar el TSP de manera eficiente, evitando el alto costo computacional de los métodos exactos. La calidad de las soluciones es elevada, considerando la complejidad combinatoria del problema. La representación gráfica de las rutas facilita la validación y comunicación de los resultados. La elección entre GA y ACO dependerá de las características específicas del problema, la facilidad de ajuste de parámetros y el tipo de convergencia deseado.</p>
+<p>La <strong>Tabla 4</strong> presenta un resumen comparativo de las características de las simulaciones realizadas con GA y ACO para resolver el TSG.</p>
+<p><strong>Tabla 4.</strong> <em>Comparación de características y resultados: GA vs.&nbsp;ACO aplicados al TSG.</em></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>tabla_comp <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Criterio"</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Inspiración"</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Construcción de soluciones"</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Velocidad de convergencia"</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Diversidad de soluciones"</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Sensibilidad a parámetros"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Estabilidad de resultados"</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Mejor iteración lograda"</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Costo total alcanzado"</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Interpretabilidad"</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Fortalezas"</span>,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Debilidades"</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Algoritmo Genético (GA)"</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Evolución natural (selección, cruza, mutación)"</span>,</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Recombina soluciones completas para generar nuevas poblaciones"</span>,</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Moderada (mejora progresiva en varias etapas)"</span>,</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Alta diversidad gracias a mutaciones y recombinación"</span>,</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Alta: requiere ajuste fino de cruza, mutación y tamaño de población"</span>,</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Puede oscilar en fases avanzadas (dependiendo del azar y cruce)"</span>,</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Iteración 253"</span>,</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"~$3.369.197"</span>,</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Alta: permite seguimiento de operadores y evolución"</span>,</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Explora más ampliamente el espacio de soluciones"</span>,</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Requiere control de diversidad para evitar estancamiento"</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Colonia de Hormigas (ACO)"</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Comportamiento colectivo de hormigas y feromonas"</span>,</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Construye rutas paso a paso con base en probabilidad"</span>,</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Alta (mejora rápida en primeras iteraciones, estabilización temprana)"</span>,</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Menor diversidad, favorece la explotación de buenas soluciones"</span>,</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Media-alta: depende de α, β, evaporación, número de hormigas"</span>,</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Alta estabilidad tras converger a una buena ruta"</span>,</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Iteración 96"</span>,</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>    <span class="st">"~$3.271.872"</span>,</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Media: soluciones emergen de dinámica colectiva"</span>,</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Explota rutas prometedoras rápidamente y converge de forma robusta"</span>,</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Puede converger prematuramente a óptimos locales"</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">check.names =</span> <span class="cn">FALSE</span>  <span class="co"># &lt;- ¡Esto es lo importante!</span></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(tabla_comp, <span class="st">"html"</span>, <span class="at">caption =</span> <span class="st">"Tabla 4. Comparación de características y resultados: GA vs. ACO aplicados al TSP."</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span>), </span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>                <span class="at">full_width =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>                <span class="at">position =</span> <span class="st">"center"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">width =</span> <span class="st">"17em"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">2</span>, <span class="at">width =</span> <span class="st">"20em"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">3</span>, <span class="at">width =</span> <span class="st">"20em"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">row_spec</span>(<span class="dv">0</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">background =</span> <span class="st">"#4682B4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="table-responsive">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<caption>Tabla 4. Comparación de características y resultados: GA vs. ACO aplicados al TSP.</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: white !important; background-color: rgba(70, 130, 180, 255) !important;">Criterio</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: white !important; background-color: rgba(70, 130, 180, 255) !important;">Algoritmo Genético (GA)</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: white !important; background-color: rgba(70, 130, 180, 255) !important;">Colonia de Hormigas (ACO)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 17em; font-weight: bold;">Inspiración</td>
+<td style="text-align: left; width: 20em;">Evolución natural (selección, cruza, mutación)</td>
+<td style="text-align: left; width: 20em;">Comportamiento colectivo de hormigas y feromonas</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 17em; font-weight: bold;">Construcción de soluciones</td>
+<td style="text-align: left; width: 20em;">Recombina soluciones completas para generar nuevas poblaciones</td>
+<td style="text-align: left; width: 20em;">Construye rutas paso a paso con base en probabilidad</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 17em; font-weight: bold;">Velocidad de convergencia</td>
+<td style="text-align: left; width: 20em;">Moderada (mejora progresiva en varias etapas)</td>
+<td style="text-align: left; width: 20em;">Alta (mejora rápida en primeras iteraciones, estabilización temprana)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 17em; font-weight: bold;">Diversidad de soluciones</td>
+<td style="text-align: left; width: 20em;">Alta diversidad gracias a mutaciones y recombinación</td>
+<td style="text-align: left; width: 20em;">Menor diversidad, favorece la explotación de buenas soluciones</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 17em; font-weight: bold;">Sensibilidad a parámetros</td>
+<td style="text-align: left; width: 20em;">Alta: requiere ajuste fino de cruza, mutación y tamaño de población</td>
+<td style="text-align: left; width: 20em;">Media-alta: depende de α, β, evaporación, número de hormigas</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 17em; font-weight: bold;">Estabilidad de resultados</td>
+<td style="text-align: left; width: 20em;">Puede oscilar en fases avanzadas (dependiendo del azar y cruce)</td>
+<td style="text-align: left; width: 20em;">Alta estabilidad tras converger a una buena ruta</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 17em; font-weight: bold;">Mejor iteración lograda</td>
+<td style="text-align: left; width: 20em;">Iteración 253</td>
+<td style="text-align: left; width: 20em;">Iteración 96</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 17em; font-weight: bold;">Costo total alcanzado</td>
+<td style="text-align: left; width: 20em;">~$3.369.197</td>
+<td style="text-align: left; width: 20em;">~$3.271.872</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 17em; font-weight: bold;">Interpretabilidad</td>
+<td style="text-align: left; width: 20em;">Alta: permite seguimiento de operadores y evolución</td>
+<td style="text-align: left; width: 20em;">Media: soluciones emergen de dinámica colectiva</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 17em; font-weight: bold;">Fortalezas</td>
+<td style="text-align: left; width: 20em;">Explora más ampliamente el espacio de soluciones</td>
+<td style="text-align: left; width: 20em;">Explota rutas prometedoras rápidamente y converge de forma robusta</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 17em; font-weight: bold;">Debilidades</td>
+<td style="text-align: left; width: 20em;">Requiere control de diversidad para evitar estancamiento</td>
+<td style="text-align: left; width: 20em;">Puede converger prematuramente a óptimos locales</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+</section>
+</section>
+<section id="conclusiones" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> <strong>Conclusiones</strong></h1>
+<ul>
+<li><p>Tanto los algoritmos genéticos (GA) como la colonia de hormigas (ACO) demostraron ser herramientas adecuadas y eficientes para resolver el Problema del Viajante de Comercio (TSP) en el contexto colombiano, integrando parámetros de costo realistas como tiempo de desplazamiento, consumo de combustible y peajes.</p></li>
+<li><p>Ambos enfoques metaheurísticos permitieron minimizar de manera efectiva el costo total del recorrido, encontrando rutas competitivas en términos de eficiencia y viabilidad práctica, a pesar de la naturaleza combinatoria y la imposibilidad de garantizar la optimalidad global.</p></li>
+<li><p>La visualización geográfica de las rutas óptimas, mediante mapas interactivos, aportó un valor significativo al análisis y validación de los resultados, facilitando la interpretación y comunicación de las soluciones encontradas.</p></li>
+<li><p>Se observó que el ACO tiende a converger más rápidamente hacia una solución estable, mientras que el GA presenta una mejora progresiva y continua a lo largo de las generaciones. Sin embargo, ambos algoritmos alcanzaron soluciones de calidad comparable, lo que refuerza la robustez de los métodos metaheurísticos para este tipo de problemas.</p></li>
+<li><p>Como líneas de trabajo futuro, se recomienda profundizar en la optimización de los hiperparámetros de ambos algoritmos, así como explorar la comparación con otros enfoques metaheurísticos o híbridos. Además, la incorporación de restricciones adicionales o escenarios dinámicos podría enriquecer el análisis y la aplicabilidad de los resultados.</p></li>
+</ul>
+</section>
+<section id="referencias" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> <strong>Referencias</strong></h1>
+<div class="bibliografia-apa">
+<p>Applegate, D. L., Bixby, R. E., Chvátal, V., &amp; Cook, W. J. (2006).&nbsp;<em>The Traveling Salesman Problem: A Computational Study</em>. Princeton University Press. <br></p>
+<p>C3 Care Car Center. (2025). Todo sobre el Spark GT Chevrolet: Rendimiento y mantenimiento. <a href="https://www.c3carecarcenter.com/blog/todo-sobre-el-spark-gt-chevrolet-rendimiento-y-mantenimiento/" class="uri">https://www.c3carecarcenter.com/blog/todo-sobre-el-spark-gt-chevrolet-rendimiento-y-mantenimiento/</a><br></p>
+<p>Dorigo, M., Maniezzo, V., &amp; Colorni, A. (1996). Ant system: Optimization by a colony of cooperating agents. <em>IEEE Transactions on Systems, Man, and Cybernetics, Part B (Cybernetics)</em>, 26(1), 29–41. <a href="https://doi.org/10.1109/3477.484436" class="uri">https://doi.org/10.1109/3477.484436</a><br></p>
+<p>Dorigo, M., &amp; Stützle, T. (2004). Ant Colony Optimization. MIT Press.<br></p>
+<p>Geodatos.net. (s.f.). Distancia entre ciudades de Colombia.&nbsp;<a href="https://www.geodatos.net/distancias/ciudades/colombia" class="uri">https://www.geodatos.net/distancias/ciudades/colombia</a><br></p>
+<p>Gonçalves, J. F., Mendes, J. J. M., &amp; Resende, M. G. C. (2005). A hybrid genetic algorithm for the job shop scheduling problem. European Journal of Operational Research, 167(1), 77-95.<br></p>
+<p>Goodfellow, I., Bengio, Y., &amp; Courville, A. (2016). <em>Deep Learning</em>. MIT Press. <a href="https://www.deeplearningbook.org/" class="uri">https://www.deeplearningbook.org/</a><br></p>
+<p>Holland, J. H. (1975). <em>Adaptation in Natural and Artificial Systems</em>. University of Michigan Press.<br></p>
+<p>Infobae. (2025, 6 de enero).&nbsp;<em>Con proyecto de ley buscan que peajes no puedan ubicarse a menos de 150 kilómetros entre sí</em>.&nbsp;<a href="https://www.infobae.com/colombia/2025/01/06/con-proyecto-de-ley-buscan-que-peajes-no-puedan-ubicarse-a-menos-de-150-kilometros-entre-si/" class="uri">https://www.infobae.com/colombia/2025/01/06/con-proyecto-de-ley-buscan-que-peajes-no-puedan-ubicarse-a-menos-de-150-kilometros-entre-si/</a><br></p>
+<p>Mejores Rutas Colombia. (s.f.).&nbsp;<em>Tabla de distancias entre ciudades de Colombia</em>.&nbsp;<a href="https://colombia.mejoresrutas.com/tabla-de-distancias/co/" class="uri">https://colombia.mejoresrutas.com/tabla-de-distancias/co/</a><br></p>
+<p>Ministerio de Minas y Energía. (2025). Precios oficiales de combustibles en Colombia. <a href="https://www.minenergia.gov.co/" class="uri">https://www.minenergia.gov.co/</a><br></p>
+<p>Mitchell, M. (1998).&nbsp;<em>An Introduction to Genetic Algorithms</em>. MIT Press.<br></p>
+<p>Revistas Uniboyacá. (s.f.). Aplicación de algoritmos genéticos en problemas de Ingeniería. <a href="https://revistasdigitales.uniboyaca.edu.co" class="uri">https://revistasdigitales.uniboyaca.edu.co</a><br></p>
+<p>Villalba Fernández de Castro, G. (2004). Algoritmos de optimización combinatoria aplicados al diseño de redes de distribución de agua potable. Uniandes. <a href="http://hdl.handle.net/1992/21519" class="uri">http://hdl.handle.net/1992/21519</a><br></p>
+<p>Yahoo Finanzas. (2025). Estos son los carros que consumen menos gasolina en Colombia. <a href="https://es-us.finanzas.yahoo.com/" class="uri">https://es-us.finanzas.yahoo.com/</a><br></p>
+<p>Zhang, A., Lipton, Z. C., Li, M., &amp; Smola, A. J. (2024). Dive into Deep Learning. <a href="https://d2l.ai/" class="uri">https://d2l.ai/</a><br></p>
+<p>Zhang, Y., Li, Y., &amp; Wang, S. (2020). A review of metaheuristics for traveling salesman problem. Applied Soft Computing, 97, 106801.<br></p>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

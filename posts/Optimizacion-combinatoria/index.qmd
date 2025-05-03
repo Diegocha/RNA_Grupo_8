@@ -1,0 +1,925 @@
+---
+title: "Optimización Combinatoria"
+format: 
+  html:
+    fig-width: 8      # Ancho de las figuras en pulgadas para HTML
+    fig-height: 6     # Alto de las figuras en pulgadas para HTML
+    number-sections: true
+    code-fold: true
+    toc: true
+    toc-title: "Tabla de contenido"
+    toc-location: left-body
+    css: custom.css
+author:
+  - name: "Diego Fernando Chávez Henao, dfchavez@unal.edu.co"
+  - name: "Alejandro Feria González, aferiag@unal.edu.co"
+  - name: "Santiago Molina Muñoz, smolinam@unal.edu.co"
+  - name: "Juan Manuel Teherán Machado, jteheranm@unal.edu.co"
+date: "2024-05-02"
+categories: [optimización, Colonia de Hormigas, Algorítmos Genéticos, R]
+image: "image.jpg"
+#bibliography: ref.bib
+page-layout: full
+execute:
+  cache: true
+---
+
+------------------------------------------------------------------------
+
+**ENUCIADO DEL PROBLEMA**
+
+Un vendedor debe hacer un recorrido por todas y cada de las 13 ciudades principales de Colombia.
+
+Utilice colonias de hormigas y algoritmos genéticos para encontrar el orden óptimo. El costo de desplazamiento entre ciudades es la suma del valor de la hora del vendedor (es un parámetro que debe estudiarse), el costo de los peajes y el costo del combustible. Cada equipo debe definir en qué carro hace el recorrido el vendedor y de allí extraer el costo del combustible.
+
+Adicionalmente represente con un gif animado o un video cómo se comporta la mejor solución usando un gráfico del recorrido en el mapa de Colombia.
+
+------------------------------------------------------------------------
+
+# **Introducción**
+
+El Problema del Viajante de Comercio (*Traveling Salesman Problem*, TSP) es uno de los problemas más clásicos y estudiados en el campo de la optimización combinatoria (Goodfellow et al., 2016; Zhang et al., 2020). Plantea el reto de encontrar la ruta de menor costo que permita a un vendedor visitar exactamente una vez cada ciudad de un conjunto y retornar al punto de partida. En el contexto colombiano, la optimización de rutas es especialmente relevante debido a la complejidad de la red vial, la alta densidad de peajes y los elevados costos logísticos (Infobae, 2025).
+
+Este trabajo busca determinar la ruta óptima para un vendedor que debe recorrer las 13 ciudades principales del país, minimizando el costo total que incluye costos de salario, peajes y combustible. Para ello se implementan dos enfoques bioinspirados: *algoritmos genéticos* (GA) y *algoritmos de colonia de hormigas* (ACO), comparando su desempeño, analizando la calidad de las soluciones y visualizando los recorridos óptimos sobre el mapa de Colombia.
+
+# **Marco Teórico**
+
+## **El Problema del Viajante de Comercio (TSP)**
+
+El Problema del Viajante de Comercio (TSP, por sus siglas en inglés) es uno de los problemas más emblemáticos de la optimización combinatoria y de la investigación de operaciones. Consiste en encontrar la ruta de menor costo que permita a un viajante visitar una vez cada ciudad de un conjunto dado y regresar al punto de partida (Zhang et al., 2020). Este problema es *NP-hard*, lo que significa que el número de posibles rutas crece factorialmente con el número de ciudades, volviendo inviable la búsqueda exhaustiva para instancias de tamaño moderado (Goodfellow et al., 2016).
+
+Matemáticamente, el TSP se modela mediante un grafo completo donde cada nodo representa una ciudad y cada arista tiene un costo asociado (Goodfellow et al., 2016). Como ejemplo de costo asociado tenemos distancia, tiempo, dinero, etc. El objetivo es encontrar el ciclo hamiltoniano de menor costo, es decir, un camino que pase una única vez por cada ciudad, retorne al origen, y minimice la suma de los costos (Zhang et al., 2020).
+
+### Supuestos para el Salario
+
+**Se asume un valor monetario por hora de trabajo de \$25.000 COP/hora**, definido según parámetros del mercado laboral colombiano, Con este valor se puede estimar el costo del salario que debe pagarse al viajante por ir desde la ciudad $i$ a la ciudad $j$, mediante la siguiente expresión:
+
+$\text{Costo del salario del viajante}_{ij} = V_h \cdot T_{ij} \tag{1}$
+
+donde
+
+-   $V_h$: Valor de la hora de trabajo del vendedor (COP/hora), asumido como \$25.000 COP/hora
+
+-   $T_{ij}$: Tiempo de viaje desde la ciudad $i$ a la ciudad $j$ (horas)
+
+### Supuestos paro los Peajes
+
+Colombia cuenta con 180 peajes en la red vial nacional (Infobae, 2025). Aunque existe un proyecto de ley para que los peajes no puedan ubicarse a menos de 150 kilómetros entre sí (Infobae, 2025), en la práctica la distancia promedio entre peajes es de 50 a 70 km. Por ejemplo, el trayecto Medellín–Bogotá (415 km) tiene 8 peajes, y el trayecto Cali–Barranquilla (1000 km) tiene 15 peajes.
+
+**Asumiendo un peaje cada 60 km recorridos**, se estima el número de peajes entre las ciudades $i$ y $j$ como:
+
+$P_{ij}= \mathrm{Redondear}\left(\frac{\text{Distancia (km)}}{60\,\text{km}}\right) \tag{2}$
+
+**Suponiendo un costo promedio por peaje de** \$25.000 COP, el costo de los peajes entre las ciudades $i$ y $j$ se calcula como:
+
+$\text{Costo de los peajes}_{ij} = P_{ij} \cdot C_p \tag{3}$
+
+donde
+
+-   $P_{ij}$: Número estimado de peajes entre las ciudades $i$ y $j$
+
+-   $C_p$: Costo promedio de cada peaje (COP), asumido como \$25.000 COP
+
+Esta aproximación busca representar de forma razonable las condiciones actuales de la red vial colombiana y su impacto económico en los recorridos del viajante.
+
+### Supuestos para el combustible
+
+Para este estudio se seleccionó el ***Chevrolet Spark GT***, un vehículo compacto ampliamente utilizado en Colombia por su eficiencia en carretera y bajo costo operativo. Según especificaciones técnicas reportadas por C3 Care Car Center (2025) y Yahoo Finanzas (2025), este modelo ofrece un **rendimiento promedio de 40 km/galón** en condiciones reales de conducción interurbana, valor asumido para el cálculo de costos en este estudio.
+
+Según Yahoo Finanzas (2025), el Spark GT combina eficiencia energética (hasta 20.7 km/L en carretera según pruebas homologadas) con una red nacional de soporte técnico, garantizando asistencia en las 13 ciudades contempladas en este estudio. Su diseño compacto facilita la movilidad en zonas urbanas (C3 Care Car Center, 2025), mientras que el rendimiento de 40 km/galón refleja condiciones reales de tráfico y carga (Ministerio de Minas y Energía, 2025).
+
+Los parámetros técnicos relevantes para este automóvil son:
+
+-   *Motor:* 1.2L DOHC de 4 cilindros, 80.5 HP y 108 Nm de torque (C3 Care Car Center, 2025).
+
+-   *Transmisión:* Mecánica, de 5 velocidades, optimizada para topografía colombiana (Yahoo Finanzas, 2025).
+
+-   *Capacidad de carga*: 402 kg, ideal para transporte de muestrarios comerciales (C3 Care Car Center, 2025).
+
+**Asumiendo que el precio de la gasolina es de** \$16.259 COP por galón (Ministerio de Minas y Energía, 2025), el costo del combustible para desplazarse de la ciudad $i$ a la ciudad $j$ se estima como:
+
+$\text{Costo del combustible}_{ij} = \left( \frac{D_{ij}}{R} \right) \cdot C_g  \tag{4}$
+
+donde
+
+-   $D_{ij}$: Distancia entre las ciudades $i$ y $j$ (km)
+
+-   $R$: Rendimiento del vehículo (km/galón), asumido como 40 km/galón
+
+-   $C_g$: Costo del galón de gasolina (COP), asumido como \$16.259 COP por galón
+
+### Matriz de Costos
+
+La matriz de costos $C$ es una matriz cuadrada de tamaño $n \times n$, donde $n$ es el número de ciudades, y cada elemento $C_{ij}$, $i, j = 1, \dots, n$, representa el costo de desplazarse de la ciudad $i$ a la ciudad $j$, y se calcula como:
+
+$C_{ij} = \text{Costo del salario del viajante}_{ij} + \text{Costo de los peajes}_{ij} + \text{Costo del combustible}_{ij}  \tag{5}$
+
+Generalmente, los elementos en la diagonal $C_{ii}$ son cero o un valor muy alto para evitar que el vendedor permanezca en la misma ciudad. La matriz puede ser simétrica o asimétrica, dependiendo de si los costos de ida y regreso entre ciudades son iguales o diferentes (Zhang et al., 2024).
+
+## **Algoritmos Genéticos (GA)**
+
+Los algoritmos genéticos (Genetic Algorithms, GA) son métodos de optimización bioinspirados que emulan los principios de la selección natural y la evolución biológica, propuestos inicialmente por John Holland en la década de 1970 (Holland, 1975). Los GA se han aplicado exitosamente a una amplia variedad de problemas complejos, especialmente aquellos donde los métodos exactos son demasiado costosos o inviables. Destacan en problemas combinatorios NP-hard, como el Problema del Viajante de Comercio (TSP), donde el espacio de soluciones crece factorialmente con el número de ciudades, volviendo impracticable la búsqueda exhaustiva (Villalba Fernández de Castro, 2004; Zhang et al., 2020).
+
+La eficacia de los GA radica en su capacidad para equilibrar la explotación de soluciones prometedoras y la exploración de nuevas regiones del espacio de búsqueda mediante mecanismos estocásticos (Dorigo & Stützle, 2004).
+
+Los componentes clave de un algoritmo genético son:
+
+-   **Representación cromosómica:** Cada solución se codifica como un cromosoma, generalmente un vector que especifica el orden de visita de las ciudades (Zhang et al., 2024).
+
+-   **Función de aptitud (fitness):** Evalúa la calidad de cada solución. Para el TSP, suele calcularse como el inverso o el negativo del costo total de la ruta (Zhang et al., 2020).
+
+-   **Operadores genéticos:**
+
+    -   **Selección:** Prioriza individuos con mayor aptitud, utilizando métodos como la selección por torneo o ruleta (Holland, 1975).
+
+    -   **Cruzamiento (crossover):** Combina segmentos de dos padres para generar descendencia, empleando operadores como el order crossover para preservar permutaciones válidas (Gonçalves et al., 2005).
+
+    -   **Mutación:** Introduce cambios aleatorios, como el intercambio de dos ciudades, para mantener la diversidad genética (Villalba Fernández de Castro, 2004).
+
+Estos algoritmos operan sobre una población de soluciones candidatas (individuos o cromosomas), que evolucionan iterativamente mediante los operadores genéticos mencionados. El objetivo es mejorar progresivamente la aptitud (fitness) de las soluciones a lo largo de las generaciones (Goodfellow et al., 2016).
+
+En el contexto del TSP, cada individuo representa una ruta que recorre todas las ciudades, y la función objetivo consiste en minimizar el costo total del recorrido. Debido a la naturaleza combinatoria del problema, los algoritmos genéticos ofrecen una estrategia eficiente para encontrar buenas soluciones aproximadas en tiempos razonables, aunque no garantizan hallar siempre la solución óptima. El proceso evolutivo permite que, generación tras generación, la población tienda a encontrar rutas cada vez más eficientes.
+
+**Verificación de la calidad de la solución**
+
+Evaluar la calidad de la solución obtenida es fundamental en el contexto del Problema del Viajante de Comercio (TSP), especialmente cuando se emplean métodos metaheurísticos como los algoritmos genéticos (GA). Los enfoques exactos, como la enumeración exhaustiva de todas las posibles rutas, resultan computacionalmente inviables debido al crecimiento factorial del número de combinaciones a medida que aumenta la cantidad de ciudades (Applegate et al., 2006; Zhang et al., 2020).
+
+Ante esta intratabilidad, se optó por aplicar un algoritmo genético, que permite aproximarse a soluciones de alta calidad mediante múltiples iteraciones y el ajuste de parámetros como el tamaño de la población y el número de generaciones (Mitchell, 1998). Los GA superan a los métodos exactos al reducir la complejidad computacional a $O(g \cdot n)$, donde $g$ es el número de generaciones y $n$ el tamaño de la población (Applegate et al., 2006).
+
+La evaluación de la calidad de las soluciones obtenidas mediante GA en el TSP requiere abordar dos desafíos clave: la naturaleza estocástica del algoritmo y la imposibilidad de validar la optimalidad global en instancias grandes. Por ello, se emplean dos pilares fundamentales para la verificación:
+
+-   **Convergencia del fitness:** Se monitorea el historial del costo a través de las generaciones. Una estabilización de la función objetivo en un rango reducido (por ejemplo, variaciones menores al 0.5% en 50 generaciones consecutivas) sugiere proximidad a un óptimo local o global (Gonçalves et al., 2005).
+
+-   **Reproducibilidad:** Ejecuciones independientes con diferentes semillas aleatorias deben generar soluciones de calidad comparable, lo que confirma la robustez del algoritmo (Zhang et al., 2020).
+
+## Algoritmo de Colonia de Hormigas (ACO)
+
+El algoritmo de colonia de hormigas (*Ant Colony Optimization*, ACO) es una técnica de optimización bioinspirada en el comportamiento colectivo de las colonias de hormigas reales durante la búsqueda de alimento (Dorigo et al., 1996; Dorigo & Stützle, 2004). En la naturaleza, las hormigas encuentran caminos cortos entre su nido y una fuente de alimento depositando una sustancia química llamada feromona. A medida que más hormigas siguen un camino y lo refuerzan con feromonas, ese camino se vuelve más atractivo para otras hormigas, lo que conduce a una optimización distribuida y adaptativa.
+
+Basado en este principio, Marco Dorigo propuso en la década de 1990 el ACO como un algoritmo metaheurístico para resolver problemas combinatorios complejos, tales como el Problema del Viajante de Comercio (TSP), la programación de tareas y la planificación de rutas (Dorigo & Stützle, 2004).
+
+En el contexto del TSP, cada hormiga construye una solución probabilísticamente, guiada por dos factores principales:
+
+-   La intensidad de feromonas depositadas en los caminos (memoria colectiva).
+-   Una heurística local, generalmente el inverso del costo o la distancia entre ciudades.
+
+Cada hormiga construye una solución completa seleccionando las ciudades a visitar con una probabilidad proporcional a estos dos factores. Tras cada iteración, el algoritmo actualiza las feromonas:
+
+-   Evaporando parte de la feromona para evitar la convergencia prematura.
+-   Refuerzando las rutas más exitosas depositando más feromona en los caminos que produjeron soluciones de bajo costo.
+
+Este mecanismo balancea la exploración (búsqueda de nuevas soluciones) y la explotación (refinamiento de soluciones prometedoras), permitiendo que el algoritmo encuentre soluciones cercanas al óptimo en problemas donde los métodos exactos son computacionalmente inviables (Dorigo et al., 1996; Dorigo & Stützle, 2004).
+
+En este estudio, el ACO fue utilizado para resolver la instancia del TSP correspondiente a las 13 ciudades principales de Colombia, minimizando el costo total del trayecto, que incluye tiempo de desplazamiento, peajes y combustible. Mediante la configuración de parámetros clave como el número de hormigas, la importancia relativa de la heurística y la tasa de evaporación, el algoritmo logró encontrar soluciones estables y de bajo costo, comparables con las obtenidas mediante algoritmos genéticos.
+
+# Resultados y Análisis
+
+El proceso seguido para resolver el Problema del Viajante de Comercio (TSP) con algoritmos genéticos (GA) y colonia de hormigas (ACO) fue el siguiente:
+
+1.  **Construcción de la matriz de costos:** Se recopilaron datos de distancia y tiempo entre las 13 ciudades principales de Colombia, utilizando fuentes confiables como el portal [Mejores Rutas](https://colombia.mejoresrutas.com/tabla-de-distancias/co/) (Mejores rutas Colombia, s.f.) y el portal [Geodatos](https://www.geodatos.net/distancias/ciudades/colombia) (Geodatos.net, s.f.). A partir de estos datos y los parámetros definidos (salario, rendimiento del vehículo, precio del combustible y peajes), se calculó el costo total para cada trayecto entre ciudades.
+
+2.  **Implementación de los algoritmos:**
+
+    **Algoritmo genético:** Se utilizó la librería **`GA`** en R para modelar el problema como una permutación de ciudades. La función de aptitud fue definida como el negativo del costo total, para así minimizar el recorrido. Se experimentó con diferentes tamaños de población y número de generaciones para observar el comportamiento del algoritmo.
+
+    **Algoritmo de colonia de hormigas**: Se desarrolló un modelo ACO adaptado al TSP, donde cada hormiga construye una ruta completa a través de todas las ciudades. Los parámetros clave incluyeron el número de hormigas, la importancia relativa de la feromona (α) y la heurística (β), y la tasa de evaporación de feromona (ρ).
+
+3.  **Visualización de resultados:** Se graficó la evolución del costo total a lo largo de las generaciones (GA) o de las iteraciones (ACO), y se representó la mejor ruta encontrada sobre el mapa de Colombia, utilizando la librería **`leaflet`** para mostrar el recorrido óptimo.
+
+4.  **Verificación de la calidad de la solución:** Se analizaron los patrones de ambos algoritmos, observando como evolucionaba el costo total, en cuántas iteracciones se estabilizaba y si alcanzaba una solución robusta. La solución final se seleccionó como la ruta de menor costo histórico registrado durante la ejecución, considerando la estabilización de la función objetivo y la ausencia de mejoras sustanciales en las iteraciones finales.
+
+## Construcción de la Matriz de Costos
+
+Para este estudio, se utilizó el portal [Mejores Rutas](https://colombia.mejoresrutas.com/tabla-de-distancias/co/) (Mejores rutas Colombia, s.f.) para generar la matriz de distancia correspondiente a las 13 ciudades principales de Colombia. Estas ciudades son: Bogotá, Cali, Medellín, Barranquilla, Cartagena, Cúcuta, Bucaramanga, Pereira, Santa Marta, Ibagué, Pasto, Manizales y Neiva.
+
+Además, la plataforma ofrecía una estimación del tiempo de viaje entre ciudades, calculado con base en un tiempo promedio de desplazamiento de aproximadamente 73 km/h. La selección de estas ciudades se basó en el criterio de su población.
+
+Para complementar este análisis, se utilizó la plataforma [Simple Maps](https://simplemaps.com/data/co-cities) para obtener las coordenadas centrales de cada ciudad, facilitando su localización en el mapa y la visualización de la información geográfica.
+
+La **Tabla 1** muestra la matriz de costos entre ciudades $C$ calculada para el análisis.
+
+**Tabla1.** *Matriz de costo entre ciudades.*
+
+```{r matrizCostos, warning=FALSE, message=FALSE}
+# Librerías necesarias
+library(knitr)
+library(kableExtra)
+library(tidyverse)
+library(GA)  # Librería genética optimizada
+library(ggplot2)
+library(readxl)
+library(leaflet)
+library(dplyr)
+
+# Lectura de datos
+Ciudades <- read.csv("data/Distancias.csv", row.names=1, na.strings="0")[1:13, 1:13] 
+
+Tiempo_Recorrido <- read.csv("data/Tiempos.csv", row.names=1, na.strings="0")[1:13, 1:13] 
+
+CiudadesUbicacion <- readxl::read_excel("data/CiudadesUbicacion.xlsx")
+
+# Convertimos los datos que están en formato texto (h:mm) a horas decimales
+convertir_horas <- function(x) {   
+  if (is.na(x)) return(NA)   
+  partes <- strsplit(x, ":")[[1]]
+  horas <- as.numeric(partes[1])
+  minutos <- as.numeric(partes[2])
+  return(horas + minutos/60)
+}
+
+Tiempo_Recorrido <- apply(Tiempo_Recorrido, c(1,2), convertir_horas)
+
+Ciudades <- apply(Ciudades, c(1,2), as.numeric)
+
+
+## Cálculo de la Matriz de Costos
+
+# Parámetros de costos
+valor_hora <- 25000
+rendimiento_carro <- 40
+precio_galon <- 16259
+
+# Costo de combustible entre cada par de ciudades
+costo_combustible <- (Ciudades / rendimiento_carro) * precio_galon
+
+# Número estimado de peajes entre cada par de ciudades
+costo_peajes <- round(Ciudades / 60) * 25000
+
+# Costo del vendedor
+costo_vendedor <- (valor_hora * Tiempo_Recorrido)
+CostoTotal <- costo_vendedor + costo_peajes + costo_combustible
+
+# Mostrando la matriz de costos
+knitr::kable(CostoTotal) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F)
+
+```
+
+## GA aplicado al TSP
+
+### **Implementación del GA aplicado al TSP**
+
+Se utilizó la librería `GA` en R para modelar el problema TSP como una permutación de ciudades. La función de aptitud fue definida como el negativo del costo total, para así minimizar el recorrido.
+
+Para la simulación del GA se utilizaron los siguientes *Hiperparámetros críticos* (basado en implementaciones prácticas):
+
+-   Tamaño de población: 50 individuos, balanceando diversidad y costo computacional (Revistas Uniboyacá, s.f.).
+
+-   Generaciones: 500 iteraciones, suficientes para converger hacia soluciones cercanas al óptimo (Gonçalves et al., 2005).
+
+-   Tasa de mutación: 20%, equilibrando exploración y estabilidad (Revistas Uniboyacá, s.f.).
+
+***La mejor solución encontrada por GA presentó un costo total mínimo de \$3.369.197, lograda en la generación 253.***
+
+```{r GA, warning=FALSE, message=FALSE}
+set.seed(123)
+
+# Función para calcular el costo total de una ruta
+evaluar_ruta <- function(ruta, matriz_costos) {
+  costo <- 0
+  for (i in 1:(length(ruta) - 1)) {
+    costo <- costo + matriz_costos[ruta[i], ruta[i + 1]]
+  }
+  # Cerrar el ciclo regresando a la ciudad inicial
+  costo <- costo + CostoTotal[ruta[length(ruta)], ruta[1]]
+  return(costo)
+}
+
+# Número de ciudades
+n_ciudades <- nrow(CostoTotal)
+
+# Implementar el algoritmo
+# modelo_GA <- ga(
+#   type = "permutation",
+#   fitness = function(ruta) -evaluar_ruta(ruta, CostoTotal),  # Negativo para minimizar
+#   lower = 1,
+#   upper = n_ciudades,
+#   popSize = 50,            # Tamaño de la población
+#   maxiter = 500,           # Número máximo de generaciones
+#   pmutation = 0.2,        # Probabilidad de mutación
+#   monitor = FALSE
+# )
+historial_fitness <- c()
+modelo_GA <- ga(
+  type = "permutation",
+  fitness = function(ruta) -evaluar_ruta(ruta, CostoTotal),  # Negativo para minimizar
+  lower = 1,
+  upper = n_ciudades,
+  popSize = 50,            # Tamaño de la población
+  maxiter = 500,           # Número máximo de generaciones
+  pmutation = 0.2,        # Probabilidad de mutación
+  monitor = function(obj) {
+    historial_fitness <<- c(historial_fitness, -max(obj@fitness))
+  }
+)
+
+# Mejor ruta
+mejor_ruta <- modelo_GA@solution[1,]
+
+# Mejor costo
+mejor_costo <- -modelo_GA@fitnessValue  # Recuerda que lo negamos antes
+
+# Mostrar resultados
+
+# Crear dataframe del historial
+df_historial <- data.frame(
+  Generacion = 1:length(historial_fitness),
+  CostoTotal = historial_fitness
+)
+
+# Encontrar el mejor costo
+#mejor_costo <- min(df_historial$CostoTotal)
+mejor_generacion <- df_historial$Generacion[which.min(df_historial$CostoTotal)]
+
+# Mostrar resultados
+cat("\nLa mejor ruta se obtuvo en la generación ", mejor_generacion, "\nEl costo total de la mejor ruta fue de $", format(mejor_costo, big.mark=","), "\n")
+
+```
+
+### **Visualización de resultados del GA aplicado al TSP**
+
+#### **Evolución del costo total a través de las generaciones**
+
+La **Figura 1** muestra cómo evolucionó el Costo Total a través de 500 generaciones. Se observa en ella que el algoritmo genético mostró una mejora significativa en el costo total durante las primeras generaciones, encontrando soluciones de menor costo de forma rápida. A partir de la generación 250 aproximadamente, el algoritmo estabilizó su desempeño, indicando que había alcanzado una solución cercana al óptimo.
+
+```{r evolucionCostoGA, warning=FALSE, message=FALSE, cache=TRUE}
+# Graficar la evolucion del Costo en el AG
+
+# Crear el texto que quieres mostrar
+texto_anotacion <- paste0("Generación: ", mejor_generacion, "\nCosto: ", format(round(mejor_costo, 0), big.mark = ","))
+
+# Graficar
+ggplot(df_historial, aes(x = Generacion, y = CostoTotal)) +
+  geom_line(color = "darkgreen", size = 1) +
+  geom_point(color = "forestgreen", size = 1.5) +
+  annotate("point", 
+           x = mejor_generacion, 
+           y = mejor_costo, 
+           color = "red", 
+           size = 4) +
+  annotate("text",
+           x = mejor_generacion + 20,  # desplazamos un poco para que no tape el punto
+           y = mejor_costo,
+           label = texto_anotacion,
+           hjust = 0,                  # alineación horizontal
+           vjust = -0.5,               # alineación vertical
+           size = 4,
+           color = "black",
+           fontface = "bold") +
+  theme_minimal() +
+  labs(
+    title = "Evolución del Costo Total en el Algoritmo Genético (AG)",
+    x = "Generación",
+    y = "Costo Total"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    axis.title = element_text(face = "bold", size = 12),
+    axis.text = element_text(size = 10)
+  )
+
+```
+
+**Figura 1.** *Evolución del Costo Total en el GA a través de 500 generaciones.*
+
+#### **Visualización de la mejor ruta**
+
+La **Tabla 2** muestra la mejor ruta hallada por GA, que corresponde al *costo total mínimo de \$3.369.197,* entre las 13 ciudades de Colombia en el orden que deben recorrerse.
+
+**Tabla 2.** *Orden en que deben recorrerse las 13 ciudades en la mejor ruta obtenida por GA.*
+
+```{r tablaMejorRutaGA, warning=FALSE, message=FALSE}
+
+# Mejor ruta (ya teníamos mejor_ruta)
+ruta_completa <- c(mejor_ruta, mejor_ruta[1])
+
+# Extraer ciudades en orden de la ruta
+ruta_ciudades <- CiudadesUbicacion[ruta_completa, ]
+
+# Agregar el orden de visita
+ruta_ciudades$Orden <- 1:nrow(ruta_ciudades)
+
+# Mostrando la mejor ruta
+knitr::kable(
+  ruta_ciudades[, c("Ciudad", "Orden")],
+  col.names = c("Ciudad", "Orden de visita")
+) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    position = "center"
+  ) %>%
+  column_spec(1, bold = TRUE, width = "10em") %>%
+  column_spec(2, width = "5em") %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#4682B4")
+
+```
+
+La **Figura 2** muestra la superposición de la mejor ruta hallada por GA en el mapa de Colombia.
+
+```{r mapaMejorRutaGA, warning=FALSE, message=FALSE, cache=TRUE}
+
+# Crear texto de costo
+costo_texto <- paste0("Costo total mínimo: $", format(round(mejor_costo, 0), big.mark = ","))
+# Íconos personalizados para inicio y fin
+icono_inicio <- awesomeIcons(
+  icon = 'flag',
+  iconColor = 'white',
+  markerColor = 'green',
+  library = 'fa'
+)
+
+icono_fin <- awesomeIcons(
+  icon = 'flag',
+  iconColor = 'white',
+  markerColor = 'red',
+  library = 'fa'
+)
+
+# Texto del costo total
+costo_texto <- paste0("Costo total mínimo: $", format(round(mejor_costo, 0), big.mark = ","))
+
+# Crear el mapa
+leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  
+  # Marcar la ciudad de inicio (primer ciudad de la ruta)
+  addAwesomeMarkers(
+    lng = ruta_ciudades$Longitud[1],
+    lat = ruta_ciudades$Latitud[1],
+    icon = icono_inicio,
+    popup = paste("Inicio:", ruta_ciudades$Ciudad[1])
+  ) %>%
+  
+  # Marcar la ciudad final (última ciudad de la ruta)
+  addAwesomeMarkers(
+    lng = ruta_ciudades$Longitud[nrow(ruta_ciudades)-1],
+    lat = ruta_ciudades$Latitud[nrow(ruta_ciudades)-1],
+    icon = icono_fin,
+    popup = paste("Fin:", ruta_ciudades$Ciudad[nrow(ruta_ciudades)-1])
+  ) %>%
+  
+  # Marcar todas las demás ciudades normales
+  addCircleMarkers(
+    data = ruta_ciudades,
+    lng = ~Longitud,
+    lat = ~Latitud,
+    radius = 6,
+    color = "blue",
+    fillColor = "blue",
+    fillOpacity = 0.8,
+    label = ~paste0(Orden, ". ", Ciudad),
+    popup = ~paste("Ciudad:", Ciudad, "<br>", "Orden de visita:", Orden)
+  ) %>%
+  
+  # Agregar la ruta conectando las ciudades
+  addPolylines(
+    lng = ~Longitud,
+    lat = ~Latitud,
+    data = ruta_ciudades,
+    color = "red",
+    weight = 3,
+    opacity = 0.8
+  ) %>%
+  
+  # Mostrar el costo total en una esquina
+  addControl(
+    html = paste0("<b>", costo_texto, "</b>"),
+    position = "bottomleft"
+  )
+```
+
+**Figura 2.** Superposición de la mejor ruta obtenida por GA en el mapa de Colombia.
+
+### Recorrido óptimo animado mejor ruta GA
+
+La **Figura 3** muestra una animación del recorrido a través de la mejor ruta encontrada usando GA aplicado al TSG.
+
+![](GifGA.gif){fig-align="center"}
+
+**Figura 3.** *Animación del recorrido óptima encontrada usando GA aplicado al TSG*.
+
+### Verificación de la calidad de la solución del GA aplicado al TSP
+
+Durante la ejecución del algoritmo, se observó un comportamiento típico de convergencia: inicialmente, el costo total disminuyó rápidamente, mostrando mejoras significativas en las primeras generaciones; posteriormente, el costo se estabilizó, oscilando alrededor de una media relativamente constante. Este patrón es consistente con el comportamiento esperado en métodos de optimización metaheurística, indicando que el AG convergió hacia un conjunto de soluciones cercanas al óptimo.
+
+Por lo tanto, se seleccionó como solución final la ruta correspondiente al menor costo alcanzado durante las iteraciones. Dado que las funciones de costo tienden a estabilizarse en un rango limitado y que no se observaron mejoras sustanciales tras cierto número de generaciones, se concluye que la solución obtenida es razonablemente buena, considerando las limitaciones inherentes a los métodos no determinísticos y la complejidad del problema (Gonçalves et al., 2005; Zhang et al., 2020).
+
+## ACO aplicado al TSP
+
+### **Implementación del ACO aplicado al TSP**
+
+Para la simulación del ACO se utilizaron los siguientes hiperparámetros críticos, basados en recomendaciones de la literatura y experimentación práctica:
+
+-   **Número de hormigas:** 13, buscando un equilibrio entre la diversidad de soluciones exploradas y el costo computacional (Dorigo & Stützle, 2004).
+
+-   **Iteraciones:** 500, suficientes para permitir la convergencia hacia soluciones de bajo costo (Gambardella & Dorigo, 1995).
+
+-   **Importancia relativa de la feromona (**$\alpha$**):** 1, para que la información histórica de las rutas influya en la toma de decisiones.
+
+-   **Importancia de la heurística (**$\beta$**):** 5, dando mayor peso al costo inmediato de los trayectos (Dorigo & Stützle, 2004).
+
+-   **Tasa de evaporación de feromona (**$\rho$**):** 0.5, permitiendo un balance entre la explotación de buenas rutas y la exploración de nuevas alternativas.
+
+-   **Constante para el depósito de feromona (\$Q\$):** 1.
+
+***La mejor solución encontrada por ACO presentó un costo total mínimo de \$3,271,872, lograda en la iteración 96.***
+
+```{r ACO, warning=FALSE, message=FALSE}
+# Número de ciudades
+n_ciudades <- nrow(CostoTotal)
+
+# Parámetros del ACO
+n_hormigas <- n_ciudades       # Una hormiga por ciudad
+n_iteraciones <- 500           # Número de generaciones
+alpha <- 1                     # Importancia de la feromona
+beta <- 5                      # Importancia de la visibilidad (1/distancia)
+rho <- 0.5                     # Tasa de evaporación
+Q <- 1                         # Constante para el depósito de feromona
+
+# Inicializar feromonas (matriz llena de 1's)
+feromonas <- matrix(1, n_ciudades, n_ciudades)
+
+# Visibilidad: inversa del costo (matriz de distancias)
+visibilidad <- 1 / CostoTotal
+diag(visibilidad) <- 0   # No queremos loops sobre sí mismo
+
+construir_ruta <- function(feromonas, visibilidad, alpha, beta) {
+  ruta <- integer(n_ciudades)
+  ruta[1] <- sample(1:n_ciudades, 1)   # Escoge ciudad inicial aleatoria
+  
+  no_visitadas <- setdiff(1:n_ciudades, ruta[1])
+  
+  for (i in 2:n_ciudades) {
+    ultimo <- ruta[i-1]
+    
+    if (length(no_visitadas) == 1) {
+      siguiente <- no_visitadas  # Solo queda una opción
+    } else {
+      probabilidades <- (feromonas[ultimo, no_visitadas]^alpha) * (visibilidad[ultimo, no_visitadas]^beta)
+      probabilidades <- probabilidades / sum(probabilidades)
+      
+      siguiente <- sample(no_visitadas, 1, prob = probabilidades)
+    }
+    
+    ruta[i] <- siguiente
+    no_visitadas <- setdiff(no_visitadas, siguiente)
+  }
+  
+  return(ruta)
+}
+
+
+# Función para calcular el costo de una ruta
+costo_ruta <- function(ruta, costo_total) {
+  costo <- 0
+  for (i in 1:(length(ruta)-1)) {
+    costo <- costo + costo_total[ruta[i], ruta[i+1]]
+  }
+  # Cerrar el ciclo (regresar al origen)
+  costo <- costo + costo_total[ruta[length(ruta)], ruta[1]]
+  return(costo)
+}
+
+# Guardar el mejor resultado
+mejor_ruta_aco <- NULL
+mejor_costo_aco <- Inf
+historial_costo_aco <- c()
+mejor_iteracion_aco <- 0
+
+
+for (iter in 1:n_iteraciones) {
+  
+  rutas <- list()
+  costos <- numeric(n_hormigas)
+  
+  # Cada hormiga construye su ruta
+  for (k in 1:n_hormigas) {
+    rutas[[k]] <- construir_ruta(feromonas, visibilidad, alpha, beta)
+    costos[k] <- costo_ruta(rutas[[k]], CostoTotal)
+  }
+  
+  # Actualizar mejor solución
+  if (min(costos) < mejor_costo_aco) {
+    mejor_costo_aco <- min(costos)
+    mejor_ruta_aco <- rutas[[which.min(costos)]]
+    mejor_iteracion_aco <- iter 
+  }
+  
+  # Actualizar feromonas
+  feromonas <- (1 - rho) * feromonas   # Evaporación
+  
+  for (k in 1:n_hormigas) {
+    ruta_k <- rutas[[k]]
+    costo_k <- costos[k]
+    
+    for (i in 1:(length(ruta_k)-1)) {
+      feromonas[ruta_k[i], ruta_k[i+1]] <- feromonas[ruta_k[i], ruta_k[i+1]] + Q / costo_k
+    }
+    # Cerrar el ciclo
+    feromonas[ruta_k[length(ruta_k)], ruta_k[1]] <- feromonas[ruta_k[length(ruta_k)], ruta_k[1]] + Q / costo_k
+  }
+  
+  # Guardar evolución
+  historial_costo_aco <- c(historial_costo_aco, mejor_costo_aco)
+  
+  # (Opcional: ver progreso)
+  #if (iter %% 50 == 0) cat("Iteración:", iter, "- Mejor costo hasta ahora:", mejor_costo_aco, "\n")
+}
+
+# Mostar resultados
+cat("\nLa mejor ruta se obtuvo en la iteración ", mejor_iteracion_aco, "\nEl costo total de la mejor ruta fue de $", format(mejor_costo_aco, big.mark=","), "\n")
+
+```
+
+### **Visualización de resultados del ACO aplicado al TSP**
+
+#### **Evolución del costo total a través de las iteraciones**
+
+La **Figura 4** muestra cómo evolucionó el Costo Total a través de 500 generaciones. Se observa que el algoritmo de colonia de hormigas presentó una rápida convergencia en las primeras generaciones, alcanzando una solución estable alrededor de la iteración 96. A partir de ese momento, el costo total se mantuvo constante, lo que indica que el conjunto de hormigas ha refinado su búsqueda alrededor de una solución de bajo costo.
+
+```{r evolucionCostoACO, warning=FALSE, message=FALSE, cache=TRUE}
+# Crear dataframe del historial de costos del ACO
+df_historial_aco <- data.frame(
+  Iteracion = 1:length(historial_costo_aco),
+  CostoTotal = historial_costo_aco
+)
+
+# Encontrar el mejor costo y la iteración donde se logró
+mejor_costo_aco <- min(df_historial_aco$CostoTotal)
+mejor_iteracion_aco <- df_historial_aco$Iteracion[which.min(df_historial_aco$CostoTotal)]
+
+# Crear el texto para la anotación
+texto_anotacion_aco <- paste0(
+  "Iteración: ", mejor_iteracion_aco, 
+  "\nCosto: ", format(round(mejor_costo_aco, 0), big.mark = ",")
+)
+
+# Graficar la evolución del costo en el ACO
+ggplot(df_historial_aco, aes(x = Iteracion, y = CostoTotal)) +
+  geom_line(color = "darkgreen", size = 1) +
+  geom_point(color = "forestgreen", size = 1.5) +
+  annotate("point", 
+           x = mejor_iteracion_aco, 
+           y = mejor_costo_aco, 
+           color = "red", 
+           size = 4) +
+  annotate("text",
+           x = mejor_iteracion_aco + 20,  # desplazar el texto para que no tape el punto
+           y = mejor_costo_aco,
+           label = texto_anotacion_aco,
+           hjust = 0,
+           vjust = -0.5,
+           size = 4,
+           color = "black",
+           fontface = "bold") +
+  theme_minimal() +
+  labs(
+    title = "Evolución del Costo Total en el Algoritmo de Colonia de Hormigas (ACO)",
+    x = "Iteración",
+    y = "Costo Total"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    axis.title = element_text(face = "bold", size = 12),
+    axis.text = element_text(size = 10)
+  )
+
+```
+
+**Figura 4.** *Evolución del Costo Total en el ACO a través de 500 iteraciones.*
+
+#### **Visualización de la mejor ruta**
+
+La **Tabla 3** muestra la mejor ruta hallada por ACO, que corresponde al *costo total mínimo de \$3.271.872,* entre las 13 ciudades de Colombia en el orden que deben recorrerse.
+
+**Tabla 3.** *Orden en que deben recorrerse las 13 ciudades en la mejor ruta obtenida por ACO.*
+
+```{r tablaMejorRutaACO, warning=FALSE, message=FALSE}
+# Ruta completa (cerrando el ciclo)
+ruta_completa_aco <- c(mejor_ruta_aco, mejor_ruta_aco[1])
+
+# Extraer ciudades según el orden
+ruta_ciudades_aco <- CiudadesUbicacion[ruta_completa_aco, ]
+
+# Agregar orden de visita
+ruta_ciudades_aco$Orden <- 1:nrow(ruta_ciudades_aco)
+
+# Mostrar la mejor ruta en una tabla
+knitr::kable(ruta_ciudades_aco[, c("Ciudad", "Orden")], 
+             col.names = c("Ciudad", "Orden de visita")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, position = "center") %>%
+  column_spec(1, bold = TRUE, width = "10em") %>%
+  column_spec(2, width = "5em") %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#4682B4")
+
+
+```
+
+La **Figura 5** muestra la superposición de la mejor ruta hallada por ACO en el mapa de Colombia.
+
+```{r mapaMejorRutaACO, warning=FALSE, message=FALSE}
+
+# Texto para mostrar el costo total
+costo_aco_texto <- paste0("Costo total (ACO): $", format(round(mejor_costo_aco, 0), big.mark = ","))
+
+# Íconos personalizados
+icono_inicio <- awesomeIcons(icon = 'flag', markerColor = 'green', iconColor = 'white', library = 'fa')
+icono_fin    <- awesomeIcons(icon = 'flag', markerColor = 'red', iconColor = 'white', library = 'fa')
+
+# Crear el mapa
+leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  
+  # Marcar ciudad de inicio
+  addAwesomeMarkers(
+    lng = ruta_ciudades_aco$Longitud[1],
+    lat = ruta_ciudades_aco$Latitud[1],
+    icon = icono_inicio,
+    popup = paste("Inicio:", ruta_ciudades_aco$Ciudad[1])
+  ) %>%
+  
+  # Marcar ciudad final (última antes de cerrar el ciclo)
+  addAwesomeMarkers(
+    lng = ruta_ciudades_aco$Longitud[nrow(ruta_ciudades_aco) - 1],
+    lat = ruta_ciudades_aco$Latitud[nrow(ruta_ciudades_aco) - 1],
+    icon = icono_fin,
+    popup = paste("Fin:", ruta_ciudades_aco$Ciudad[nrow(ruta_ciudades_aco) - 1])
+  ) %>%
+  
+  # Puntos azules para las demás ciudades
+  addCircleMarkers(
+    data = ruta_ciudades_aco,
+    lng = ~Longitud,
+    lat = ~Latitud,
+    radius = 6,
+    color = "blue",
+    fillOpacity = 0.8,
+    label = ~paste0(Orden, ". ", Ciudad),
+    popup = ~paste("Ciudad:", Ciudad, "<br>", "Orden:", Orden)
+  ) %>%
+  
+  # Ruta roja
+  addPolylines(
+    data = ruta_ciudades_aco,
+    lng = ~Longitud,
+    lat = ~Latitud,
+    color = "red",
+    weight = 3,
+    opacity = 0.8
+  ) %>%
+  
+  # Costo total
+  addControl(
+    html = paste0("<b>Costo total ACO: $", format(round(mejor_costo_aco, 0), big.mark = ","), "</b>"),
+    position = "bottomleft"
+  )
+
+```
+
+**Figura 5.** Superposición de la mejor ruta obtenida por ACO en el mapa de Colombia.
+
+### Recorrido óptimo animado mejor ruta ACO
+
+La **Figura 6** muestra una animación del recorrido a través de la mejor ruta encontrada usando ACO aplicado al TSG.
+
+![](GifACO.gif){fig-align="center"}
+
+**Figura 6.** *Animación del recorrido óptima encontrada usando ACO aplicado al TSG*.
+
+### Verificación de la calidad de la solución del ACO aplicado al TSP
+
+Aunque los algoritmos metaheurísticos no garantizan la optimalidad global, el comportamiento observado en la evolución del costo sugiere que el algoritmo de colonia de hormigas (ACO) fue eficiente para encontrar una solución competitiva al problema del viajante bajo condiciones realistas.
+
+El ACO se aplicó para resolver una instancia del problema del viajante, con el objetivo de minimizar el costo total de recorrer todas las ciudades y regresar al punto de partida. Dado que el número de rutas posibles crece factorialmente con la cantidad de ciudades, una evaluación exhaustiva por fuerza bruta es impracticable, lo que hace esencial analizar la calidad de la solución obtenida a partir de los resultados empíricos del algoritmo.
+
+Durante las 500 iteraciones ejecutadas, el ACO mostró un patrón típico de convergencia eficiente: el costo total disminuyó rápidamente en las primeras iteraciones y se estabilizó alrededor de la iteración 90. A partir de ese punto, el algoritmo mantuvo consistentemente la mejor solución, lo que indica que las feromonas guiaron a las hormigas hacia una ruta sólida, iterativamente reforzada como la mejor alternativa encontrada.
+
+Este patrón de estabilización sugiere que el algoritmo alcanzó un óptimo local robusto. Si bien los métodos metaheurísticos no garantizan encontrar la solución óptima global, la combinación de una rápida convergencia, la estabilidad mantenida durante más del 90% de las iteraciones y la coherencia en los resultados permiten concluir que la solución obtenida es razonablemente buena en términos de eficiencia y costo.
+
+El valor final alcanzado fue de \$3,271,872, el cual se mantuvo inalterado en todas las iteraciones posteriores a la convergencia. Este comportamiento, junto con la tendencia descendente y estable de la función objetivo, respalda la confiabilidad y solidez de la solución obtenida mediante este enfoque bioinspirado.
+
+## Comparación entre el GA y ACO aplicados al TSG
+
+Tanto el Algoritmo Genético (GA) como la Colonia de Hormigas (ACO) son enfoques metaheurísticos inspirados en procesos naturales, aplicados en este trabajo a la resolución del Problema del Viajante de Comercio (TSP). Ambos buscan encontrar rutas óptimas minimizando el costo total del recorrido, que considera tiempo de desplazamiento, consumo de combustible y peajes. Aunque ambos métodos son de naturaleza estocástica y no garantizan la optimalidad global, presentan diferencias notables en su enfoque, comportamiento y resultados.
+
+Desde el punto de vista computacional, el GA emplea operadores de evolución genética -como selección, cruce y mutación- para explorar el espacio de soluciones, generando diversidad entre generaciones y favoreciendo combinaciones prometedoras. Por su parte, el ACO simula el comportamiento colectivo de las hormigas depositando y evaporando feromonas, construyendo soluciones de manera probabilística e incremental, guiadas por la experiencia acumulada.
+
+En cuanto a los resultados obtenidos, ambos algoritmos convergieron a soluciones estables en un número razonable de iteraciones. El ACO se destacó por su rápida convergencia, alcanzando su mejor solución alrededor de la iteración 96 y manteniéndola constante durante el resto del proceso. El GA, en cambio, mostró una mejora más progresiva y continua, permitiendo pequeñas optimizaciones incluso en etapas avanzadas del ciclo evolutivo.
+
+En términos de calidad de la solución, ambos métodos arrojaron rutas de costo muy similar, aunque no necesariamente idénticas. Esto sugiere que, pese a sus diferencias internas, cada algoritmo fue capaz de explorar zonas similares del espacio de soluciones, lo que refuerza la solidez de los resultados encontrados. Además, la convergencia de ambos métodos hacia soluciones estables ofrece evidencia empírica de que dichas soluciones se ubican en regiones de alta calidad dentro del espacio del problema.
+
+En cuanto a interpretabilidad y ajuste, el GA ofrece una mayor flexibilidad en la manipulación de operadores genéticos y estrategias de cruce, mientras que el ACO se beneficia de una dinámica colectiva más estable una vez ajustados correctamente sus parámetros ($\alpha$, $\beta$, evaporación y número de hormigas).
+
+Ambos algoritmos resultaron efectivos en la resolución del problema propuesto, y la comparación de sus resultados evidencia que, con configuraciones adecuadas, tanto el enfoque evolutivo como el bioinspirado pueden alcanzar soluciones de alta calidad. La elección entre uno u otro dependerá del contexto, la facilidad de ajuste, la sensibilidad a los parámetros y el tipo de convergencia deseado en problemas similares.
+
+En resumen, ambos algoritmos permiten abordar el TSP de manera eficiente, evitando el alto costo computacional de los métodos exactos. La calidad de las soluciones es elevada, considerando la complejidad combinatoria del problema. La representación gráfica de las rutas facilita la validación y comunicación de los resultados. La elección entre GA y ACO dependerá de las características específicas del problema, la facilidad de ajuste de parámetros y el tipo de convergencia deseado.
+
+La **Tabla 4** presenta un resumen comparativo de las características de las simulaciones realizadas con GA y ACO para resolver el TSG.
+
+**Tabla 4.** *Comparación de características y resultados: GA vs. ACO aplicados al TSG.*
+
+```{r}
+tabla_comp <- data.frame(
+  "Criterio" = c(
+    "Inspiración",
+    "Construcción de soluciones",
+    "Velocidad de convergencia",
+    "Diversidad de soluciones",
+    "Sensibilidad a parámetros",
+    "Estabilidad de resultados",
+    "Mejor iteración lograda",
+    "Costo total alcanzado",
+    "Interpretabilidad",
+    "Fortalezas",
+    "Debilidades"
+  ),
+  "Algoritmo Genético (GA)" = c(
+    "Evolución natural (selección, cruza, mutación)",
+    "Recombina soluciones completas para generar nuevas poblaciones",
+    "Moderada (mejora progresiva en varias etapas)",
+    "Alta diversidad gracias a mutaciones y recombinación",
+    "Alta: requiere ajuste fino de cruza, mutación y tamaño de población",
+    "Puede oscilar en fases avanzadas (dependiendo del azar y cruce)",
+    "Iteración 253",
+    "~$3.369.197",
+    "Alta: permite seguimiento de operadores y evolución",
+    "Explora más ampliamente el espacio de soluciones",
+    "Requiere control de diversidad para evitar estancamiento"
+  ),
+  "Colonia de Hormigas (ACO)" = c(
+    "Comportamiento colectivo de hormigas y feromonas",
+    "Construye rutas paso a paso con base en probabilidad",
+    "Alta (mejora rápida en primeras iteraciones, estabilización temprana)",
+    "Menor diversidad, favorece la explotación de buenas soluciones",
+    "Media-alta: depende de α, β, evaporación, número de hormigas",
+    "Alta estabilidad tras converger a una buena ruta",
+    "Iteración 96",
+    "~$3.271.872",
+    "Media: soluciones emergen de dinámica colectiva",
+    "Explota rutas prometedoras rápidamente y converge de forma robusta",
+    "Puede converger prematuramente a óptimos locales"
+  ),
+  check.names = FALSE  # <- ¡Esto es lo importante!
+)
+
+kable(tabla_comp, "html", caption = "Tabla 4. Comparación de características y resultados: GA vs. ACO aplicados al TSP.") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+                full_width = FALSE, 
+                position = "center") %>%
+  column_spec(1, bold = TRUE, width = "17em") %>%
+  column_spec(2, width = "20em") %>%
+  column_spec(3, width = "20em") %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#4682B4")
+
+```
+
+# **Conclusiones**
+
+-   Tanto los algoritmos genéticos (GA) como la colonia de hormigas (ACO) demostraron ser herramientas adecuadas y eficientes para resolver el Problema del Viajante de Comercio (TSP) en el contexto colombiano, integrando parámetros de costo realistas como tiempo de desplazamiento, consumo de combustible y peajes.
+
+-   Ambos enfoques metaheurísticos permitieron minimizar de manera efectiva el costo total del recorrido, encontrando rutas competitivas en términos de eficiencia y viabilidad práctica, a pesar de la naturaleza combinatoria y la imposibilidad de garantizar la optimalidad global.
+
+-   La visualización geográfica de las rutas óptimas, mediante mapas interactivos, aportó un valor significativo al análisis y validación de los resultados, facilitando la interpretación y comunicación de las soluciones encontradas.
+
+-   Se observó que el ACO tiende a converger más rápidamente hacia una solución estable, mientras que el GA presenta una mejora progresiva y continua a lo largo de las generaciones. Sin embargo, ambos algoritmos alcanzaron soluciones de calidad comparable, lo que refuerza la robustez de los métodos metaheurísticos para este tipo de problemas.
+
+-   Como líneas de trabajo futuro, se recomienda profundizar en la optimización de los hiperparámetros de ambos algoritmos, así como explorar la comparación con otros enfoques metaheurísticos o híbridos. Además, la incorporación de restricciones adicionales o escenarios dinámicos podría enriquecer el análisis y la aplicabilidad de los resultados.
+
+# **Referencias**
+
+::: bibliografia-apa
+Applegate, D. L., Bixby, R. E., Chvátal, V., & Cook, W. J. (2006). *The Traveling Salesman Problem: A Computational Study*. Princeton University Press. <br>
+
+C3 Care Car Center. (2025). Todo sobre el Spark GT Chevrolet: Rendimiento y mantenimiento. <https://www.c3carecarcenter.com/blog/todo-sobre-el-spark-gt-chevrolet-rendimiento-y-mantenimiento/><br>
+
+Dorigo, M., Maniezzo, V., & Colorni, A. (1996). Ant system: Optimization by a colony of cooperating agents. *IEEE Transactions on Systems, Man, and Cybernetics, Part B (Cybernetics)*, 26(1), 29–41. <https://doi.org/10.1109/3477.484436><br>
+
+Dorigo, M., & Stützle, T. (2004). Ant Colony Optimization. MIT Press.<br>
+
+Geodatos.net. (s.f.). Distancia entre ciudades de Colombia. <https://www.geodatos.net/distancias/ciudades/colombia><br>
+
+Gonçalves, J. F., Mendes, J. J. M., & Resende, M. G. C. (2005). A hybrid genetic algorithm for the job shop scheduling problem. European Journal of Operational Research, 167(1), 77-95.<br>
+
+Goodfellow, I., Bengio, Y., & Courville, A. (2016). *Deep Learning*. MIT Press. <https://www.deeplearningbook.org/><br>
+
+Holland, J. H. (1975). *Adaptation in Natural and Artificial Systems*. University of Michigan Press.<br>
+
+Infobae. (2025, 6 de enero). *Con proyecto de ley buscan que peajes no puedan ubicarse a menos de 150 kilómetros entre sí*. <https://www.infobae.com/colombia/2025/01/06/con-proyecto-de-ley-buscan-que-peajes-no-puedan-ubicarse-a-menos-de-150-kilometros-entre-si/><br>
+
+Mejores Rutas Colombia. (s.f.). *Tabla de distancias entre ciudades de Colombia*. <https://colombia.mejoresrutas.com/tabla-de-distancias/co/><br>
+
+Ministerio de Minas y Energía. (2025). Precios oficiales de combustibles en Colombia. <https://www.minenergia.gov.co/><br>
+
+Mitchell, M. (1998). *An Introduction to Genetic Algorithms*. MIT Press.<br>
+
+Revistas Uniboyacá. (s.f.). Aplicación de algoritmos genéticos en problemas de Ingeniería. <https://revistasdigitales.uniboyaca.edu.co><br>
+
+Villalba Fernández de Castro, G. (2004). Algoritmos de optimización combinatoria aplicados al diseño de redes de distribución de agua potable. Uniandes. <http://hdl.handle.net/1992/21519><br>
+
+Yahoo Finanzas. (2025). Estos son los carros que consumen menos gasolina en Colombia. <https://es-us.finanzas.yahoo.com/><br>
+
+Zhang, A., Lipton, Z. C., Li, M., & Smola, A. J. (2024). Dive into Deep Learning. <https://d2l.ai/><br>
+
+Zhang, Y., Li, Y., & Wang, S. (2020). A review of metaheuristics for traveling salesman problem. Applied Soft Computing, 97, 106801.<br>
+:::
