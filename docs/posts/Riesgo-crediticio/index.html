@@ -71,6 +71,10 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -193,30 +197,28 @@ window.Quarto = {
   <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción"><span class="header-section-number">1</span> <strong>Introducción</strong></a></li>
   <li><a href="#marco-teórico" id="toc-marco-teórico" class="nav-link" data-scroll-target="#marco-teórico"><span class="header-section-number">2</span> <strong>Marco Teórico</strong></a>
   <ul class="collapse">
-  <li><a href="#riesgo-crediticio-y-su-importancia" id="toc-riesgo-crediticio-y-su-importancia" class="nav-link" data-scroll-target="#riesgo-crediticio-y-su-importancia"><span class="header-section-number">2.1</span> Riesgo crediticio y su importancia</a></li>
-  <li><a href="#métodos-para-estimar-el-riesgo-crediticio" id="toc-métodos-para-estimar-el-riesgo-crediticio" class="nav-link" data-scroll-target="#métodos-para-estimar-el-riesgo-crediticio"><span class="header-section-number">2.2</span> Métodos para estimar el riesgo crediticio</a></li>
-  <li><a href="#redes-neuronales" id="toc-redes-neuronales" class="nav-link" data-scroll-target="#redes-neuronales"><span class="header-section-number">2.3</span> Redes Neuronales</a>
+  <li><a href="#riesgo-crediticio" id="toc-riesgo-crediticio" class="nav-link" data-scroll-target="#riesgo-crediticio"><span class="header-section-number">2.1</span> Riesgo crediticio</a>
   <ul class="collapse">
-  <li><a href="#definición-y-concepto-básicos" id="toc-definición-y-concepto-básicos" class="nav-link" data-scroll-target="#definición-y-concepto-básicos"><span class="header-section-number">2.3.1</span> Definición y concepto básicos</a></li>
-  <li><a href="#arquitectura-básica" id="toc-arquitectura-básica" class="nav-link" data-scroll-target="#arquitectura-básica"><span class="header-section-number">2.3.2</span> Arquitectura básica</a></li>
-  <li><a href="#funcionamiento-de-una-neurona-artificial" id="toc-funcionamiento-de-una-neurona-artificial" class="nav-link" data-scroll-target="#funcionamiento-de-una-neurona-artificial"><span class="header-section-number">2.3.3</span> 2.3.3 Funcionamiento de una neurona artificial</a></li>
-  <li><a href="#funciones-de-activación" id="toc-funciones-de-activación" class="nav-link" data-scroll-target="#funciones-de-activación"><span class="header-section-number">2.3.4</span> Funciones de activación</a></li>
-  <li><a href="#proceso-de-entrenamiento" id="toc-proceso-de-entrenamiento" class="nav-link" data-scroll-target="#proceso-de-entrenamiento"><span class="header-section-number">2.3.5</span> Proceso de entrenamiento</a></li>
-  <li><a href="#ejemplo-básico-en-python" id="toc-ejemplo-básico-en-python" class="nav-link" data-scroll-target="#ejemplo-básico-en-python"><span class="header-section-number">2.3.6</span> Ejemplo básico en Python</a></li>
-  <li><a href="#este-ejemplo-crea-una-red-simple-para-clasificación-binaria-con-una-capa-oculta." id="toc-este-ejemplo-crea-una-red-simple-para-clasificación-binaria-con-una-capa-oculta." class="nav-link" data-scroll-target="#este-ejemplo-crea-una-red-simple-para-clasificación-binaria-con-una-capa-oculta."><span class="header-section-number">2.3.7</span> Este ejemplo crea una red simple para clasificación binaria con una capa oculta.</a></li>
+  <li><a href="#métodos-para-estimar-el-riesgo-crediticio" id="toc-métodos-para-estimar-el-riesgo-crediticio" class="nav-link" data-scroll-target="#métodos-para-estimar-el-riesgo-crediticio"><span class="header-section-number">2.1.1</span> Métodos para estimar el riesgo crediticio</a></li>
   </ul></li>
-  <li><a href="#redes-neuronales-artificiales-en-el-riesgo-crediticio" id="toc-redes-neuronales-artificiales-en-el-riesgo-crediticio" class="nav-link" data-scroll-target="#redes-neuronales-artificiales-en-el-riesgo-crediticio"><span class="header-section-number">2.4</span> Redes neuronales artificiales en el riesgo crediticio</a></li>
-  <li><a href="#scorecards-y-explicabilidad" id="toc-scorecards-y-explicabilidad" class="nav-link" data-scroll-target="#scorecards-y-explicabilidad"><span class="header-section-number">2.5</span> 2.3. Scorecards y explicabilidad</a></li>
-  <li><a href="#scorecard-y-análisis-de-variables-de-riesgo" id="toc-scorecard-y-análisis-de-variables-de-riesgo" class="nav-link" data-scroll-target="#scorecard-y-análisis-de-variables-de-riesgo"><span class="header-section-number">2.6</span> 2.4. Scorecard y análisis de variables de riesgo</a></li>
-  <li><a href="#metodología-usada" id="toc-metodología-usada" class="nav-link" data-scroll-target="#metodología-usada"><span class="header-section-number">2.7</span> 2.4 Metodología usada</a></li>
-  </ul></li>
-  <li><a href="#resultados-y-análisis" id="toc-resultados-y-análisis" class="nav-link" data-scroll-target="#resultados-y-análisis"><span class="header-section-number">3</span> Resultados y Análisis</a>
+  <li><a href="#redes-neuronales-artificiales-rna" id="toc-redes-neuronales-artificiales-rna" class="nav-link" data-scroll-target="#redes-neuronales-artificiales-rna"><span class="header-section-number">2.2</span> Redes Neuronales Artificiales (RNA)</a>
   <ul class="collapse">
-  <li><a href="#preprocesamiento-y-preparación-de-datos" id="toc-preprocesamiento-y-preparación-de-datos" class="nav-link" data-scroll-target="#preprocesamiento-y-preparación-de-datos"><span class="header-section-number">3.1</span> 1. Preprocesamiento y preparación de datos</a></li>
+  <li><a href="#conceptos-clave-en-rna" id="toc-conceptos-clave-en-rna" class="nav-link" data-scroll-target="#conceptos-clave-en-rna"><span class="header-section-number">2.2.1</span> Conceptos clave en RNA</a></li>
+  <li><a href="#rna-en-el-riesgo-crediticio" id="toc-rna-en-el-riesgo-crediticio" class="nav-link" data-scroll-target="#rna-en-el-riesgo-crediticio"><span class="header-section-number">2.2.2</span> RNA en el riesgo crediticio</a></li>
+  <li><a href="#ejemplo-básico-en-python" id="toc-ejemplo-básico-en-python" class="nav-link" data-scroll-target="#ejemplo-básico-en-python"><span class="header-section-number">2.2.3</span> Ejemplo básico en Python</a></li>
   </ul></li>
-  <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones"><span class="header-section-number">4</span> Conclusiones</a></li>
-  <li><a href="#contribuciones-individuales" id="toc-contribuciones-individuales" class="nav-link" data-scroll-target="#contribuciones-individuales"><span class="header-section-number">5</span> Contribuciones individuales</a></li>
-  <li><a href="#refeencias" id="toc-refeencias" class="nav-link" data-scroll-target="#refeencias"><span class="header-section-number">6</span> Refeencias</a></li>
+  <li><a href="#scorecards-y-explicabilidad" id="toc-scorecards-y-explicabilidad" class="nav-link" data-scroll-target="#scorecards-y-explicabilidad"><span class="header-section-number">2.3</span> Scorecards y explicabilidad</a>
+  <ul class="collapse">
+  <li><a href="#fórmula-estándar-para-scorecards" id="toc-fórmula-estándar-para-scorecards" class="nav-link" data-scroll-target="#fórmula-estándar-para-scorecards"><span class="header-section-number">2.3.1</span> Fórmula estándar para scorecards</a></li>
+  </ul></li>
+  <li><a href="#metodología-a-usar" id="toc-metodología-a-usar" class="nav-link" data-scroll-target="#metodología-a-usar"><span class="header-section-number">2.4</span> Metodología a usar</a></li>
+  </ul></li>
+  <li><a href="#resultados-y-análisis" id="toc-resultados-y-análisis" class="nav-link" data-scroll-target="#resultados-y-análisis"><span class="header-section-number">3</span> Resultados y Análisis</a></li>
+  <li><a href="#aplicación-web" id="toc-aplicación-web" class="nav-link" data-scroll-target="#aplicación-web"><span class="header-section-number">4</span> Aplicación web</a></li>
+  <li><a href="#video" id="toc-video" class="nav-link" data-scroll-target="#video"><span class="header-section-number">5</span> Video</a></li>
+  <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones"><span class="header-section-number">6</span> Conclusiones</a></li>
+  <li><a href="#contribuciones-individuales" id="toc-contribuciones-individuales" class="nav-link" data-scroll-target="#contribuciones-individuales"><span class="header-section-number">7</span> Contribuciones individuales</a></li>
+  <li><a href="#referencias" id="toc-referencias" class="nav-link" data-scroll-target="#referencias"><span class="header-section-number">8</span> Referencias</a></li>
   </ul>
 </nav>
 </nav>
@@ -237,30 +239,28 @@ window.Quarto = {
   <li><a href="#introducción" id="toc-introducción"><span class="header-section-number">1</span> <strong>Introducción</strong></a></li>
   <li><a href="#marco-teórico" id="toc-marco-teórico"><span class="header-section-number">2</span> <strong>Marco Teórico</strong></a>
   <ul>
-  <li><a href="#riesgo-crediticio-y-su-importancia" id="toc-riesgo-crediticio-y-su-importancia"><span class="header-section-number">2.1</span> Riesgo crediticio y su importancia</a></li>
-  <li><a href="#métodos-para-estimar-el-riesgo-crediticio" id="toc-métodos-para-estimar-el-riesgo-crediticio"><span class="header-section-number">2.2</span> Métodos para estimar el riesgo crediticio</a></li>
-  <li><a href="#redes-neuronales" id="toc-redes-neuronales"><span class="header-section-number">2.3</span> Redes Neuronales</a>
+  <li><a href="#riesgo-crediticio" id="toc-riesgo-crediticio"><span class="header-section-number">2.1</span> Riesgo crediticio</a>
   <ul>
-  <li><a href="#definición-y-concepto-básicos" id="toc-definición-y-concepto-básicos"><span class="header-section-number">2.3.1</span> Definición y concepto básicos</a></li>
-  <li><a href="#arquitectura-básica" id="toc-arquitectura-básica"><span class="header-section-number">2.3.2</span> Arquitectura básica</a></li>
-  <li><a href="#funcionamiento-de-una-neurona-artificial" id="toc-funcionamiento-de-una-neurona-artificial"><span class="header-section-number">2.3.3</span> 2.3.3 Funcionamiento de una neurona artificial</a></li>
-  <li><a href="#funciones-de-activación" id="toc-funciones-de-activación"><span class="header-section-number">2.3.4</span> Funciones de activación</a></li>
-  <li><a href="#proceso-de-entrenamiento" id="toc-proceso-de-entrenamiento"><span class="header-section-number">2.3.5</span> Proceso de entrenamiento</a></li>
-  <li><a href="#ejemplo-básico-en-python" id="toc-ejemplo-básico-en-python"><span class="header-section-number">2.3.6</span> Ejemplo básico en Python</a></li>
-  <li><a href="#este-ejemplo-crea-una-red-simple-para-clasificación-binaria-con-una-capa-oculta." id="toc-este-ejemplo-crea-una-red-simple-para-clasificación-binaria-con-una-capa-oculta."><span class="header-section-number">2.3.7</span> Este ejemplo crea una red simple para clasificación binaria con una capa oculta.</a></li>
+  <li><a href="#métodos-para-estimar-el-riesgo-crediticio" id="toc-métodos-para-estimar-el-riesgo-crediticio"><span class="header-section-number">2.1.1</span> Métodos para estimar el riesgo crediticio</a></li>
   </ul></li>
-  <li><a href="#redes-neuronales-artificiales-en-el-riesgo-crediticio" id="toc-redes-neuronales-artificiales-en-el-riesgo-crediticio"><span class="header-section-number">2.4</span> Redes neuronales artificiales en el riesgo crediticio</a></li>
-  <li><a href="#scorecards-y-explicabilidad" id="toc-scorecards-y-explicabilidad"><span class="header-section-number">2.5</span> 2.3. Scorecards y explicabilidad</a></li>
-  <li><a href="#scorecard-y-análisis-de-variables-de-riesgo" id="toc-scorecard-y-análisis-de-variables-de-riesgo"><span class="header-section-number">2.6</span> 2.4. Scorecard y análisis de variables de riesgo</a></li>
-  <li><a href="#metodología-usada" id="toc-metodología-usada"><span class="header-section-number">2.7</span> 2.4 Metodología usada</a></li>
-  </ul></li>
-  <li><a href="#resultados-y-análisis" id="toc-resultados-y-análisis"><span class="header-section-number">3</span> Resultados y Análisis</a>
+  <li><a href="#redes-neuronales-artificiales-rna" id="toc-redes-neuronales-artificiales-rna"><span class="header-section-number">2.2</span> Redes Neuronales Artificiales (RNA)</a>
   <ul>
-  <li><a href="#preprocesamiento-y-preparación-de-datos" id="toc-preprocesamiento-y-preparación-de-datos"><span class="header-section-number">3.1</span> 1. Preprocesamiento y preparación de datos</a></li>
+  <li><a href="#conceptos-clave-en-rna" id="toc-conceptos-clave-en-rna"><span class="header-section-number">2.2.1</span> Conceptos clave en RNA</a></li>
+  <li><a href="#rna-en-el-riesgo-crediticio" id="toc-rna-en-el-riesgo-crediticio"><span class="header-section-number">2.2.2</span> RNA en el riesgo crediticio</a></li>
+  <li><a href="#ejemplo-básico-en-python" id="toc-ejemplo-básico-en-python"><span class="header-section-number">2.2.3</span> Ejemplo básico en Python</a></li>
   </ul></li>
-  <li><a href="#conclusiones" id="toc-conclusiones"><span class="header-section-number">4</span> Conclusiones</a></li>
-  <li><a href="#contribuciones-individuales" id="toc-contribuciones-individuales"><span class="header-section-number">5</span> Contribuciones individuales</a></li>
-  <li><a href="#refeencias" id="toc-refeencias"><span class="header-section-number">6</span> Refeencias</a></li>
+  <li><a href="#scorecards-y-explicabilidad" id="toc-scorecards-y-explicabilidad"><span class="header-section-number">2.3</span> Scorecards y explicabilidad</a>
+  <ul>
+  <li><a href="#fórmula-estándar-para-scorecards" id="toc-fórmula-estándar-para-scorecards"><span class="header-section-number">2.3.1</span> Fórmula estándar para scorecards</a></li>
+  </ul></li>
+  <li><a href="#metodología-a-usar" id="toc-metodología-a-usar"><span class="header-section-number">2.4</span> Metodología a usar</a></li>
+  </ul></li>
+  <li><a href="#resultados-y-análisis" id="toc-resultados-y-análisis"><span class="header-section-number">3</span> Resultados y Análisis</a></li>
+  <li><a href="#aplicación-web" id="toc-aplicación-web"><span class="header-section-number">4</span> Aplicación web</a></li>
+  <li><a href="#video" id="toc-video"><span class="header-section-number">5</span> Video</a></li>
+  <li><a href="#conclusiones" id="toc-conclusiones"><span class="header-section-number">6</span> Conclusiones</a></li>
+  <li><a href="#contribuciones-individuales" id="toc-contribuciones-individuales"><span class="header-section-number">7</span> Contribuciones individuales</a></li>
+  <li><a href="#referencias" id="toc-referencias"><span class="header-section-number">8</span> Referencias</a></li>
   </ul>
 </nav>
 <hr>
@@ -278,189 +278,220 @@ La variable “loan_status” (incumplimiento de las obligaciones financieras) e
 <hr>
 <section id="introducción" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> <strong>Introducción</strong></h1>
-<p>El riesgo de crédito es un concepto fundamental en las finanzas modernas, ya que representa la posibilidad de que un prestatario incumpla con el pago de una obligación financiera (Financionario, 2025; Finance Strategists, 2023). Su adecuada gestión permite a las instituciones financieras mantener su estabilidad y proyectar confianza ante clientes y reguladores. En la actualidad, la evaluación del riesgo de crédito se apoya cada vez más en modelos de machine learning, capaces de identificar patrones complejos en grandes volúmenes de datos históricos y así mejorar la toma de decisiones respecto a la aprobación de créditos (ListenData, 2019).</p>
+<p>El <em>Riesgo de Crédito</em> es un concepto fundamental en las finanzas modernas, ya que representa la posibilidad de que un prestatario incumpla con el pago de una obligación financiera (Financionario, 2025; Finance Strategists, 2023). Su adecuada gestión permite a las instituciones financieras mantener su estabilidad y proyectar confianza ante clientes y reguladores. En la actualidad, la evaluación del riesgo de crédito se apoya cada vez más en modelos de Machine Learning (como las Redes Neuronales), capaces de identificar patrones complejos en grandes volúmenes de datos históricos y así mejorar la toma de decisiones respecto a la aprobación de créditos (ListenData, 2019).</p>
 <p>El presente trabajo tiene como objetivo desarrollar un modelo basado en redes neuronales artificiales (RNA) para predecir la probabilidad de incumplimiento de pago de un crédito, utilizando el conjunto de datos “Credit Risk Analysis” (R_G, 2021). Además, se construirá una scorecard derivada del modelo y se implementará una aplicación web interactiva que permita a los usuarios consultar su puntaje y compararse con la población general.</p>
 </section>
 <section id="marco-teórico" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> <strong>Marco Teórico</strong></h1>
-<section id="riesgo-crediticio-y-su-importancia" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="riesgo-crediticio-y-su-importancia"><span class="header-section-number">2.1</span> Riesgo crediticio y su importancia</h2>
-<p>El riesgo crediticio se define como la probabilidad de que un prestatario incumpla con el pago de una obligación financiera, lo que puede generar pérdidas para la entidad que otorga el préstamo (Financionario, 2025; Finance Strategists, 2023). Este riesgo es un factor central en la toma de decisiones financieras, ya que afecta tanto a las instituciones como a los solicitantes de crédito. Una gestión adecuada del riesgo crediticio permite anticipar posibles impagos, ajustar condiciones como tasas de interés o garantías, y mantener la estabilidad de las entidades financieras (ListenData, 2019).</p>
-<p>Además, una evaluación precisa del riesgo crediticio protege a las instituciones de pérdidas inesperadas, promueve la confianza en el sistema financiero y facilita el acceso a condiciones más justas para los usuarios (Finance Strategists, 2023). La correcta evaluación del riesgo es fundamental para la transparencia y eficiencia del sistema financiero, beneficiando a todas las partes involucradas. Por un lado, protege a las instituciones financieras y, por otro, ayuda a los solicitantes a comprender los factores que influyen en su perfil crediticio y a acceder a productos financieros adecuados a su situación (Finance Strategists, 2023).</p>
+<section id="riesgo-crediticio" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="riesgo-crediticio"><span class="header-section-number">2.1</span> Riesgo crediticio</h2>
+<p>El riesgo crediticio se define como la probabilidad de que un prestatario incumpla con el pago de una obligación financiera, lo que puede generar pérdidas para la entidad que otorga el préstamo (Financionario, 2025; Finance Strategists, 2023). Este riesgo es un factor central en la toma de decisiones financieras, ya que afecta tanto a las instituciones como a los solicitantes de crédito. Una gestión adecuada del riesgo crediticio permite anticipar posibles impagos, ajustar condiciones como tasas de interés o garantías, y mantener la estabilidad de las entidades financieras (ListenData, 2019). Además, una evaluación precisa del riesgo crediticio protege a las instituciones de pérdidas inesperadas, promueve la confianza en el sistema financiero y facilita el acceso a condiciones más justas para los usuarios (Finance Strategists, 2023). La correcta evaluación del riesgo es fundamental para la transparencia y eficiencia del sistema financiero, beneficiando a todas las partes involucradas. Por un lado, protege a las instituciones financieras y, por otro, ayuda a los solicitantes a comprender los factores que influyen en su perfil crediticio y a acceder a productos financieros adecuados a su situación (Finance Strategists, 2023).</p>
 <p>El riesgo crediticio puede manifestarse en diferentes formas, incluyendo el riesgo de incumplimiento, riesgo de contraparte, riesgo de concentración y riesgo país, entre otros (Pirani Risk, 2022). También se vincula a la calificación crediticia, que evalúa la solvencia de un prestatario y es utilizada por agencias especializadas para informar a inversores y entidades financieras (BME Exchange, s.f.). Para mitigar este riesgo, se aplican estrategias como la diversificación, análisis exhaustivo de crédito, uso de instrumentos de cobertura y monitoreo constante (Pirani Risk, 2022).</p>
-</section>
-<section id="métodos-para-estimar-el-riesgo-crediticio" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="métodos-para-estimar-el-riesgo-crediticio"><span class="header-section-number">2.2</span> Métodos para estimar el riesgo crediticio</h2>
+<section id="métodos-para-estimar-el-riesgo-crediticio" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="métodos-para-estimar-el-riesgo-crediticio"><span class="header-section-number">2.1.1</span> Métodos para estimar el riesgo crediticio</h3>
 <p>La estimación del riesgo crediticio ha evolucionado desde enfoques tradicionales basados en reglas heurísticas y la experiencia de expertos, hasta modelos estadísticos y técnicas avanzadas de machine learning. Entre los métodos más utilizados se encuentran:</p>
 <ul>
-<li><p><strong>Reglas heurísticas:</strong> Basadas en criterios subjetivos y juicio de analistas, como el modelo de las cinco “C” del crédito (Carácter, Capital, Capacidad, Colateral y Ciclo). Aunque simples y fáciles de aplicar, presentan limitaciones en su capacidad para generalizar y adaptarse a cambios en el entorno económico (De Lara Haro, 2004).</p></li>
-<li><p><strong>Modelos estadísticos tradicionales:</strong> La regresión logística es el método más popular para puntajes crediticios debido a su capacidad para modelar una variable dependiente binaria y su interpretabilidad (Hosmer &amp; Lemeshow, 2000; ListenData, 2019). El análisis discriminante también ha sido utilizado, aunque presenta limitaciones en entornos dinámicos (Ince &amp; Aktan, 2009).</p></li>
-<li><p><strong>Modelos basados en calificaciones internas y estructurales:</strong> Métodos como CreditMetrics, desarrollados por J.P. Morgan en 1997, estiman el valor en riesgo (VaR) de crédito considerando la migración de calificaciones y la probabilidad de incumplimiento, permitiendo evaluar la diversificación y concentración del portafolio (Sánchez Cerón, 2001).</p></li>
-<li><p><strong>Técnicas de machine learning:</strong> Incluyen árboles de decisión, Random Forest, XGBoost y redes neuronales artificiales. Estas técnicas capturan relaciones no lineales y patrones complejos en grandes volúmenes de datos, mejorando la precisión en la predicción del incumplimiento (Zhang, Lipton, Li, &amp; Smola, 2024; Towards Data Science, 2020).</p></li>
+<li><p><strong>Reglas heurísticas:</strong> Basadas en criterios subjetivos y juicio de analistas, como el modelo de las cinco “C” del crédito (<em>Carácter, Capital, Capacidad, Colateral y Ciclo</em>). Su principal ventaja radica en la simplicidad y facilidad de aplicación, especialmente en contextos donde no se dispone de grandes volúmenes de datos o sistemas automatizados. Además, permite incorporar el conocimiento experto y factores difíciles de cuantificar. Sin embargo, su naturaleza subjetiva limita su capacidad para generalizar y adaptarse a cambios en el entorno económico, lo que puede generar inconsistencias entre evaluadores y dificulta su escalabilidad. Este método es común en pequeñas entidades financieras o microfinancieras donde el análisis personalizado es la norma (De Lara Haro, 2004).</p></li>
+<li><p><strong>Modelos estadísticos tradicionales:</strong> La <em>Regresión Logística</em> es uno de los métodos más populares para estimar el riesgo crediticio debido a su capacidad para modelar variables binarias (como incumplimiento o no incumplimiento) y su alta interpretabilidad, lo que facilita la explicación de resultados ante reguladores y gestores (Hosmer &amp; Lemeshow, 2000; ListenData, 2019). El <em>Análisis Discriminante</em> también ha sido empleado en este ámbito, aunque presenta limitaciones cuando el entorno es dinámico o las relaciones entre variables no son lineales (Ince &amp; Aktan, 2009). Estos modelos son ampliamente usados en bancos grandes para <em>scoring</em> crediticio tradicional, pero requieren datos limpios y estructurados, y pueden ser menos efectivos para capturar patrones complejos o interacciones no lineales.</p></li>
+<li><p><strong>Modelos basados en calificaciones internas y estructurales:</strong> Métodos como <em>CreditMetrics</em>, desarrollado por J.P. Morgan en 1997, representan un avance al considerar la migración de calificaciones crediticias y la probabilidad de incumplimiento para estimar el valor en riesgo (VaR) de un portafolio. Estos modelos permiten evaluar la diversificación y concentración del riesgo, incorporando además la correlación entre créditos, lo que es crucial para una gestión integral del riesgo crediticio (Sánchez Cerón, 2001). Su principal fortaleza está en modelar la evolución dinámica del riesgo y en su utilidad para la gestión de portafolios y cumplimiento regulatorio. No obstante, requieren grandes volúmenes de datos históricos y matrices de transición bien calibradas, además de presentar cierta complejidad computacional y la necesidad de actualización constante. Son comúnmente utilizados por grandes instituciones financieras para la gestión avanzada del riesgo y la provisión de capital conforme a normativas internacionales (Peña, 2002; Ruza y Paz-Curbera, 2012).</p></li>
+<li><p><strong>Técnicas de machine learning:</strong> En los últimos años, las técnicas de aprendizaje automático como <em>Árboles de Decisión, Random Forest, XGBoost y Redes Neuronales Artificiales</em> han ganado protagonismo en la estimación del riesgo crediticio. Estas metodologías destacan por su capacidad para capturar relaciones no lineales y patrones complejos en grandes volúmenes de datos, lo que mejora significativamente la precisión en la predicción del incumplimiento (Zhang, Lipton, Li, &amp; Smola, 2024; Towards Data Science, 2020). Además, permiten automatizar procesos y manejar variables heterogéneas, incluyendo datos no estructurados. Sin embargo, su principal limitación es la menor interpretabilidad respecto a los modelos estadísticos tradicionales, lo que puede dificultar la explicación y aceptación ante organismos reguladores. También requieren recursos computacionales considerables y grandes bases de datos para evitar problemas como el sobreajuste. Estas técnicas son especialmente utilizadas por <em>fintechs</em> y bancos digitales que buscan optimizar la aprobación de créditos mediante modelos predictivos avanzados.</p></li>
 </ul>
-<p>La selección del método adecuado depende de la naturaleza del problema, la calidad y cantidad de datos disponibles, así como de los requerimientos en términos de interpretabilidad y desempeño. Mientras los modelos tradicionales ofrecen transparencia, los métodos modernos aportan mayor capacidad predictiva, aunque requieren un manejo cuidadoso para garantizar la explicabilidad y cumplimiento regulatorio.</p>
+<p>La selección del método más adecuado para estimar el riesgo crediticio depende del contexto específico, la disponibilidad y calidad de datos, los recursos tecnológicos y las exigencias regulatorias. Mientras que las reglas heurísticas pueden ser útiles en entornos con poca infraestructura tecnológica, los modelos estadísticos y estructurales son preferidos en instituciones con mayor capacidad analítica, y las técnicas de machine learning se posicionan como la vanguardia en escenarios con grandes volúmenes de datos y necesidad de alta precisión.</p>
 </section>
-<section id="redes-neuronales" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="redes-neuronales"><span class="header-section-number">2.3</span> Redes Neuronales</h2>
-<section id="definición-y-concepto-básicos" class="level3" data-number="2.3.1">
-<h3 data-number="2.3.1" class="anchored" data-anchor-id="definición-y-concepto-básicos"><span class="header-section-number">2.3.1</span> Definición y concepto básicos</h3>
-<p>Las redes neuronales artificiales (RNA) son modelos computacionales inspirados en la estructura y funcionamiento del cerebro humano, compuestos por nodos interconectados llamados neuronas artificiales, organizados en capas (UNIR, 2021; Zhang, Lipton, Li, &amp; Smola, 2024). Estas redes aprenden patrones complejos transformando las entradas mediante funciones matemáticas y funciones de activación no lineales, lo que les permite modelar relaciones complejas entre variables (IBM, 2021; AWS, 2022). La capacidad de aprender de forma continua mediante bucles de retroalimentación correctivos mejora su análisis predictivo (AWS, 2022).</p>
 </section>
-<section id="arquitectura-básica" class="level3" data-number="2.3.2">
-<h3 data-number="2.3.2" class="anchored" data-anchor-id="arquitectura-básica"><span class="header-section-number">2.3.2</span> Arquitectura básica</h3>
-<p>Una RNA típica consta de tres tipos de capas (Interactive Chaos, 2023; AWS, 2022):</p>
-<ul>
-<li><p><strong>Capa de entrada:</strong> Recibe los datos iniciales. No realiza cálculos, simplemente introduce la información en la red.</p></li>
-<li><p><strong>Capas ocultas:</strong> Son intermedias y pueden ser múltiples. Cada capa oculta toma la salida de la capa anterior, realiza transformaciones no lineales y pasa el resultado a la siguiente capa.</p></li>
-<li><p><strong>Capa de salida:</strong> Produce el resultado final, que puede ser una clasificación, una regresión o una probabilidad.</p></li>
-</ul>
-<p>La arquitectura de la red neuronal define cómo se conectan las neuronas artificiales entre sí para procesar y transmitir información, siendo la elección de la arquitectura un aspecto importante en la construcción de un modelo de aprendizaje profundo (GAMCO, 2023).</p>
-</section>
-<section id="funcionamiento-de-una-neurona-artificial" class="level3" data-number="2.3.3">
-<h3 data-number="2.3.3" class="anchored" data-anchor-id="funcionamiento-de-una-neurona-artificial"><span class="header-section-number">2.3.3</span> 2.3.3 Funcionamiento de una neurona artificial</h3>
-<p>Cada neurona artificial recibe varias entradas, cada una con un peso asociado que determina su importancia relativa (Asesoftware, 2024). Tras recibir las entradas, la neurona calcula una suma ponderada de dichas entradas y aplica una función de activación para determinar su salida.</p>
-<p>Según Zhang et al.&nbsp;(2024), la salida de una neurona <span class="math inline">\(j\)</span> se calcula como:</p>
+<section id="redes-neuronales-artificiales-rna" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="redes-neuronales-artificiales-rna"><span class="header-section-number">2.2</span> Redes Neuronales Artificiales (RNA)</h2>
+<p>Las redes neuronales artificiales (RNA) son modelos computacionales inspirados en la estructura y funcionamiento del cerebro humano, compuestos por nodos interconectados llamados neuronas artificiales, organizados en capas (UNIR, 2021; Zhang, Lipton, Li, &amp; Smola, 2024). Cada neurona recibe señales de entrada, las procesa mediante funciones matemáticas y funciones de activación no lineales, y transmite el resultado a las neuronas de la siguiente capa. Este proceso permite que la red aprenda representaciones jerárquicas y patrones complejos en grandes volúmenes de datos, modelando relaciones no lineales entre variables, lo que resulta especialmente útil en tareas de clasificación, predicción y análisis (IBM, 2021; AWS, 2022; Zhang et al., 2024).</p>
+<section id="conceptos-clave-en-rna" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="conceptos-clave-en-rna"><span class="header-section-number">2.2.1</span> Conceptos clave en RNA</h3>
+<p><strong>Perceptrón:</strong></p>
+<p>El perceptrón es la unidad básica de una red neuronal artificial, constituido por un modelo matemático que recibe un vector de entradas, las multiplica por pesos asociados y suma un sesgo o <em>bias</em>. El resultado de esta suma ponderada se pasa por una función de activación para producir una salida (Zhang et al., 2024, cap. 4).</p>
+<p>Matemáticamente, la salida <span class="math inline">\(y\)</span> de una neurona <span class="math inline">\(j\)</span> se expresa como:</p>
 <p><span class="math inline">\(y_j = f\left( \sum_i w_{ij} x_i + b_j \right) \tag{1}\)</span></p>
-<p>donde;</p>
-<p><span class="math inline">\(x_i\)</span> son las entradas a la neurona,</p>
-<p><span class="math inline">\(w_{ij}\)</span> los pesos asociados a cada entrada,</p>
-<p><span class="math inline">\(b_j\)</span> el sesgo (bias) de la neurona, y</p>
-<p><span class="math inline">\(f\)</span> la función de activación, que introduce no linealidad.</p>
-<p>Al principio, todas las ponderaciones (pesos) son aleatorias y las respuestas que resultan de la red son, posiblemente, disparatadas. La red aprende a través del entrenamiento, ajustando continuamente las ponderaciones en función del error entre las predicciones y los resultados reales. Este proceso se repite muchas veces y la red sigue mejorando sus predicciones hasta haber alcanzado uno o varios criterios de parada (IBM, 2021).</p>
-</section>
-<section id="funciones-de-activación" class="level3" data-number="2.3.4">
-<h3 data-number="2.3.4" class="anchored" data-anchor-id="funciones-de-activación"><span class="header-section-number">2.3.4</span> Funciones de activación</h3>
-<p>Las funciones de activación introducen no linealidad, esencial para que la red aprenda relaciones complejas. A continuación se presenta una tabla con las funciones más comunes, su forma matemática, características y usos habituales.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Función</th>
-<th>Fórmula matemática</th>
-<th>Rango de salida</th>
-<th>Características principales</th>
-<th>Usos habituales</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Lineal</td>
-<td><span class="math inline">\(f(x) = x\)</span></td>
-<td><span class="math inline">\(-\infty, \infty\)</span></td>
-<td>Simple, no introduce no linealidad</td>
-<td>Capa de salida en regresión</td>
-</tr>
-<tr class="even">
-<td>Sigmoide</td>
-<td><span class="math inline">\(f(x) = \frac{1}{1 + e^{-x}}\)</span></td>
-<td><span class="math inline">\((0, 1)\)</span></td>
-<td>Curva en “S”, salida probabilística</td>
-<td>Clasificación binaria (capa de salida)</td>
-</tr>
-<tr class="odd">
-<td>Tangente hiperbólica (tanh)</td>
-<td><span class="math inline">\(f(x) = \tanh(x) = \frac{e^{x} - e^{-x}}{e^{x} + e^{-x}}\)</span></td>
-<td><span class="math inline">\((-1, 1)\)</span></td>
-<td>Centrada en cero, salida simétrica</td>
-<td>Capas ocultas, problemas con datos centrados</td>
-</tr>
-<tr class="even">
-<td>ReLU (Rectified Linear Unit)</td>
-<td><span class="math inline">\(f(x) = \max(0, x)\)</span></td>
-<td><span class="math inline">\([0, \infty)\)</span></td>
-<td>Computacionalmente eficiente, evita desvanecimiento de gradiente</td>
-<td>Capas ocultas en redes profundas</td>
-</tr>
-<tr class="odd">
-<td>Leaky ReLU</td>
-<td><span class="math inline">\(f(x) = \max(\alpha x, x), \alpha \approx 0.01\)</span></td>
-<td><span class="math inline">\(\mathbb{R}\)</span></td>
-<td>Evita neuronas muertas de ReLU</td>
-<td>Capas ocultas, mejora ReLU</td>
-</tr>
-<tr class="even">
-<td>ELU (Exponential Linear Unit)</td>
-<td><span class="math inline">\(f(x)=\begin{cases}
-x, &amp; \text{si } x &gt; 0 \\
-\alpha \left(e^{x} - 1\right), &amp; \text{si } x \leq 0
-\end{cases}\)</span></td>
-<td><span class="math inline">\(\mathbb{R}\)</span></td>
-<td>Suaviza la salida negativa, mejora convergencia</td>
-<td>Redes profundas</td>
-</tr>
-</tbody>
-</table>
-<p>$ | | | | | Softmax | <span class="math inline">\(f_i(x) = \frac{e^{x_i}}{\sum_j e^{x_j}}\)</span> | <span class="math inline">\((0,1)\)</span>, suma 1 | Convierte vector en probabilidades | Clasificación multiclase (capa de salida) | | Square | <span class="math inline">\(f(x) = x^2\)</span> | <span class="math inline">\([0, \infty)\)</span> | Modela relaciones cuadráticas | Experimentación, casos específicos | | Sine | <span class="math inline">\(f(x) = \sin(x)\)</span> | <span class="math inline">\([-1,1]\)</span> | Modela relaciones periódicas | Modelos bioinspirados, experimentación |</p>
-<p><strong>Nota:</strong> La elección de la función de activación depende del problema y la arquitectura. Por ejemplo, ReLU es la más popular en capas ocultas por su eficiencia y buen desempeño, mientras que sigmoide y softmax se usan en la capa de salida para clasificación.</p>
-</section>
-<section id="proceso-de-entrenamiento" class="level3" data-number="2.3.5">
-<h3 data-number="2.3.5" class="anchored" data-anchor-id="proceso-de-entrenamiento"><span class="header-section-number">2.3.5</span> Proceso de entrenamiento</h3>
-<p>El entrenamiento ajusta los pesos y sesgos para minimizar una función de pérdida (por ejemplo, entropía cruzada para clasificación). Se emplea el algoritmo de retropropagación junto con optimizadores como Adam o SGD para actualizar los parámetros iterativamente (Zhang et al., 2024).</p>
-</section>
-<section id="ejemplo-básico-en-python" class="level3" data-number="2.3.6">
-<h3 data-number="2.3.6" class="anchored" data-anchor-id="ejemplo-básico-en-python"><span class="header-section-number">2.3.6</span> Ejemplo básico en Python</h3>
-</section>
-<section id="este-ejemplo-crea-una-red-simple-para-clasificación-binaria-con-una-capa-oculta." class="level3" data-number="2.3.7">
-<h3 data-number="2.3.7" class="anchored" data-anchor-id="este-ejemplo-crea-una-red-simple-para-clasificación-binaria-con-una-capa-oculta."><span class="header-section-number">2.3.7</span> Este ejemplo crea una red simple para clasificación binaria con una capa oculta.</h3>
+<p>donde <span class="math inline">\(x_i\)</span> son las entradas a la neurona, <span class="math inline">\(w_{ij}\)</span> los pesos asociados a cada entrada, <span class="math inline">\(b_j\)</span> el sesgo (bias) de la neurona, y <span class="math inline">\(f\)</span> la función de activación, que introduce no linealidad necesaria para el aprendizaje. Inicialmente, los pesos (ponderaciones) de la red neuronal se asignan de forma aleatoria, lo que puede generar respuestas erráticas o inconsistentes. A través de un proceso de entrenamiento supervisado, la red ajusta iterativamente estos pesos en función del error entre las predicciones y los resultados reales. Este ciclo de ajuste se repite múltiples veces, permitiendo que la red mejore progresivamente su desempeño hasta alcanzar uno o varios criterios de parada establecidos (IBM, 2021).</p>
+<p>El perceptrón fue originalmente propuesto como un clasificador binario, siendo eficiente para problemas linealmente separables, y su concepto se ha extendido para formar la base de redes neuronales más profundas y complejas.</p>
+<p><strong>Capas:</strong></p>
+<p>Las redes neuronales artificiales (RNA) están organizadas en tres tipos principales de capas:</p>
+<ul>
+<li><p><strong>Capa de entrada:</strong> Recibe los datos originales o iniciales del problema. Esta capa no realiza cálculos, sino que introduce la información en la red.</p></li>
+<li><p><strong>Capas ocultas:</strong> Son una o varias capas intermedias que procesan y transforman la información recibida. Cada neurona en estas capas calcula una suma ponderada de sus entradas, aplica una función de activación no lineal y transmite el resultado a la siguiente capa. El número y tamaño de estas capas determinan la capacidad de la red para aprender representaciones jerárquicas y patrones complejos.</p></li>
+<li><p><strong>Capa de salida:</strong> Produce la predicción final, que puede ser una clase, una probabilidad o un valor numérico, según el tipo de problema (clasificación, regresión, etc.).</p></li>
+</ul>
+<p>La profundidad y arquitectura de la red se seleccionan en función de la complejidad del problema y la cantidad de datos disponibles. La arquitectura define cómo se conectan las neuronas y cómo fluye la información, siendo un aspecto clave para el desempeño del modelo (Zhang et al., 2024; Interactive Chaos, 2023; AWS, 2022; GAMCO, 2023).</p>
+<p><strong>Funciones de activación:</strong></p>
+<p>Las funciones de activación transforman la salida de cada nodo, permitiendo a la red aprender relaciones complejas. La selección de la función de activación es crucial, ya que determina la capacidad del modelo para aproximar funciones no lineales (Zhang et al., 2024, cap. 5).</p>
+<p>Existen funciones de activación lineales y no lineales:</p>
+<ul>
+<li><p><strong>Función lineal</strong><br>
+Se define como<br>
+<span class="math display">\[ f(x) = x \]</span><br>
+Su rango de salida es <span class="math inline">\((-\infty, \infty)\)</span>. Es simple y mantiene la escala de entrada, por lo que se utiliza principalmente en la capa de salida para problemas de regresión. Sin embargo, no introduce no linealidad, lo que limita la capacidad de aprendizaje cuando se usa en capas ocultas.</p></li>
+<li><p><strong>Función sigmoide</strong><br>
+La función no lineal sigmoide se define como<br>
+<span class="math display">\[ f(x) = \frac{1}{1 + e^{-x}} \]</span><br>
+Su rango de salida es <span class="math inline">\((0, 1)\)</span>. Es suave y produce salidas interpretables como probabilidades, lo que la hace útil para clasificación binaria. Su principal limitación es el problema del gradiente evanescente, que puede ralentizar el aprendizaje en redes profundas, además de saturarse para valores extremos.</p></li>
+<li><p><strong>Tangente hiperbólica</strong><br>
+La función no lineal tangente hiperbólica se define como<br>
+<span class="math display">\[ f(x) = \tanh(x) = \frac{e^{x} - e^{-x}}{e^{x} + e^{-x}} \]</span>Su rango es <span class="math inline">\((-1, 1)\)</span>. Está centrada en cero, lo que mejora la convergencia respecto a la sigmoide. Sin embargo, también puede sufrir gradiente evanescente y saturación.</p></li>
+<li><p><strong>ReLU</strong><br>
+La función no lineal ReLU (<em>Rectified Linear Unit</em>, Unidad lineal rectificada)se define como<br>
+<span class="math display">\[ f(x) = \max(0, x) \]</span>Su rango es <span class="math inline">\([0, \infty)\)</span>. Es computacionalmente eficiente y ayuda a evitar el problema del gradiente evanescente positivo, facilitando el entrenamiento de redes profundas. Su limitación principal es el problema de neuronas muertas cuando la entrada es negativa de forma persistente.</p></li>
+<li><p><strong>Leaky ReLU</strong><br>
+La función no lineal Leaky ReLU (<em>Leaky Rectified Linear Unit</em>, ReLU con Fuga), se define como<br>
+<span class="math display">\[
+f(x) = \begin{cases}
+x &amp; \text{si } x &gt; 0 \\
+\alpha x &amp; \text{si } x \leq 0
+\end{cases}
+\]</span><br>
+con <span class="math inline">\(\alpha\)</span> pequeño (por ejemplo, 0.01). Su rango es <span class="math inline">\((-\infty, \infty)\)</span>. Soluciona el problema de neuronas muertas permitiendo una pequeña pendiente para valores negativos. Sin embargo, la elección de <span class="math inline">\(\alpha\)</span> es arbitraria y no siempre mejora todos los modelos.</p></li>
+<li><p><strong>Softmax</strong><br>
+Para un vector <span class="math inline">\(\mathbf{x}\)</span>, la función no lineal softmax se define como<br>
+<span class="math display">\[
+f_i(\mathbf{x}) = \frac{e^{x_i}}{\sum_j e^{x_j}} \quad \text{para } i=1,...,K
+\]</span><br>
+Su rango es <span class="math inline">\((0, 1)\)</span> y suma total 1. Es usada en la capa de salida para clasificación multiclase, convirtiendo vectores en distribuciones de probabilidad. Su limitación es que puede ser costosa computacionalmente para muchas clases.</p></li>
+<li><p><strong>ELU</strong></p>
+<p>La función no lineal ELU (<em>Exponential Linear Unit</em>, Unidad Lineal Exponencial) se define como<br>
+<span class="math display">\[
+f(x) = \begin{cases}
+x &amp; \text{si } x &gt; 0 \\
+\alpha (e^{x} - 1) &amp; \text{si } x \leq 0
+\end{cases}
+\]</span><br>
+con <span class="math inline">\(\alpha &gt; 0\)</span>. Su rango es <span class="math inline">\((-\alpha, \infty)\)</span>. Converge rápido, tiene salida centrada cerca de cero y evita neuronas muertas. Su cálculo es más costoso que ReLU y <span class="math inline">\(\alpha\)</span> no se aprende durante el entrenamiento.</p></li>
+<li><p><strong>SELU</strong></p>
+<p>La función no lineal SELU (<em>Scaled ELU</em>, ELU Escalada) se define como<br>
+<span class="math display">\[
+f(x) = \lambda \begin{cases}
+x &amp; \text{si } x &gt; 0 \\
+\alpha (e^{x} - 1) &amp; \text{si } x \leq 0
+\end{cases}
+\]</span><br>
+con <span class="math inline">\(\alpha \approx 1.6733\)</span> y <span class="math inline">\(\lambda \approx 1.0507\)</span> . Su rango es <span class="math inline">\((-\lambda \alpha, \infty)\)</span>. Facilita la auto-normalización interna, acelerando la convergencia y manteniendo media y varianza. Requiere arquitecturas específicas y es sensible a la inicialización.</p></li>
+<li><p><strong>Seno</strong><br>
+La función no lineal Seno<br>
+<br>
+<span class="math display">\[ f(x) = \sin(x) \]</span>Su rango es <span class="math inline">\([-1, 1]\)</span>. Es útil para modelar funciones periódicas y patrones complejos, especialmente en señales y series temporales. Su principal limitación es que no es monotónica, lo que puede complicar la optimización.</p></li>
+</ul>
 <hr>
+<p><strong>Nota:</strong> La elección de la función de activación depende del problema y la arquitectura de la red. Por ejemplo, ReLU es la más popular en capas ocultas por su eficiencia y buen desempeño, mientras que sigmoide y softmax se usan comúnmente en la capa de salida para clasificación.</p>
 </section>
-</section>
-<section id="redes-neuronales-artificiales-en-el-riesgo-crediticio" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="redes-neuronales-artificiales-en-el-riesgo-crediticio"><span class="header-section-number">2.4</span> Redes neuronales artificiales en el riesgo crediticio</h2>
-<p>Las redes neuronales artificiales (RNA) son sistemas computacionales inspirados en el cerebro humano, diseñados para aprender patrones complejos a partir de grandes volúmenes de datos (UNIR, 2021; Zhang et al., 2024). Su principal fortaleza es la capacidad de modelar relaciones no lineales entre las variables de entrada y la probabilidad de incumplimiento, superando en muchos casos a los modelos tradicionales (IBM, 2025).</p>
+<section id="rna-en-el-riesgo-crediticio" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="rna-en-el-riesgo-crediticio"><span class="header-section-number">2.2.2</span> RNA en el riesgo crediticio</h3>
 <p>El teorema de aproximación universal establece que una red neuronal con una sola capa oculta y suficientes neuronas puede aproximar cualquier función continua definida en un conjunto compacto, siempre que utilice funciones de activación no lineales (Zhang et al., 2024, cap. 5; Cloudflare, 2023). En la práctica, para problemas complejos como el riesgo crediticio, se emplean arquitecturas más profundas y técnicas modernas de regularización y optimización, lo que permite capturar interacciones sutiles entre variables demográficas, financieras y de comportamiento.</p>
 <p>En el sector financiero, las RNA han demostrado ser especialmente útiles para la clasificación de clientes según su nivel de riesgo, la predicción de incumplimientos y la asignación de puntajes crediticios personalizados (Towards Data Science, 2020). Sin embargo, su implementación requiere un preprocesamiento cuidadoso y técnicas de explicabilidad para cumplir con normativas y generar confianza en reguladores y usuarios finales.</p>
+</section>
+<section id="ejemplo-básico-en-python" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="ejemplo-básico-en-python"><span class="header-section-number">2.2.3</span> Ejemplo básico en Python</h3>
+<p>Este ejemplo crea una red simple para clasificación binaria con una capa oculta para clasificación binaria, que incluye además la generación de un gráfico visual de la red usando&nbsp;<code>torchviz</code>.&nbsp;</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>C:\Users\Diego\AppData\Local\Programs\Python\PYTHON~1\Lib\site-packages\torch\_subclasses\functional_tensor.py:276: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\utils\tensor_numpy.cpp:81.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'simple_nn.png'</code></pre>
+</div>
+<div class="cell-output-display">
+
+</div>
+</div>
+<p><img src="simple_nn.png" class="img-fluid"></p>
 <hr>
 </section>
-<section id="scorecards-y-explicabilidad" class="level2" data-number="2.5">
-<h2 data-number="2.5" class="anchored" data-anchor-id="scorecards-y-explicabilidad"><span class="header-section-number">2.5</span> 2.3. Scorecards y explicabilidad</h2>
-<p>Para facilitar la interpretación de los modelos de riesgo, es común traducir la probabilidad de incumplimiento en un puntaje o scorecard. Este puntaje permite comparar fácilmente el riesgo relativo entre individuos y es ampliamente utilizado en la industria financiera (ListenData, 2019). Además, la explicabilidad del modelo es esencial para cumplir con regulaciones y generar confianza en los usuarios, por lo que se emplean técnicas como SHAP para identificar las variables más influyentes en la predicción.</p>
 </section>
-<section id="scorecard-y-análisis-de-variables-de-riesgo" class="level2" data-number="2.6">
-<h2 data-number="2.6" class="anchored" data-anchor-id="scorecard-y-análisis-de-variables-de-riesgo"><span class="header-section-number">2.6</span> 2.4. Scorecard y análisis de variables de riesgo</h2>
-<p>La probabilidad estimada se transformó en un puntaje utilizando la fórmula estándar de scorecards:</p>
-<p>Score=200+50×ln⁡(1−pp)Score=200+50×ln(p1−p)</p>
-<p>donde pp es la probabilidad de incumplimiento predicha por el modelo.</p>
+<section id="scorecards-y-explicabilidad" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="scorecards-y-explicabilidad"><span class="header-section-number">2.3</span> Scorecards y explicabilidad</h2>
+<p>Para facilitar la interpretación de los modelos de riesgo crediticio, es común transformar la probabilidad de incumplimiento en un puntaje o&nbsp;<em>scorecard</em>. Este puntaje permite comparar fácilmente el riesgo relativo entre individuos y es ampliamente utilizado en la industria financiera (ListenData, 2019). La conversión a puntaje facilita la toma de decisiones y la comunicación con usuarios y reguladores.</p>
+<p>Además, la explicabilidad del modelo es fundamental para cumplir con regulaciones y generar confianza en los usuarios. Por ello, se emplean técnicas como SHAP (<em>SHapley Additive exPlanations</em>), que identifican y cuantifican la influencia de cada variable en la predicción, haciendo los modelos más transparentes y comprensibles.</p>
+<section id="fórmula-estándar-para-scorecards" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="fórmula-estándar-para-scorecards"><span class="header-section-number">2.3.1</span> Fórmula estándar para scorecards</h3>
+<p>La probabilidad estimada de incumplimiento, <span class="math inline">\(p\)</span>, se transforma en un puntaje mediante la fórmula estándar de score:</p>
+<p><span class="math inline">\(Score=200+50\ln\left(\frac{⁡1−p}p\right)\tag{2}\)</span></p>
+<p>donde <span class="math inline">\(p\)</span> es la probabilidad de incumplimiento predicha por el modelo. Esta fórmula asigna un puntaje que disminuye a medida que aumenta la probabilidad de incumplimiento, facilitando la clasificación y comparación de clientes según su riesgo.</p>
 </section>
-<section id="metodología-usada" class="level2" data-number="2.7">
-<h2 data-number="2.7" class="anchored" data-anchor-id="metodología-usada"><span class="header-section-number">2.7</span> 2.4 Metodología usada</h2>
-<p>Para abordar este reto de modelado de riesgo crediticio con redes neuronales, proponemos una metodología integral que combina técnicas avanzadas de machine learning con buenas prácticas de ingeniería de datos. El enfoque se estructura en cinco fases clave:</p>
+</section>
+<section id="metodología-a-usar" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="metodología-a-usar"><span class="header-section-number">2.4</span> Metodología a usar</h2>
+<p>Para abordar el reto del modelado del riesgo crediticio mediante redes neuronales artificiales, se propone una metodología integral que combina técnicas avanzadas de machine learning con buenas prácticas de ingeniería de datos. Este enfoque se estructura en cinco fases clave, que aseguran la calidad del modelo, su robustez y su interpretabilidad.</p>
+<p><strong>1. Análisis exploratorio de datos (EDA)</strong></p>
+<p>Antes de construir el modelo, se realiza un análisis exhaustivo para comprender la estructura y calidad del conjunto de datos:</p>
+<ul>
+<li><p>Evaluación de la distribución de variables, detección y análisis de valores faltantes y outliers.</p></li>
+<li><p>Identificación de correlaciones y relaciones entre variables predictoras y la variable objetivo.</p></li>
+<li><p>Selección inicial de variables relevantes, excluyendo aquellas con alto porcentaje de datos faltantes o baja relevancia predictiva.</p></li>
+<li><p>Visualización de patrones y balance de clases para guiar el preprocesamiento y modelado.</p></li>
+</ul>
+<p><strong>2. Definición y preprocesamiento de la variable objetivo</strong></p>
+<ul>
+<li><p>La variable objetivo se define a partir de la columna “loan_status” del dataset, siguiendo la codificación binaria recomendada:</p>
+<ul>
+<li><p>“Fully Paid” y “Does not meet the credit policy. Status:Fully Paid” codificados como 0 (buenos pagadores).</p></li>
+<li><p>“Charged Off”, “Default”, “Late (31-120)”, y “Does not meet the credit policy. Status:Charged Off” codificados como 1 (malos pagadores).</p></li>
+<li><p>Se excluyen registros con estados “Current”, “Issued”, “In Grace Period”, “Late (16-30)” y otros marcados como NA, por no tener certeza sobre su comportamiento final.</p></li>
+</ul></li>
+</ul>
+<p><strong>3. Preprocesamiento y preparación de datos</strong></p>
+<ul>
+<li><p><strong>Tratamiento de valores faltantes:</strong><br>
+Imputación múltiple para variables numéricas; estrategias específicas para variables categóricas.</p></li>
+<li><p><strong>Ingeniería de características:</strong></p>
+<ul>
+<li><p>Codificación WoE (Weight of Evidence) para variables categóricas, facilitando la relación con la variable objetivo y la interpretabilidad.</p></li>
+<li><p>Escalado robusto (RobustScaler) para variables numéricas, minimizando el impacto de valores atípicos.</p></li>
+</ul></li>
+<li><p><strong>División de datos:</strong></p>
+<ul>
+<li><p>División estratificada 80-10-10 para entrenamiento, validación y prueba, manteniendo la proporción de clases.</p></li>
+<li><p>Validación cruzada temporal para series temporales, asegurando que los datos de entrenamiento precedan temporalmente a los de validación y prueba, evitando fugas de información.</p></li>
+</ul></li>
+<li><p><strong>Automatización:</strong><br>
+Uso de pipelines para asegurar reproducibilidad y facilitar iteraciones.</p></li>
+</ul>
+<p><strong>4. Construcción y entrenamiento del modelo</strong></p>
+<ul>
+<li><p>Diseño de una arquitectura de red neuronal artificial con capas ocultas suficientes para capturar relaciones no lineales complejas.</p></li>
+<li><p>Uso de funciones de activación no lineales como ReLU y variantes para mejorar la convergencia y evitar problemas como neuronas muertas.</p></li>
+<li><p>Optimización de hiperparámetros mediante técnicas como grid search o búsqueda bayesiana.</p></li>
+<li><p>Aplicación de técnicas de regularización (dropout, early stopping) para evitar sobreajuste.</p></li>
+<li><p>Implementación y comparación con modelos de baja complejidad como árboles de decisión y regresión logística, para validar mejoras y robustez.</p></li>
+</ul>
+<p><strong>5. Evaluación y explicabilidad del modelo</strong></p>
+<ul>
+<li><p>Evaluación con métricas adecuadas para problemas desbalanceados: AUC-ROC, precisión, recall, F1-score.</p></li>
+<li><p>Validación cruzada y backtesting para asegurar generalización y estabilidad.</p></li>
+<li><p>Pruebas de estrés para evaluar resiliencia ante escenarios adversos.</p></li>
+<li><p>Uso de técnicas de explicabilidad como SHAP para identificar variables que más influyen en la predicción, facilitando la interpretación y cumplimiento normativo.</p></li>
+<li><p>Transformación de probabilidades en scorecards mediante fórmulas estándar para facilitar la comunicación práctica del riesgo.</p></li>
+</ul>
+<p><strong>Consideraciones adicionales</strong></p>
+<ul>
+<li><p>En caso de desbalance significativo, aplicar técnicas como SMOTE o submuestreo para mejorar la detección de casos minoritarios.</p></li>
+<li><p>Monitoreo continuo del modelo en producción para detectar degradación y actualizar según sea necesario.</p></li>
+<li><p>Documentación rigurosa y cumplimiento de normas APA en el reporte técnico.</p></li>
+</ul>
+<p>Esta metodología está alineada con las mejores prácticas reportadas en la literatura y la industria para el modelado de riesgo crediticio con redes neuronales (Fernández Castaño, 2007; Grau Álvarez, 2020; FasterCapital, 2025; Eafit, 2021). Su aplicación permitirá construir un modelo robusto, eficiente y transparente para predecir la probabilidad de incumplimiento crediticio.</p>
 </section>
 </section>
 <section id="resultados-y-análisis" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Resultados y Análisis</h1>
 <p>En esta sección se presentan los resultados obtenidos al aplicar diferentes métodos de optimización sobre las funciones de Rosenbrock y Rastrigin, tanto en dos como en tres dimensiones. El objetivo fue comparar el desempeño del descenso por gradiente y de tres algoritmos heurísticos: algoritmo genético (GA), optimización por enjambre de partículas (PSO) y evolución diferencial (DE), considerando la calidad de la solución final, el número de evaluaciones de la función objetivo y la robustez frente a condiciones iniciales aleatorias.</p>
-<section id="preprocesamiento-y-preparación-de-datos" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="preprocesamiento-y-preparación-de-datos"><span class="header-section-number">3.1</span> 1. Preprocesamiento y preparación de datos</h2>
-<p><strong>Manejo de la variable objetivo</strong>:</p>
-<ul>
-<li><p>Codificación binaria según especificaciones: <strong><code>Fully Paid=0</code></strong>, <strong><code>Charged Off/Default/Late (31-120)=1</code></strong></p></li>
-<li><p>Eliminación de registros con <strong><code>NA</code></strong> (categorías “Current”, “Issued”, etc.)<a href="https://www.lancaster.ac.uk/stor-i-student-sites/katie-howgate/2021/02/07/how-to-build-a-credit-scorecard/"><u>6</u></a><a href="http://www.scielo.org.bo/scielo.php?script=sci_arttext&amp;pid=S2518-44312014000200002"><u>8</u></a></p></li>
-</ul>
-<p><strong>Ingeniería de características</strong>:</p>
-<ul>
-<li><p>Tratamiento de valores faltantes: imputación múltiple para variables numéricas<a href="https://fastercapital.com/content/Credit-Risk-Neural-Networks--How-to-Use-Neural-Networks-to-Model-and-Predict-Credit-Risk.html"><u>2</u></a></p></li>
-<li><p>Codificación WoE (Weight of Evidence) para variables categóricas<a href="https://www.lancaster.ac.uk/stor-i-student-sites/katie-howgate/2021/02/07/how-to-build-a-credit-scorecard/"><u>6</u></a><a href="http://www.scielo.org.bo/scielo.php?script=sci_arttext&amp;pid=S2518-44312014000200002"><u>8</u></a></p></li>
-<li><p>Escalado robusto (RobustScaler) para variables numéricas<a href="https://medcraveonline.com/MSEIJ/development-of-a-credit-risk-evaluation-systemusing-multilayer-neural-networks.html"><u>5</u></a></p></li>
-</ul>
-<p><strong>División de datos</strong>:</p>
-<ul>
-<li><p>Estratificación por variable objetivo (80-10-10)</p></li>
-<li><p>Validación cruzada temporal para series temporales</p></li>
-</ul>
 </section>
+<section id="aplicación-web" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Aplicación web</h1>
+<p>Se desarrolló una aplicación web con <em>FastAPI</em>, que permite a los usuarios ingresar sus características personales y recibir su score de riesgo, junto con una comparación frente a la población general y una explicación visual de las variables que más influyen en su resultado.</p>
 </section>
-<section id="conclusiones" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Conclusiones</h1>
+<section id="video" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Video</h1>
 </section>
-<section id="contribuciones-individuales" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Contribuciones individuales</h1>
+<section id="conclusiones" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Conclusiones</h1>
+<p>El uso de redes neuronales artificiales permite mejorar la predicción del riesgo de crédito frente a modelos tradicionales, capturando relaciones complejas entre las variables. La construcción de una scorecard facilita la interpretación de los resultados y la toma de decisiones tanto para instituciones financieras como para los propios usuarios. La aplicación web desarrollada aporta valor al permitir la autoevaluación y la transparencia del proceso. Se recomienda continuar explorando técnicas de explicabilidad y monitoreo del modelo para asegurar su robustez y equidad en el tiempo.</p>
+<p>El análisis de importancia de variables mediante SHAP reveló que el historial crediticio, el ingreso mensual y la relación deuda/ingreso son los factores más determinantes para el riesgo de incumplimiento.</p>
+</section>
+<section id="contribuciones-individuales" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Contribuciones individuales</h1>
 <ul>
 <li><p><strong><em>Diego Chávez:</em></strong> Mis contribuciones al proyecto …</p></li>
 <li><p><strong><em>Alejandro Feria:</em></strong> Redaccion …</p></li>
@@ -468,19 +499,23 @@ x, &amp; \text{si } x &gt; 0 \\
 <li><p><strong><em>Juan Teherán:</em></strong> Los aportes …</p></li>
 </ul>
 </section>
-<section id="refeencias" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Refeencias</h1>
+<section id="referencias" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Referencias</h1>
 <div class="bibliografia-apa">
 <p>Asesoftware. (2024). Redes Neuronales Artificiales: Funciones y aplicaciones en IA. https://asesoftware.com/redes-neuronales-artificiales/<br></p>
+<p>AWS. (2022).&nbsp;<em>Machine Learning Techniques for Credit Risk Analysis</em>. Amazon Web Services.<br></p>
 <p>AWS. (2022). ¿Qué es una red neuronal? https://aws.amazon.com/es/what-is/neural-network/<br></p>
 <p>BME Exchange. (s.f.).&nbsp;<em>Calificación crediticia</em>.&nbsp;<a href="https://www.bmexchange.com/">https://www.bmexchange.com</a><br></p>
 <p>Cloudflare. (2023). What is a neural network? <a href="https://www.cloudflare.com/learning/ddos/glossary/neural-network/" class="uri">https://www.cloudflare.com/learning/ddos/glossary/neural-network/</a><br></p>
 <p>De Lara Haro, F. (2004).&nbsp;<em>Gestión del riesgo crediticio</em>. Editorial Universitaria.<br></p>
+<p>Fernández Castaño, H., &amp; Pérez Ramírez, F. O. (2007).&nbsp;<em>Las redes neuronales y la evaluación del riesgo de crédito</em>. Revista Ingenierías, Universidad de Medellín, 6(10), 77–91.&nbsp;<a href="https://revistas.udem.edu.co/index.php/ingenierias/article/view/225" class="uri">https://revistas.udem.edu.co/index.php/ingenierias/article/view/225</a><br></p>
 <p>Finance Strategists. (2023). Credit risk: Definition, types, and management. <a href="https://www.financestrategists.com/" class="uri">https://www.financestrategists.com/</a><br></p>
 <p>Financionario. (2025). ¿Qué es el riesgo de crédito? <a href="https://www.financionario.com/" class="uri">https://www.financionario.com/</a></p>
 <p>GAMCO. (2023). Qué es Arquitectura de red neuronal Concepto y definición. Glosario. https://gamco.es/glosario/arquitectura-de-red-neuronal/<br></p>
+<p>Gómez Ramírez, N. A., Guerrero Velandia, G. C., &amp; Prieto Ardila, Y. A. (2020). Diseño de un modelo teórico de análisis crediticio usando redes neuronales artificiales aplicadas a Start-ups. Universidad EAN.&nbsp;<a href="https://repository.universidadean.edu.co/bitstreams/145bb004-8f26-4d1e-b632-065627cdbb06/download" class="uri">https://repository.universidadean.edu.co/bitstreams/145bb004-8f26-4d1e-b632-065627cdbb06/download</a><br></p>
 <p>Hosmer, D. W., &amp; Lemeshow, S. (2000).&nbsp;<em>Applied logistic regression</em>&nbsp;(2nd ed.). Wiley.<br></p>
 <p>IBM. (2021). El modelo de redes neuronales. https://www.ibm.com/docs/es/spss-modeler/saas?topic=networks-neural-model<br></p>
+<p>IBM. (2021).&nbsp;<em>Understanding Neural Networks for Credit Risk</em>. IBM Documentation.<br></p>
 <p>IBM. (2025). What are artificial neural networks? <a href="https://www.ibm.com/cloud/learn/neural-networks" class="uri">https://www.ibm.com/cloud/learn/neural-networks</a><br></p>
 <p>Ince, H., &amp; Aktan, B. (2009).&nbsp;<em>Credit risk evaluation with discriminant analysis</em>. Journal of Financial Studies.<br></p>
 <p>Interactive Chaos. (2023). Estructura de una red neuronal. https://interactivechaos.com/es/manual/tutorial-de-machine-learning/estructura-de-una-red-neuronal<br></p>

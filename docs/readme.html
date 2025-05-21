@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Blog de trabajos de la materia RNA – Redes Neuronales y Algoritmos Bioinspirados. Grupo 8</title>
+<title>readme – Redes Neuronales y Algoritmos Bioinspirados. Grupo 8</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -68,65 +66,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -134,7 +74,7 @@ window.Quarto = {
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -170,214 +110,81 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">Blog de trabajos de la materia RNA</h1>
-                      </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta column-page-left">
-
-      
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(4)</span></div><div class="category" data-category="Algoritmos Bioinspirados">Algoritmos Bioinspirados <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Algorítmos Genéticos">Algorítmos Genéticos <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Colonia de Hormigas">Colonia de Hormigas <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Gradiente descendente">Gradiente descendente <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Modelación">Modelación <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Métodos Heurísticos">Métodos Heurísticos <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Python">Python <span class="quarto-category-count">(1)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Redes Neuronales">Redes Neuronales <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Riesgo crediticio">Riesgo crediticio <span class="quarto-category-count">(1)</span></div><div class="category" data-category="optimización">optimización <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Árbol de decisión">Árbol de decisión <span class="quarto-category-count">(1)</span></div></div></div>
+    
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content column-page" id="quarto-document-content">
 
 
 
 
+<section id="redes-neuronales-y-algoritmos-bioinspirados---grupo-8" class="level1">
+<h1>Redes Neuronales y Algoritmos Bioinspirados - Grupo 8</h1>
+<p>Este repositorio contiene los trabajos y materiales desarrollados para la materia <strong>Redes Neuronales y Algoritmos Bioinspirados</strong> de la Universidad Nacional de Colombia, realizados por el Grupo 8.</p>
+<section id="descripción" class="level2">
+<h2 class="anchored" data-anchor-id="descripción">Descripción</h2>
+<p>El proyecto consiste en un blog académico construido con <a href="https://quarto.org/">Quarto</a>, donde se publican análisis, implementaciones y resultados de diferentes algoritmos inspirados en la naturaleza, con énfasis en:</p>
+<ul>
+<li><strong>Redes Neuronales</strong></li>
+<li><strong>Algoritmos Genéticos</strong></li>
+<li><strong>Colonia de Hormigas</strong></li>
+<li><strong>Optimización Numérica y Combinatoria</strong></li>
+</ul>
+<p>El blog está dirigido a estudiantes y personas interesadas en aprender de manera práctica y teórica sobre modelos de inteligencia artificial y optimización bioinspirada.</p>
+</section>
+<section id="estructura-del-repositorio" class="level2">
+<h2 class="anchored" data-anchor-id="estructura-del-repositorio">Estructura del repositorio</h2>
+<ul>
+<li><p><code>/posts/</code><br>
+Contiene los artículos principales del blog, cada uno en una carpeta independiente:</p>
+<ul>
+<li><code>Bienvenida/</code> — Introducción al blog y motivación.</li>
+<li><code>Optimizacion-numerica/</code> — Optimización numérica: gradiente descendente y métodos heurísticos.</li>
+<li><code>Optimizacion-combinatoria/</code> — Optimización combinatoria: TSP con algoritmos genéticos y colonia de hormigas.</li>
+</ul></li>
+<li><p><code>/docs/</code><br>
+Carpeta generada automáticamente por Quarto con los archivos HTML del blog listo para publicación.</p></li>
+<li><p><code>/data/</code><br>
+Archivos de datos utilizados en los análisis (matrices de distancias, tiempos, ubicaciones de ciudades, etc.).</p></li>
+<li><p><code>readme.md</code><br>
+Este archivo.</p></li>
+</ul>
+</section>
+<section id="tecnologías-y-herramientas" class="level2">
+<h2 class="anchored" data-anchor-id="tecnologías-y-herramientas">Tecnologías y herramientas</h2>
+<ul>
+<li><strong>Lenguaje principal:</strong> R</li>
+<li><strong>Visualización:</strong> ggplot2, plotly, leaflet</li>
+<li><strong>Optimización:</strong> GA, pso, DEoptim (librerías de R)</li>
+<li><strong>Documentación y publicación:</strong> Quarto</li>
+</ul>
+</section>
+<section id="cómo-ver-el-blog" class="level2">
+<h2 class="anchored" data-anchor-id="cómo-ver-el-blog">Cómo ver el blog</h2>
+<p>Puedes navegar el blog generado en la carpeta <code>/docs/</code> abriendo <code>index.html</code> en tu navegador, o desplegarlo en un servidor web estático.</p>
+</section>
+<section id="autores" class="level2">
+<h2 class="anchored" data-anchor-id="autores">Autores</h2>
+<ul>
+<li>Diego Fernando Chávez Henao — dfchavez@unal.edu.co</li>
+<li>Alejandro Feria González — aferiag@unal.edu.co</li>
+<li>Santiago Molina Muñoz — smolinam@unal.edu.co</li>
+<li>Juan Manuel Teherán Machado — jteheranm@unal.edu.co</li>
+</ul>
+</section>
+<section id="créditos-y-referencias" class="level2">
+<h2 class="anchored" data-anchor-id="créditos-y-referencias">Créditos y referencias</h2>
+<p>Las implementaciones y análisis se basan en bibliografía académica relevante, citada en cada post. Los datos de ciudades y parámetros de costos fueron obtenidos de fuentes públicas y oficiales.</p>
+<hr>
+<p><strong>Universidad Nacional de Colombia — 2025</strong></p>
 
 
+</section>
+</section>
 
-
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="Redes Neuronales,Riesgo crediticio,Árbol de decisión,Modelación,Python" data-listing-date-sort="1718168400000" data-listing-file-modified-sort="1747816062775" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="22" data-listing-word-count-sort="4259">
-<div class="thumbnail">
-<p><a href="./posts/Riesgo-crediticio/index.html" class="no-external"></a></p><a href="./posts/Riesgo-crediticio/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/Riesgo-crediticio/image.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/Riesgo-crediticio/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/Riesgo-crediticio/index.html" class="no-external">Modelado de Riesgo Crediticio con Redes Neuronales</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/Riesgo-crediticio/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Redes Neuronales'); return false;">
-Redes Neuronales
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Riesgo crediticio'); return false;">
-Riesgo crediticio
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Árbol de decisión'); return false;">
-Árbol de decisión
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Modelación'); return false;">
-Modelación
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Python'); return false;">
-Python
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/Riesgo-crediticio/index.html" class="no-external"><strong>ENUCIADO DEL PROBLEMA</strong></a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/Riesgo-crediticio/index.html" class="no-external">
-<div class="listing-date">
-Jun 12, 2024
-</div>
-<div class="listing-author">
-Diego Fernando Chávez Henao, dfchavez@unal.edu.co, Alejandro Feria González, aferiag@unal.edu.co, Santiago Molina Muñoz, smolinam@unal.edu.co, Juan Manuel Teherán Machado, jteheranm@unal.edu.co
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="Redes Neuronales,Algoritmos Bioinspirados,R" data-listing-date-sort="1714626000000" data-listing-file-modified-sort="1746239504042" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="222">
-<div class="thumbnail">
-<p><a href="./posts/Bienvenida/index.html" class="no-external"></a></p><a href="./posts/Bienvenida/index.html" class="no-external">
-<p class="card-img-top"><img src="posts\Bienvenida\thumbnail.jpg"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/Bienvenida/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/Bienvenida/index.html" class="no-external">Bienvenidos a nuestro Blog</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/Bienvenida/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Redes Neuronales'); return false;">
-Redes Neuronales
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Algoritmos Bioinspirados'); return false;">
-Algoritmos Bioinspirados
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
-R
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/Bienvenida/index.html" class="no-external">En este espacio se publicarán los trabajos de la materia <strong>Redes Neuronales y Algoritmos Bioinspirados</strong>. Podrás encontrar diferentes proyectos prácticos donde se explican…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/Bienvenida/index.html" class="no-external">
-<div class="listing-date">
-May 2, 2024
-</div>
-<div class="listing-author">
-Diego Fernando Chávez Henao, dfchavez@unal.edu.co, Alejandro Feria González, aferiag@unal.edu.co, Santiago Molina Muñoz, smolinam@unal.edu.co, Juan Manuel Teherán Machado, jteheranm@unal.edu.co
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="optimización,Colonia de Hormigas,Algorítmos Genéticos,R" data-listing-date-sort="1714626000000" data-listing-file-modified-sort="1746239602929" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="39" data-listing-word-count-sort="7662">
-<div class="thumbnail">
-<p><a href="./posts/Optimizacion-combinatoria/index.html" class="no-external"></a></p><a href="./posts/Optimizacion-combinatoria/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/Optimizacion-combinatoria/image.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/Optimizacion-combinatoria/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/Optimizacion-combinatoria/index.html" class="no-external">Optimización Combinatoria</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/Optimizacion-combinatoria/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('optimización'); return false;">
-optimización
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Colonia de Hormigas'); return false;">
-Colonia de Hormigas
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Algorítmos Genéticos'); return false;">
-Algorítmos Genéticos
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
-R
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/Optimizacion-combinatoria/index.html" class="no-external"><strong>ENUCIADO DEL PROBLEMA</strong></a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/Optimizacion-combinatoria/index.html" class="no-external">
-<div class="listing-date">
-May 2, 2024
-</div>
-<div class="listing-author">
-Diego Fernando Chávez Henao, dfchavez@unal.edu.co, Alejandro Feria González, aferiag@unal.edu.co, Santiago Molina Muñoz, smolinam@unal.edu.co, Juan Manuel Teherán Machado, jteheranm@unal.edu.co
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="optimización,Gradiente descendente,Métodos Heurísticos,R" data-listing-date-sort="1714626000000" data-listing-file-modified-sort="1746243887811" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="37" data-listing-word-count-sort="7321">
-<div class="thumbnail">
-<p><a href="./posts/Optimizacion-numerica/index.html" class="no-external"></a></p><a href="./posts/Optimizacion-numerica/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/Optimizacion-numerica/image.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/Optimizacion-numerica/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/Optimizacion-numerica/index.html" class="no-external">Optimización Numérica</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/Optimizacion-numerica/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('optimización'); return false;">
-optimización
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Gradiente descendente'); return false;">
-Gradiente descendente
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Métodos Heurísticos'); return false;">
-Métodos Heurísticos
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
-R
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/Optimizacion-numerica/index.html" class="no-external"><strong>ENUCIADO DEL PROBLEMA</strong></a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/Optimizacion-numerica/index.html" class="no-external">
-<div class="listing-date">
-May 2, 2024
-</div>
-<div class="listing-author">
-Diego Fernando Chávez Henao, dfchavez@unal.edu.co, Alejandro Feria González, aferiag@unal.edu.co, Santiago Molina Muñoz, smolinam@unal.edu.co, Juan Manuel Teherán Machado, jteheranm@unal.edu.co
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

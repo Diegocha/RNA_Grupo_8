@@ -1,12 +1,2 @@
 /* css styles */
 
-/* Aumentar el tamaño de fuente base */
-body {
-  font-size: 22px;
-}
-
-.bibliografia-apa {
-  padding-left: 2em;
-  text-indent: -2em;
-  margin-bottom: 0.5em;
-}
