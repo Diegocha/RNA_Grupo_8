@@ -1,0 +1,251 @@
+---
+title: "Modelado de Riesgo Crediticio con Redes Neuronales"
+format: 
+  html:
+    fig-width: 8      # Ancho de las figuras en pulgadas para HTML
+    fig-height: 6     # Alto de las figuras en pulgadas para HTML
+    number-sections: true
+    code-fold: true
+    toc: true
+    toc-title: "Tabla de contenido"
+    toc-location: left-body
+    css: custom.css
+author:
+  - name: "Diego Fernando Chávez Henao, dfchavez@unal.edu.co"
+  - name: "Alejandro Feria González, aferiag@unal.edu.co"
+  - name: "Santiago Molina Muñoz, smolinam@unal.edu.co"
+  - name: "Juan Manuel Teherán Machado, jteheranm@unal.edu.co"
+date: "2024-06-12"
+categories: [Redes Neuronales, Riesgo crediticio, Árbol de decisión, Modelación, Python]
+image: "image.jpg"
+#bibliography: ref.bib
+page-layout: full
+execute:
+  cache: true
+---
+
+------------------------------------------------------------------------
+
+**ENUCIADO DEL PROBLEMA**
+
+El reto en este trabajo es crear un modelo para predecir la probabilidad de que un individuo incumpla con el pago de su crédito.\
+\
+La variable "loan_status" (incumplimiento de las obligaciones financieras) está dada en el archivo "Credit Risk Dataset" (disponible en <https://www.kaggle.com/datasets/ranadeep/credit-risk-dataset/data>).
+
+**Reto**
+
+1.  Cree y valide un modelo de probabilidad de incumplimiento basado en redes neuronales artificiales. Optimice la arquitectura del modelo.
+
+2.  Represente este modelo con una scorecard
+
+3.  Analice qué variables hacen más riesgosa a una persona
+
+4.  Cree una app web que le permita saber a las personas, de acuerdo con sus características, cuál es su scorecard y cómo se ve contra la población.
+
+------------------------------------------------------------------------
+
+# **Introducción**
+
+El riesgo de crédito es un concepto fundamental en las finanzas modernas, ya que representa la posibilidad de que un prestatario incumpla con el pago de una obligación financiera (Financionario, 2025; Finance Strategists, 2023). Su adecuada gestión permite a las instituciones financieras mantener su estabilidad y proyectar confianza ante clientes y reguladores. En la actualidad, la evaluación del riesgo de crédito se apoya cada vez más en modelos de machine learning, capaces de identificar patrones complejos en grandes volúmenes de datos históricos y así mejorar la toma de decisiones respecto a la aprobación de créditos (ListenData, 2019).
+
+El presente trabajo tiene como objetivo desarrollar un modelo basado en redes neuronales artificiales (RNA) para predecir la probabilidad de incumplimiento de pago de un crédito, utilizando el conjunto de datos "Credit Risk Analysis" (R_G, 2021). Además, se construirá una scorecard derivada del modelo y se implementará una aplicación web interactiva que permita a los usuarios consultar su puntaje y compararse con la población general.
+
+# **Marco Teórico**
+
+## Riesgo crediticio y su importancia
+
+El riesgo crediticio se define como la probabilidad de que un prestatario incumpla con el pago de una obligación financiera, lo que puede generar pérdidas para la entidad que otorga el préstamo (Financionario, 2025; Finance Strategists, 2023). Este riesgo es un factor central en la toma de decisiones financieras, ya que afecta tanto a las instituciones como a los solicitantes de crédito. Una gestión adecuada del riesgo crediticio permite anticipar posibles impagos, ajustar condiciones como tasas de interés o garantías, y mantener la estabilidad de las entidades financieras (ListenData, 2019).
+
+Además, una evaluación precisa del riesgo crediticio protege a las instituciones de pérdidas inesperadas, promueve la confianza en el sistema financiero y facilita el acceso a condiciones más justas para los usuarios (Finance Strategists, 2023). La correcta evaluación del riesgo es fundamental para la transparencia y eficiencia del sistema financiero, beneficiando a todas las partes involucradas. Por un lado, protege a las instituciones financieras y, por otro, ayuda a los solicitantes a comprender los factores que influyen en su perfil crediticio y a acceder a productos financieros adecuados a su situación (Finance Strategists, 2023).
+
+El riesgo crediticio puede manifestarse en diferentes formas, incluyendo el riesgo de incumplimiento, riesgo de contraparte, riesgo de concentración y riesgo país, entre otros (Pirani Risk, 2022). También se vincula a la calificación crediticia, que evalúa la solvencia de un prestatario y es utilizada por agencias especializadas para informar a inversores y entidades financieras (BME Exchange, s.f.). Para mitigar este riesgo, se aplican estrategias como la diversificación, análisis exhaustivo de crédito, uso de instrumentos de cobertura y monitoreo constante (Pirani Risk, 2022).
+
+## Métodos para estimar el riesgo crediticio
+
+La estimación del riesgo crediticio ha evolucionado desde enfoques tradicionales basados en reglas heurísticas y la experiencia de expertos, hasta modelos estadísticos y técnicas avanzadas de machine learning. Entre los métodos más utilizados se encuentran:
+
+-   **Reglas heurísticas:** Basadas en criterios subjetivos y juicio de analistas, como el modelo de las cinco “C” del crédito (Carácter, Capital, Capacidad, Colateral y Ciclo). Aunque simples y fáciles de aplicar, presentan limitaciones en su capacidad para generalizar y adaptarse a cambios en el entorno económico (De Lara Haro, 2004).
+
+-   **Modelos estadísticos tradicionales:** La regresión logística es el método más popular para puntajes crediticios debido a su capacidad para modelar una variable dependiente binaria y su interpretabilidad (Hosmer & Lemeshow, 2000; ListenData, 2019). El análisis discriminante también ha sido utilizado, aunque presenta limitaciones en entornos dinámicos (Ince & Aktan, 2009).
+
+-   **Modelos basados en calificaciones internas y estructurales:** Métodos como CreditMetrics, desarrollados por J.P. Morgan en 1997, estiman el valor en riesgo (VaR) de crédito considerando la migración de calificaciones y la probabilidad de incumplimiento, permitiendo evaluar la diversificación y concentración del portafolio (Sánchez Cerón, 2001).
+
+-   **Técnicas de machine learning:** Incluyen árboles de decisión, Random Forest, XGBoost y redes neuronales artificiales. Estas técnicas capturan relaciones no lineales y patrones complejos en grandes volúmenes de datos, mejorando la precisión en la predicción del incumplimiento (Zhang, Lipton, Li, & Smola, 2024; Towards Data Science, 2020).
+
+La selección del método adecuado depende de la naturaleza del problema, la calidad y cantidad de datos disponibles, así como de los requerimientos en términos de interpretabilidad y desempeño. Mientras los modelos tradicionales ofrecen transparencia, los métodos modernos aportan mayor capacidad predictiva, aunque requieren un manejo cuidadoso para garantizar la explicabilidad y cumplimiento regulatorio.
+
+## Redes Neuronales
+
+### Definición y concepto básicos
+
+Las redes neuronales artificiales (RNA) son modelos computacionales inspirados en la estructura y funcionamiento del cerebro humano, compuestos por nodos interconectados llamados neuronas artificiales, organizados en capas (UNIR, 2021; Zhang, Lipton, Li, & Smola, 2024). Estas redes aprenden patrones complejos transformando las entradas mediante funciones matemáticas y funciones de activación no lineales, lo que les permite modelar relaciones complejas entre variables (IBM, 2021; AWS, 2022). La capacidad de aprender de forma continua mediante bucles de retroalimentación correctivos mejora su análisis predictivo (AWS, 2022).
+
+### Arquitectura básica
+
+Una RNA típica consta de tres tipos de capas (Interactive Chaos, 2023; AWS, 2022):
+
+-   **Capa de entrada:** Recibe los datos iniciales. No realiza cálculos, simplemente introduce la información en la red.
+
+-   **Capas ocultas:** Son intermedias y pueden ser múltiples. Cada capa oculta toma la salida de la capa anterior, realiza transformaciones no lineales y pasa el resultado a la siguiente capa.
+
+-   **Capa de salida:** Produce el resultado final, que puede ser una clasificación, una regresión o una probabilidad.
+
+La arquitectura de la red neuronal define cómo se conectan las neuronas artificiales entre sí para procesar y transmitir información, siendo la elección de la arquitectura un aspecto importante en la construcción de un modelo de aprendizaje profundo (GAMCO, 2023).
+
+### 2.3.3 Funcionamiento de una neurona artificial
+
+Cada neurona artificial recibe varias entradas, cada una con un peso asociado que determina su importancia relativa (Asesoftware, 2024). Tras recibir las entradas, la neurona calcula una suma ponderada de dichas entradas y aplica una función de activación para determinar su salida.
+
+Según Zhang et al. (2024), la salida de una neurona $j$ se calcula como:
+
+$y_j = f\left( \sum_i w_{ij} x_i + b_j \right) \tag{1}$
+
+donde;
+
+$x_i$ son las entradas a la neurona,
+
+$w_{ij}$ los pesos asociados a cada entrada,
+
+$b_j$ el sesgo (bias) de la neurona, y
+
+$f$ la función de activación, que introduce no linealidad.
+
+Al principio, todas las ponderaciones (pesos) son aleatorias y las respuestas que resultan de la red son, posiblemente, disparatadas. La red aprende a través del entrenamiento, ajustando continuamente las ponderaciones en función del error entre las predicciones y los resultados reales. Este proceso se repite muchas veces y la red sigue mejorando sus predicciones hasta haber alcanzado uno o varios criterios de parada (IBM, 2021).
+
+### Funciones de activación
+
+Las funciones de activación introducen no linealidad, esencial para que la red aprenda relaciones complejas. A continuación se presenta una tabla con las funciones más comunes, su forma matemática, características y usos habituales.
+
+| Función | Fórmula matemática | Rango de salida | Características principales | Usos habituales |
+|----|----|----|----|----|
+| Lineal | $f(x) = x$ | $-\infty, \infty$ | Simple, no introduce no linealidad | Capa de salida en regresión |
+| Sigmoide | $f(x) = \frac{1}{1 + e^{-x}}$ | $(0, 1)$ | Curva en "S", salida probabilística | Clasificación binaria (capa de salida) |
+| Tangente hiperbólica (tanh) | $f(x) = \tanh(x) = \frac{e^{x} - e^{-x}}{e^{x} + e^{-x}}$ | $(-1, 1)$ | Centrada en cero, salida simétrica | Capas ocultas, problemas con datos centrados |
+| ReLU (Rectified Linear Unit) | $f(x) = \max(0, x)$ | $[0, \infty)$ | Computacionalmente eficiente, evita desvanecimiento de gradiente | Capas ocultas en redes profundas |
+| Leaky ReLU | $f(x) = \max(\alpha x, x), \alpha \approx 0.01$ | $\mathbb{R}$ | Evita neuronas muertas de ReLU | Capas ocultas, mejora ReLU |
+| ELU (Exponential Linear Unit) | $f(x)=\begin{cases}
+x, & \text{si } x > 0 \\
+\alpha \left(e^{x} - 1\right), & \text{si } x \leq 0
+\end{cases}$ | $\mathbb{R}$ | Suaviza la salida negativa, mejora convergencia | Redes profundas |
+
+\$ \| \| \| \| \| Softmax \| $f_i(x) = \frac{e^{x_i}}{\sum_j e^{x_j}}$ \| $(0,1)$, suma 1 \| Convierte vector en probabilidades \| Clasificación multiclase (capa de salida) \| \| Square \| $f(x) = x^2$ \| $[0, \infty)$ \| Modela relaciones cuadráticas \| Experimentación, casos específicos \| \| Sine \| $f(x) = \sin(x)$ \| $[-1,1]$ \| Modela relaciones periódicas \| Modelos bioinspirados, experimentación \|
+
+**Nota:** La elección de la función de activación depende del problema y la arquitectura. Por ejemplo, ReLU es la más popular en capas ocultas por su eficiencia y buen desempeño, mientras que sigmoide y softmax se usan en la capa de salida para clasificación.
+
+### Proceso de entrenamiento
+
+El entrenamiento ajusta los pesos y sesgos para minimizar una función de pérdida (por ejemplo, entropía cruzada para clasificación). Se emplea el algoritmo de retropropagación junto con optimizadores como Adam o SGD para actualizar los parámetros iterativamente (Zhang et al., 2024).
+
+### Ejemplo básico en Python
+
+### Este ejemplo crea una red simple para clasificación binaria con una capa oculta.
+
+------------------------------------------------------------------------
+
+## Redes neuronales artificiales en el riesgo crediticio
+
+Las redes neuronales artificiales (RNA) son sistemas computacionales inspirados en el cerebro humano, diseñados para aprender patrones complejos a partir de grandes volúmenes de datos (UNIR, 2021; Zhang et al., 2024). Su principal fortaleza es la capacidad de modelar relaciones no lineales entre las variables de entrada y la probabilidad de incumplimiento, superando en muchos casos a los modelos tradicionales (IBM, 2025).
+
+El teorema de aproximación universal establece que una red neuronal con una sola capa oculta y suficientes neuronas puede aproximar cualquier función continua definida en un conjunto compacto, siempre que utilice funciones de activación no lineales (Zhang et al., 2024, cap. 5; Cloudflare, 2023). En la práctica, para problemas complejos como el riesgo crediticio, se emplean arquitecturas más profundas y técnicas modernas de regularización y optimización, lo que permite capturar interacciones sutiles entre variables demográficas, financieras y de comportamiento.
+
+En el sector financiero, las RNA han demostrado ser especialmente útiles para la clasificación de clientes según su nivel de riesgo, la predicción de incumplimientos y la asignación de puntajes crediticios personalizados (Towards Data Science, 2020). Sin embargo, su implementación requiere un preprocesamiento cuidadoso y técnicas de explicabilidad para cumplir con normativas y generar confianza en reguladores y usuarios finales.
+
+------------------------------------------------------------------------
+
+## 2.3. Scorecards y explicabilidad
+
+Para facilitar la interpretación de los modelos de riesgo, es común traducir la probabilidad de incumplimiento en un puntaje o scorecard. Este puntaje permite comparar fácilmente el riesgo relativo entre individuos y es ampliamente utilizado en la industria financiera (ListenData, 2019). Además, la explicabilidad del modelo es esencial para cumplir con regulaciones y generar confianza en los usuarios, por lo que se emplean técnicas como SHAP para identificar las variables más influyentes en la predicción.
+
+## 2.4. Scorecard y análisis de variables de riesgo
+
+La probabilidad estimada se transformó en un puntaje utilizando la fórmula estándar de scorecards:
+
+Score=200+50×ln⁡(1−pp)Score=200+50×ln(p1−p)
+
+donde pp es la probabilidad de incumplimiento predicha por el modelo.
+
+## 2.4 Metodología usada
+
+Para abordar este reto de modelado de riesgo crediticio con redes neuronales, proponemos una metodología integral que combina técnicas avanzadas de machine learning con buenas prácticas de ingeniería de datos. El enfoque se estructura en cinco fases clave:
+
+# Resultados y Análisis
+
+En esta sección se presentan los resultados obtenidos al aplicar diferentes métodos de optimización sobre las funciones de Rosenbrock y Rastrigin, tanto en dos como en tres dimensiones. El objetivo fue comparar el desempeño del descenso por gradiente y de tres algoritmos heurísticos: algoritmo genético (GA), optimización por enjambre de partículas (PSO) y evolución diferencial (DE), considerando la calidad de la solución final, el número de evaluaciones de la función objetivo y la robustez frente a condiciones iniciales aleatorias.
+
+## 1. Preprocesamiento y preparación de datos
+
+**Manejo de la variable objetivo**:
+
+-   Codificación binaria según especificaciones: **`Fully Paid=0`**, **`Charged Off/Default/Late (31-120)=1`**
+
+-   Eliminación de registros con **`NA`** (categorías "Current", "Issued", etc.)[[6]{.underline}](https://www.lancaster.ac.uk/stor-i-student-sites/katie-howgate/2021/02/07/how-to-build-a-credit-scorecard/)[[8]{.underline}](http://www.scielo.org.bo/scielo.php?script=sci_arttext&pid=S2518-44312014000200002)
+
+**Ingeniería de características**:
+
+-   Tratamiento de valores faltantes: imputación múltiple para variables numéricas[[2]{.underline}](https://fastercapital.com/content/Credit-Risk-Neural-Networks--How-to-Use-Neural-Networks-to-Model-and-Predict-Credit-Risk.html)
+
+-   Codificación WoE (Weight of Evidence) para variables categóricas[[6]{.underline}](https://www.lancaster.ac.uk/stor-i-student-sites/katie-howgate/2021/02/07/how-to-build-a-credit-scorecard/)[[8]{.underline}](http://www.scielo.org.bo/scielo.php?script=sci_arttext&pid=S2518-44312014000200002)
+
+-   Escalado robusto (RobustScaler) para variables numéricas[[5]{.underline}](https://medcraveonline.com/MSEIJ/development-of-a-credit-risk-evaluation-systemusing-multilayer-neural-networks.html)
+
+**División de datos**:
+
+-   Estratificación por variable objetivo (80-10-10)
+
+-   Validación cruzada temporal para series temporales
+
+# Conclusiones
+
+# Contribuciones individuales
+
+-   ***Diego Chávez:*** Mis contribuciones al proyecto ...
+
+-   ***Alejandro Feria:*** Redaccion ...
+
+-   ***Santiago Molina*****:** Diseñar e implementar ...
+
+-   ***Juan Teherán:*** Los aportes ...
+
+# Refeencias
+
+::: bibliografia-apa
+Asesoftware. (2024). Redes Neuronales Artificiales: Funciones y aplicaciones en IA. https://asesoftware.com/redes-neuronales-artificiales/<br>
+
+AWS. (2022). ¿Qué es una red neuronal? https://aws.amazon.com/es/what-is/neural-network/<br>
+
+BME Exchange. (s.f.). *Calificación crediticia*. [https://www.bmexchange.com](https://www.bmexchange.com/)<br>
+
+Cloudflare. (2023). What is a neural network? <https://www.cloudflare.com/learning/ddos/glossary/neural-network/><br>
+
+De Lara Haro, F. (2004). *Gestión del riesgo crediticio*. Editorial Universitaria.<br>
+
+Finance Strategists. (2023). Credit risk: Definition, types, and management. <https://www.financestrategists.com/><br>
+
+Financionario. (2025). ¿Qué es el riesgo de crédito? <https://www.financionario.com/>
+
+GAMCO. (2023). Qué es Arquitectura de red neuronal Concepto y definición. Glosario. https://gamco.es/glosario/arquitectura-de-red-neuronal/<br>
+
+Hosmer, D. W., & Lemeshow, S. (2000). *Applied logistic regression* (2nd ed.). Wiley.<br>
+
+IBM. (2021). El modelo de redes neuronales. https://www.ibm.com/docs/es/spss-modeler/saas?topic=networks-neural-model<br>
+
+IBM. (2025). What are artificial neural networks? <https://www.ibm.com/cloud/learn/neural-networks><br>
+
+Ince, H., & Aktan, B. (2009). *Credit risk evaluation with discriminant analysis*. Journal of Financial Studies.<br>
+
+Interactive Chaos. (2023). Estructura de una red neuronal. https://interactivechaos.com/es/manual/tutorial-de-machine-learning/estructura-de-una-red-neuronal<br>
+
+ListenData. (2019). A complete guide to credit risk modelling. <https://www.listendata.com/2019/08/credit-risk-modelling.html><br>
+
+Pirani Risk. (2022). *Gestión integral del riesgo crediticio*. [https://www.piranirisk.com](https://www.piranirisk.com/)<br>
+
+R_G. (2021). Credit risk analysis \[Dataset\]. Kaggle. <https://www.kaggle.com/datasets/ranadeep/credit-risk-dataset/data><br>
+
+Sánchez Cerón, F. (2001). *Modelos estructurales para la gestión del riesgo de crédito*. Editorial Financiera.<br>
+
+Towards Data Science. (2020). How to prepare data for credit risk modeling. <https://towardsdatascience.com/how-to-prepare-data-for-credit-risk-modeling-5523641882f2/><br>
+
+UNIR. (2021). Redes neuronales artificiales: Qué son y para qué sirven. <https://www.unir.net/tecnologia/revista/redes-neuronales-artificiales/><br>
+
+Zhang, A., Lipton, Z. C., Li, M., & Smola, A. J. (2024). *Dive into deep learning*. Cambridge University Press. <https://d2l.ai/index.html><br>
+:::

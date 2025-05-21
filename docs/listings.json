@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/Riesgo-crediticio/index.html",
       "/posts/Bienvenida/index.html",
       "/posts/Optimizacion-combinatoria/index.html",
       "/posts/Optimizacion-numerica/index.html"

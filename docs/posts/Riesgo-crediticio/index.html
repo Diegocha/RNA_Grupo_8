@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Diego Fernando Chávez Henao, dfchavez@unal.edu.co">
+<meta name="author" content="Alejandro Feria González, aferiag@unal.edu.co">
+<meta name="author" content="Santiago Molina Muñoz, smolinam@unal.edu.co">
+<meta name="author" content="Juan Manuel Teherán Machado, jteheranm@unal.edu.co">
+<meta name="dcterms.date" content="2024-06-12">
+
+<title>Modelado de Riesgo Crediticio con Redes Neuronales – Redes Neuronales y Algoritmos Bioinspirados. Grupo 8</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="custom.css">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Redes Neuronales y Algoritmos Bioinspirados. Grupo 8</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-right">
+      <h1 class="title">Modelado de Riesgo Crediticio con Redes Neuronales</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">Redes Neuronales</div>
+                <div class="quarto-category">Riesgo crediticio</div>
+                <div class="quarto-category">Árbol de decisión</div>
+                <div class="quarto-category">Modelación</div>
+                <div class="quarto-category">Python</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta column-page-right">
+
+      <div>
+      <div class="quarto-title-meta-heading">Authors</div>
+      <div class="quarto-title-meta-contents">
+               <p>Diego Fernando Chávez Henao, dfchavez@unal.edu.co </p>
+               <p>Alejandro Feria González, aferiag@unal.edu.co </p>
+               <p>Santiago Molina Muñoz, smolinam@unal.edu.co </p>
+               <p>Juan Manuel Teherán Machado, jteheranm@unal.edu.co </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">June 12, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenido</h2>
+   
+  <ul>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción"><span class="header-section-number">1</span> <strong>Introducción</strong></a></li>
+  <li><a href="#marco-teórico" id="toc-marco-teórico" class="nav-link" data-scroll-target="#marco-teórico"><span class="header-section-number">2</span> <strong>Marco Teórico</strong></a>
+  <ul class="collapse">
+  <li><a href="#riesgo-crediticio-y-su-importancia" id="toc-riesgo-crediticio-y-su-importancia" class="nav-link" data-scroll-target="#riesgo-crediticio-y-su-importancia"><span class="header-section-number">2.1</span> Riesgo crediticio y su importancia</a></li>
+  <li><a href="#métodos-para-estimar-el-riesgo-crediticio" id="toc-métodos-para-estimar-el-riesgo-crediticio" class="nav-link" data-scroll-target="#métodos-para-estimar-el-riesgo-crediticio"><span class="header-section-number">2.2</span> Métodos para estimar el riesgo crediticio</a></li>
+  <li><a href="#redes-neuronales" id="toc-redes-neuronales" class="nav-link" data-scroll-target="#redes-neuronales"><span class="header-section-number">2.3</span> Redes Neuronales</a>
+  <ul class="collapse">
+  <li><a href="#definición-y-concepto-básicos" id="toc-definición-y-concepto-básicos" class="nav-link" data-scroll-target="#definición-y-concepto-básicos"><span class="header-section-number">2.3.1</span> Definición y concepto básicos</a></li>
+  <li><a href="#arquitectura-básica" id="toc-arquitectura-básica" class="nav-link" data-scroll-target="#arquitectura-básica"><span class="header-section-number">2.3.2</span> Arquitectura básica</a></li>
+  <li><a href="#funcionamiento-de-una-neurona-artificial" id="toc-funcionamiento-de-una-neurona-artificial" class="nav-link" data-scroll-target="#funcionamiento-de-una-neurona-artificial"><span class="header-section-number">2.3.3</span> 2.3.3 Funcionamiento de una neurona artificial</a></li>
+  <li><a href="#funciones-de-activación" id="toc-funciones-de-activación" class="nav-link" data-scroll-target="#funciones-de-activación"><span class="header-section-number">2.3.4</span> Funciones de activación</a></li>
+  <li><a href="#proceso-de-entrenamiento" id="toc-proceso-de-entrenamiento" class="nav-link" data-scroll-target="#proceso-de-entrenamiento"><span class="header-section-number">2.3.5</span> Proceso de entrenamiento</a></li>
+  <li><a href="#ejemplo-básico-en-python" id="toc-ejemplo-básico-en-python" class="nav-link" data-scroll-target="#ejemplo-básico-en-python"><span class="header-section-number">2.3.6</span> Ejemplo básico en Python</a></li>
+  <li><a href="#este-ejemplo-crea-una-red-simple-para-clasificación-binaria-con-una-capa-oculta." id="toc-este-ejemplo-crea-una-red-simple-para-clasificación-binaria-con-una-capa-oculta." class="nav-link" data-scroll-target="#este-ejemplo-crea-una-red-simple-para-clasificación-binaria-con-una-capa-oculta."><span class="header-section-number">2.3.7</span> Este ejemplo crea una red simple para clasificación binaria con una capa oculta.</a></li>
+  </ul></li>
+  <li><a href="#redes-neuronales-artificiales-en-el-riesgo-crediticio" id="toc-redes-neuronales-artificiales-en-el-riesgo-crediticio" class="nav-link" data-scroll-target="#redes-neuronales-artificiales-en-el-riesgo-crediticio"><span class="header-section-number">2.4</span> Redes neuronales artificiales en el riesgo crediticio</a></li>
+  <li><a href="#scorecards-y-explicabilidad" id="toc-scorecards-y-explicabilidad" class="nav-link" data-scroll-target="#scorecards-y-explicabilidad"><span class="header-section-number">2.5</span> 2.3. Scorecards y explicabilidad</a></li>
+  <li><a href="#scorecard-y-análisis-de-variables-de-riesgo" id="toc-scorecard-y-análisis-de-variables-de-riesgo" class="nav-link" data-scroll-target="#scorecard-y-análisis-de-variables-de-riesgo"><span class="header-section-number">2.6</span> 2.4. Scorecard y análisis de variables de riesgo</a></li>
+  <li><a href="#metodología-usada" id="toc-metodología-usada" class="nav-link" data-scroll-target="#metodología-usada"><span class="header-section-number">2.7</span> 2.4 Metodología usada</a></li>
+  </ul></li>
+  <li><a href="#resultados-y-análisis" id="toc-resultados-y-análisis" class="nav-link" data-scroll-target="#resultados-y-análisis"><span class="header-section-number">3</span> Resultados y Análisis</a>
+  <ul class="collapse">
+  <li><a href="#preprocesamiento-y-preparación-de-datos" id="toc-preprocesamiento-y-preparación-de-datos" class="nav-link" data-scroll-target="#preprocesamiento-y-preparación-de-datos"><span class="header-section-number">3.1</span> 1. Preprocesamiento y preparación de datos</a></li>
+  </ul></li>
+  <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones"><span class="header-section-number">4</span> Conclusiones</a></li>
+  <li><a href="#contribuciones-individuales" id="toc-contribuciones-individuales" class="nav-link" data-scroll-target="#contribuciones-individuales"><span class="header-section-number">5</span> Contribuciones individuales</a></li>
+  <li><a href="#refeencias" id="toc-refeencias" class="nav-link" data-scroll-target="#refeencias"><span class="header-section-number">6</span> Refeencias</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-right" id="quarto-document-content">
+
+
+
+
+<nav id="TOC-body" role="doc-toc">
+    <h2 id="toc-title">Tabla de contenido</h2>
+   
+  <ul>
+  <li><a href="#introducción" id="toc-introducción"><span class="header-section-number">1</span> <strong>Introducción</strong></a></li>
+  <li><a href="#marco-teórico" id="toc-marco-teórico"><span class="header-section-number">2</span> <strong>Marco Teórico</strong></a>
+  <ul>
+  <li><a href="#riesgo-crediticio-y-su-importancia" id="toc-riesgo-crediticio-y-su-importancia"><span class="header-section-number">2.1</span> Riesgo crediticio y su importancia</a></li>
+  <li><a href="#métodos-para-estimar-el-riesgo-crediticio" id="toc-métodos-para-estimar-el-riesgo-crediticio"><span class="header-section-number">2.2</span> Métodos para estimar el riesgo crediticio</a></li>
+  <li><a href="#redes-neuronales" id="toc-redes-neuronales"><span class="header-section-number">2.3</span> Redes Neuronales</a>
+  <ul>
+  <li><a href="#definición-y-concepto-básicos" id="toc-definición-y-concepto-básicos"><span class="header-section-number">2.3.1</span> Definición y concepto básicos</a></li>
+  <li><a href="#arquitectura-básica" id="toc-arquitectura-básica"><span class="header-section-number">2.3.2</span> Arquitectura básica</a></li>
+  <li><a href="#funcionamiento-de-una-neurona-artificial" id="toc-funcionamiento-de-una-neurona-artificial"><span class="header-section-number">2.3.3</span> 2.3.3 Funcionamiento de una neurona artificial</a></li>
+  <li><a href="#funciones-de-activación" id="toc-funciones-de-activación"><span class="header-section-number">2.3.4</span> Funciones de activación</a></li>
+  <li><a href="#proceso-de-entrenamiento" id="toc-proceso-de-entrenamiento"><span class="header-section-number">2.3.5</span> Proceso de entrenamiento</a></li>
+  <li><a href="#ejemplo-básico-en-python" id="toc-ejemplo-básico-en-python"><span class="header-section-number">2.3.6</span> Ejemplo básico en Python</a></li>
+  <li><a href="#este-ejemplo-crea-una-red-simple-para-clasificación-binaria-con-una-capa-oculta." id="toc-este-ejemplo-crea-una-red-simple-para-clasificación-binaria-con-una-capa-oculta."><span class="header-section-number">2.3.7</span> Este ejemplo crea una red simple para clasificación binaria con una capa oculta.</a></li>
+  </ul></li>
+  <li><a href="#redes-neuronales-artificiales-en-el-riesgo-crediticio" id="toc-redes-neuronales-artificiales-en-el-riesgo-crediticio"><span class="header-section-number">2.4</span> Redes neuronales artificiales en el riesgo crediticio</a></li>
+  <li><a href="#scorecards-y-explicabilidad" id="toc-scorecards-y-explicabilidad"><span class="header-section-number">2.5</span> 2.3. Scorecards y explicabilidad</a></li>
+  <li><a href="#scorecard-y-análisis-de-variables-de-riesgo" id="toc-scorecard-y-análisis-de-variables-de-riesgo"><span class="header-section-number">2.6</span> 2.4. Scorecard y análisis de variables de riesgo</a></li>
+  <li><a href="#metodología-usada" id="toc-metodología-usada"><span class="header-section-number">2.7</span> 2.4 Metodología usada</a></li>
+  </ul></li>
+  <li><a href="#resultados-y-análisis" id="toc-resultados-y-análisis"><span class="header-section-number">3</span> Resultados y Análisis</a>
+  <ul>
+  <li><a href="#preprocesamiento-y-preparación-de-datos" id="toc-preprocesamiento-y-preparación-de-datos"><span class="header-section-number">3.1</span> 1. Preprocesamiento y preparación de datos</a></li>
+  </ul></li>
+  <li><a href="#conclusiones" id="toc-conclusiones"><span class="header-section-number">4</span> Conclusiones</a></li>
+  <li><a href="#contribuciones-individuales" id="toc-contribuciones-individuales"><span class="header-section-number">5</span> Contribuciones individuales</a></li>
+  <li><a href="#refeencias" id="toc-refeencias"><span class="header-section-number">6</span> Refeencias</a></li>
+  </ul>
+</nav>
+<hr>
+<p><strong>ENUCIADO DEL PROBLEMA</strong></p>
+<p>El reto en este trabajo es crear un modelo para predecir la probabilidad de que un individuo incumpla con el pago de su crédito.<br>
+<br>
+La variable “loan_status” (incumplimiento de las obligaciones financieras) está dada en el archivo “Credit Risk Dataset” (disponible en&nbsp;<a href="https://www.kaggle.com/datasets/ranadeep/credit-risk-dataset/data" class="uri">https://www.kaggle.com/datasets/ranadeep/credit-risk-dataset/data</a>).</p>
+<p><strong>Reto</strong></p>
+<ol type="1">
+<li><p>Cree y valide un modelo de probabilidad de incumplimiento basado en redes neuronales artificiales. Optimice la arquitectura del modelo.</p></li>
+<li><p>Represente este modelo con una scorecard</p></li>
+<li><p>Analice qué variables hacen más riesgosa a una persona</p></li>
+<li><p>Cree una app web que le permita saber a las personas, de acuerdo con sus características, cuál es su scorecard y cómo se ve contra la población.</p></li>
+</ol>
+<hr>
+<section id="introducción" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> <strong>Introducción</strong></h1>
+<p>El riesgo de crédito es un concepto fundamental en las finanzas modernas, ya que representa la posibilidad de que un prestatario incumpla con el pago de una obligación financiera (Financionario, 2025; Finance Strategists, 2023). Su adecuada gestión permite a las instituciones financieras mantener su estabilidad y proyectar confianza ante clientes y reguladores. En la actualidad, la evaluación del riesgo de crédito se apoya cada vez más en modelos de machine learning, capaces de identificar patrones complejos en grandes volúmenes de datos históricos y así mejorar la toma de decisiones respecto a la aprobación de créditos (ListenData, 2019).</p>
+<p>El presente trabajo tiene como objetivo desarrollar un modelo basado en redes neuronales artificiales (RNA) para predecir la probabilidad de incumplimiento de pago de un crédito, utilizando el conjunto de datos “Credit Risk Analysis” (R_G, 2021). Además, se construirá una scorecard derivada del modelo y se implementará una aplicación web interactiva que permita a los usuarios consultar su puntaje y compararse con la población general.</p>
+</section>
+<section id="marco-teórico" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> <strong>Marco Teórico</strong></h1>
+<section id="riesgo-crediticio-y-su-importancia" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="riesgo-crediticio-y-su-importancia"><span class="header-section-number">2.1</span> Riesgo crediticio y su importancia</h2>
+<p>El riesgo crediticio se define como la probabilidad de que un prestatario incumpla con el pago de una obligación financiera, lo que puede generar pérdidas para la entidad que otorga el préstamo (Financionario, 2025; Finance Strategists, 2023). Este riesgo es un factor central en la toma de decisiones financieras, ya que afecta tanto a las instituciones como a los solicitantes de crédito. Una gestión adecuada del riesgo crediticio permite anticipar posibles impagos, ajustar condiciones como tasas de interés o garantías, y mantener la estabilidad de las entidades financieras (ListenData, 2019).</p>
+<p>Además, una evaluación precisa del riesgo crediticio protege a las instituciones de pérdidas inesperadas, promueve la confianza en el sistema financiero y facilita el acceso a condiciones más justas para los usuarios (Finance Strategists, 2023). La correcta evaluación del riesgo es fundamental para la transparencia y eficiencia del sistema financiero, beneficiando a todas las partes involucradas. Por un lado, protege a las instituciones financieras y, por otro, ayuda a los solicitantes a comprender los factores que influyen en su perfil crediticio y a acceder a productos financieros adecuados a su situación (Finance Strategists, 2023).</p>
+<p>El riesgo crediticio puede manifestarse en diferentes formas, incluyendo el riesgo de incumplimiento, riesgo de contraparte, riesgo de concentración y riesgo país, entre otros (Pirani Risk, 2022). También se vincula a la calificación crediticia, que evalúa la solvencia de un prestatario y es utilizada por agencias especializadas para informar a inversores y entidades financieras (BME Exchange, s.f.). Para mitigar este riesgo, se aplican estrategias como la diversificación, análisis exhaustivo de crédito, uso de instrumentos de cobertura y monitoreo constante (Pirani Risk, 2022).</p>
+</section>
+<section id="métodos-para-estimar-el-riesgo-crediticio" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="métodos-para-estimar-el-riesgo-crediticio"><span class="header-section-number">2.2</span> Métodos para estimar el riesgo crediticio</h2>
+<p>La estimación del riesgo crediticio ha evolucionado desde enfoques tradicionales basados en reglas heurísticas y la experiencia de expertos, hasta modelos estadísticos y técnicas avanzadas de machine learning. Entre los métodos más utilizados se encuentran:</p>
+<ul>
+<li><p><strong>Reglas heurísticas:</strong> Basadas en criterios subjetivos y juicio de analistas, como el modelo de las cinco “C” del crédito (Carácter, Capital, Capacidad, Colateral y Ciclo). Aunque simples y fáciles de aplicar, presentan limitaciones en su capacidad para generalizar y adaptarse a cambios en el entorno económico (De Lara Haro, 2004).</p></li>
+<li><p><strong>Modelos estadísticos tradicionales:</strong> La regresión logística es el método más popular para puntajes crediticios debido a su capacidad para modelar una variable dependiente binaria y su interpretabilidad (Hosmer &amp; Lemeshow, 2000; ListenData, 2019). El análisis discriminante también ha sido utilizado, aunque presenta limitaciones en entornos dinámicos (Ince &amp; Aktan, 2009).</p></li>
+<li><p><strong>Modelos basados en calificaciones internas y estructurales:</strong> Métodos como CreditMetrics, desarrollados por J.P. Morgan en 1997, estiman el valor en riesgo (VaR) de crédito considerando la migración de calificaciones y la probabilidad de incumplimiento, permitiendo evaluar la diversificación y concentración del portafolio (Sánchez Cerón, 2001).</p></li>
+<li><p><strong>Técnicas de machine learning:</strong> Incluyen árboles de decisión, Random Forest, XGBoost y redes neuronales artificiales. Estas técnicas capturan relaciones no lineales y patrones complejos en grandes volúmenes de datos, mejorando la precisión en la predicción del incumplimiento (Zhang, Lipton, Li, &amp; Smola, 2024; Towards Data Science, 2020).</p></li>
+</ul>
+<p>La selección del método adecuado depende de la naturaleza del problema, la calidad y cantidad de datos disponibles, así como de los requerimientos en términos de interpretabilidad y desempeño. Mientras los modelos tradicionales ofrecen transparencia, los métodos modernos aportan mayor capacidad predictiva, aunque requieren un manejo cuidadoso para garantizar la explicabilidad y cumplimiento regulatorio.</p>
+</section>
+<section id="redes-neuronales" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="redes-neuronales"><span class="header-section-number">2.3</span> Redes Neuronales</h2>
+<section id="definición-y-concepto-básicos" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="definición-y-concepto-básicos"><span class="header-section-number">2.3.1</span> Definición y concepto básicos</h3>
+<p>Las redes neuronales artificiales (RNA) son modelos computacionales inspirados en la estructura y funcionamiento del cerebro humano, compuestos por nodos interconectados llamados neuronas artificiales, organizados en capas (UNIR, 2021; Zhang, Lipton, Li, &amp; Smola, 2024). Estas redes aprenden patrones complejos transformando las entradas mediante funciones matemáticas y funciones de activación no lineales, lo que les permite modelar relaciones complejas entre variables (IBM, 2021; AWS, 2022). La capacidad de aprender de forma continua mediante bucles de retroalimentación correctivos mejora su análisis predictivo (AWS, 2022).</p>
+</section>
+<section id="arquitectura-básica" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="arquitectura-básica"><span class="header-section-number">2.3.2</span> Arquitectura básica</h3>
+<p>Una RNA típica consta de tres tipos de capas (Interactive Chaos, 2023; AWS, 2022):</p>
+<ul>
+<li><p><strong>Capa de entrada:</strong> Recibe los datos iniciales. No realiza cálculos, simplemente introduce la información en la red.</p></li>
+<li><p><strong>Capas ocultas:</strong> Son intermedias y pueden ser múltiples. Cada capa oculta toma la salida de la capa anterior, realiza transformaciones no lineales y pasa el resultado a la siguiente capa.</p></li>
+<li><p><strong>Capa de salida:</strong> Produce el resultado final, que puede ser una clasificación, una regresión o una probabilidad.</p></li>
+</ul>
+<p>La arquitectura de la red neuronal define cómo se conectan las neuronas artificiales entre sí para procesar y transmitir información, siendo la elección de la arquitectura un aspecto importante en la construcción de un modelo de aprendizaje profundo (GAMCO, 2023).</p>
+</section>
+<section id="funcionamiento-de-una-neurona-artificial" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="funcionamiento-de-una-neurona-artificial"><span class="header-section-number">2.3.3</span> 2.3.3 Funcionamiento de una neurona artificial</h3>
+<p>Cada neurona artificial recibe varias entradas, cada una con un peso asociado que determina su importancia relativa (Asesoftware, 2024). Tras recibir las entradas, la neurona calcula una suma ponderada de dichas entradas y aplica una función de activación para determinar su salida.</p>
+<p>Según Zhang et al.&nbsp;(2024), la salida de una neurona <span class="math inline">\(j\)</span> se calcula como:</p>
+<p><span class="math inline">\(y_j = f\left( \sum_i w_{ij} x_i + b_j \right) \tag{1}\)</span></p>
+<p>donde;</p>
+<p><span class="math inline">\(x_i\)</span> son las entradas a la neurona,</p>
+<p><span class="math inline">\(w_{ij}\)</span> los pesos asociados a cada entrada,</p>
+<p><span class="math inline">\(b_j\)</span> el sesgo (bias) de la neurona, y</p>
+<p><span class="math inline">\(f\)</span> la función de activación, que introduce no linealidad.</p>
+<p>Al principio, todas las ponderaciones (pesos) son aleatorias y las respuestas que resultan de la red son, posiblemente, disparatadas. La red aprende a través del entrenamiento, ajustando continuamente las ponderaciones en función del error entre las predicciones y los resultados reales. Este proceso se repite muchas veces y la red sigue mejorando sus predicciones hasta haber alcanzado uno o varios criterios de parada (IBM, 2021).</p>
+</section>
+<section id="funciones-de-activación" class="level3" data-number="2.3.4">
+<h3 data-number="2.3.4" class="anchored" data-anchor-id="funciones-de-activación"><span class="header-section-number">2.3.4</span> Funciones de activación</h3>
+<p>Las funciones de activación introducen no linealidad, esencial para que la red aprenda relaciones complejas. A continuación se presenta una tabla con las funciones más comunes, su forma matemática, características y usos habituales.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Función</th>
+<th>Fórmula matemática</th>
+<th>Rango de salida</th>
+<th>Características principales</th>
+<th>Usos habituales</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Lineal</td>
+<td><span class="math inline">\(f(x) = x\)</span></td>
+<td><span class="math inline">\(-\infty, \infty\)</span></td>
+<td>Simple, no introduce no linealidad</td>
+<td>Capa de salida en regresión</td>
+</tr>
+<tr class="even">
+<td>Sigmoide</td>
+<td><span class="math inline">\(f(x) = \frac{1}{1 + e^{-x}}\)</span></td>
+<td><span class="math inline">\((0, 1)\)</span></td>
+<td>Curva en “S”, salida probabilística</td>
+<td>Clasificación binaria (capa de salida)</td>
+</tr>
+<tr class="odd">
+<td>Tangente hiperbólica (tanh)</td>
+<td><span class="math inline">\(f(x) = \tanh(x) = \frac{e^{x} - e^{-x}}{e^{x} + e^{-x}}\)</span></td>
+<td><span class="math inline">\((-1, 1)\)</span></td>
+<td>Centrada en cero, salida simétrica</td>
+<td>Capas ocultas, problemas con datos centrados</td>
+</tr>
+<tr class="even">
+<td>ReLU (Rectified Linear Unit)</td>
+<td><span class="math inline">\(f(x) = \max(0, x)\)</span></td>
+<td><span class="math inline">\([0, \infty)\)</span></td>
+<td>Computacionalmente eficiente, evita desvanecimiento de gradiente</td>
+<td>Capas ocultas en redes profundas</td>
+</tr>
+<tr class="odd">
+<td>Leaky ReLU</td>
+<td><span class="math inline">\(f(x) = \max(\alpha x, x), \alpha \approx 0.01\)</span></td>
+<td><span class="math inline">\(\mathbb{R}\)</span></td>
+<td>Evita neuronas muertas de ReLU</td>
+<td>Capas ocultas, mejora ReLU</td>
+</tr>
+<tr class="even">
+<td>ELU (Exponential Linear Unit)</td>
+<td><span class="math inline">\(f(x)=\begin{cases}
+x, &amp; \text{si } x &gt; 0 \\
+\alpha \left(e^{x} - 1\right), &amp; \text{si } x \leq 0
+\end{cases}\)</span></td>
+<td><span class="math inline">\(\mathbb{R}\)</span></td>
+<td>Suaviza la salida negativa, mejora convergencia</td>
+<td>Redes profundas</td>
+</tr>
+</tbody>
+</table>
+<p>$ | | | | | Softmax | <span class="math inline">\(f_i(x) = \frac{e^{x_i}}{\sum_j e^{x_j}}\)</span> | <span class="math inline">\((0,1)\)</span>, suma 1 | Convierte vector en probabilidades | Clasificación multiclase (capa de salida) | | Square | <span class="math inline">\(f(x) = x^2\)</span> | <span class="math inline">\([0, \infty)\)</span> | Modela relaciones cuadráticas | Experimentación, casos específicos | | Sine | <span class="math inline">\(f(x) = \sin(x)\)</span> | <span class="math inline">\([-1,1]\)</span> | Modela relaciones periódicas | Modelos bioinspirados, experimentación |</p>
+<p><strong>Nota:</strong> La elección de la función de activación depende del problema y la arquitectura. Por ejemplo, ReLU es la más popular en capas ocultas por su eficiencia y buen desempeño, mientras que sigmoide y softmax se usan en la capa de salida para clasificación.</p>
+</section>
+<section id="proceso-de-entrenamiento" class="level3" data-number="2.3.5">
+<h3 data-number="2.3.5" class="anchored" data-anchor-id="proceso-de-entrenamiento"><span class="header-section-number">2.3.5</span> Proceso de entrenamiento</h3>
+<p>El entrenamiento ajusta los pesos y sesgos para minimizar una función de pérdida (por ejemplo, entropía cruzada para clasificación). Se emplea el algoritmo de retropropagación junto con optimizadores como Adam o SGD para actualizar los parámetros iterativamente (Zhang et al., 2024).</p>
+</section>
+<section id="ejemplo-básico-en-python" class="level3" data-number="2.3.6">
+<h3 data-number="2.3.6" class="anchored" data-anchor-id="ejemplo-básico-en-python"><span class="header-section-number">2.3.6</span> Ejemplo básico en Python</h3>
+</section>
+<section id="este-ejemplo-crea-una-red-simple-para-clasificación-binaria-con-una-capa-oculta." class="level3" data-number="2.3.7">
+<h3 data-number="2.3.7" class="anchored" data-anchor-id="este-ejemplo-crea-una-red-simple-para-clasificación-binaria-con-una-capa-oculta."><span class="header-section-number">2.3.7</span> Este ejemplo crea una red simple para clasificación binaria con una capa oculta.</h3>
+<hr>
+</section>
+</section>
+<section id="redes-neuronales-artificiales-en-el-riesgo-crediticio" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="redes-neuronales-artificiales-en-el-riesgo-crediticio"><span class="header-section-number">2.4</span> Redes neuronales artificiales en el riesgo crediticio</h2>
+<p>Las redes neuronales artificiales (RNA) son sistemas computacionales inspirados en el cerebro humano, diseñados para aprender patrones complejos a partir de grandes volúmenes de datos (UNIR, 2021; Zhang et al., 2024). Su principal fortaleza es la capacidad de modelar relaciones no lineales entre las variables de entrada y la probabilidad de incumplimiento, superando en muchos casos a los modelos tradicionales (IBM, 2025).</p>
+<p>El teorema de aproximación universal establece que una red neuronal con una sola capa oculta y suficientes neuronas puede aproximar cualquier función continua definida en un conjunto compacto, siempre que utilice funciones de activación no lineales (Zhang et al., 2024, cap. 5; Cloudflare, 2023). En la práctica, para problemas complejos como el riesgo crediticio, se emplean arquitecturas más profundas y técnicas modernas de regularización y optimización, lo que permite capturar interacciones sutiles entre variables demográficas, financieras y de comportamiento.</p>
+<p>En el sector financiero, las RNA han demostrado ser especialmente útiles para la clasificación de clientes según su nivel de riesgo, la predicción de incumplimientos y la asignación de puntajes crediticios personalizados (Towards Data Science, 2020). Sin embargo, su implementación requiere un preprocesamiento cuidadoso y técnicas de explicabilidad para cumplir con normativas y generar confianza en reguladores y usuarios finales.</p>
+<hr>
+</section>
+<section id="scorecards-y-explicabilidad" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="scorecards-y-explicabilidad"><span class="header-section-number">2.5</span> 2.3. Scorecards y explicabilidad</h2>
+<p>Para facilitar la interpretación de los modelos de riesgo, es común traducir la probabilidad de incumplimiento en un puntaje o scorecard. Este puntaje permite comparar fácilmente el riesgo relativo entre individuos y es ampliamente utilizado en la industria financiera (ListenData, 2019). Además, la explicabilidad del modelo es esencial para cumplir con regulaciones y generar confianza en los usuarios, por lo que se emplean técnicas como SHAP para identificar las variables más influyentes en la predicción.</p>
+</section>
+<section id="scorecard-y-análisis-de-variables-de-riesgo" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="scorecard-y-análisis-de-variables-de-riesgo"><span class="header-section-number">2.6</span> 2.4. Scorecard y análisis de variables de riesgo</h2>
+<p>La probabilidad estimada se transformó en un puntaje utilizando la fórmula estándar de scorecards:</p>
+<p>Score=200+50×ln⁡(1−pp)Score=200+50×ln(p1−p)</p>
+<p>donde pp es la probabilidad de incumplimiento predicha por el modelo.</p>
+</section>
+<section id="metodología-usada" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="metodología-usada"><span class="header-section-number">2.7</span> 2.4 Metodología usada</h2>
+<p>Para abordar este reto de modelado de riesgo crediticio con redes neuronales, proponemos una metodología integral que combina técnicas avanzadas de machine learning con buenas prácticas de ingeniería de datos. El enfoque se estructura en cinco fases clave:</p>
+</section>
+</section>
+<section id="resultados-y-análisis" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Resultados y Análisis</h1>
+<p>En esta sección se presentan los resultados obtenidos al aplicar diferentes métodos de optimización sobre las funciones de Rosenbrock y Rastrigin, tanto en dos como en tres dimensiones. El objetivo fue comparar el desempeño del descenso por gradiente y de tres algoritmos heurísticos: algoritmo genético (GA), optimización por enjambre de partículas (PSO) y evolución diferencial (DE), considerando la calidad de la solución final, el número de evaluaciones de la función objetivo y la robustez frente a condiciones iniciales aleatorias.</p>
+<section id="preprocesamiento-y-preparación-de-datos" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="preprocesamiento-y-preparación-de-datos"><span class="header-section-number">3.1</span> 1. Preprocesamiento y preparación de datos</h2>
+<p><strong>Manejo de la variable objetivo</strong>:</p>
+<ul>
+<li><p>Codificación binaria según especificaciones: <strong><code>Fully Paid=0</code></strong>, <strong><code>Charged Off/Default/Late (31-120)=1</code></strong></p></li>
+<li><p>Eliminación de registros con <strong><code>NA</code></strong> (categorías “Current”, “Issued”, etc.)<a href="https://www.lancaster.ac.uk/stor-i-student-sites/katie-howgate/2021/02/07/how-to-build-a-credit-scorecard/"><u>6</u></a><a href="http://www.scielo.org.bo/scielo.php?script=sci_arttext&amp;pid=S2518-44312014000200002"><u>8</u></a></p></li>
+</ul>
+<p><strong>Ingeniería de características</strong>:</p>
+<ul>
+<li><p>Tratamiento de valores faltantes: imputación múltiple para variables numéricas<a href="https://fastercapital.com/content/Credit-Risk-Neural-Networks--How-to-Use-Neural-Networks-to-Model-and-Predict-Credit-Risk.html"><u>2</u></a></p></li>
+<li><p>Codificación WoE (Weight of Evidence) para variables categóricas<a href="https://www.lancaster.ac.uk/stor-i-student-sites/katie-howgate/2021/02/07/how-to-build-a-credit-scorecard/"><u>6</u></a><a href="http://www.scielo.org.bo/scielo.php?script=sci_arttext&amp;pid=S2518-44312014000200002"><u>8</u></a></p></li>
+<li><p>Escalado robusto (RobustScaler) para variables numéricas<a href="https://medcraveonline.com/MSEIJ/development-of-a-credit-risk-evaluation-systemusing-multilayer-neural-networks.html"><u>5</u></a></p></li>
+</ul>
+<p><strong>División de datos</strong>:</p>
+<ul>
+<li><p>Estratificación por variable objetivo (80-10-10)</p></li>
+<li><p>Validación cruzada temporal para series temporales</p></li>
+</ul>
+</section>
+</section>
+<section id="conclusiones" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Conclusiones</h1>
+</section>
+<section id="contribuciones-individuales" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Contribuciones individuales</h1>
+<ul>
+<li><p><strong><em>Diego Chávez:</em></strong> Mis contribuciones al proyecto …</p></li>
+<li><p><strong><em>Alejandro Feria:</em></strong> Redaccion …</p></li>
+<li><p><strong><em>Santiago Molina</em>:</strong> Diseñar e implementar …</p></li>
+<li><p><strong><em>Juan Teherán:</em></strong> Los aportes …</p></li>
+</ul>
+</section>
+<section id="refeencias" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Refeencias</h1>
+<div class="bibliografia-apa">
+<p>Asesoftware. (2024). Redes Neuronales Artificiales: Funciones y aplicaciones en IA. https://asesoftware.com/redes-neuronales-artificiales/<br></p>
+<p>AWS. (2022). ¿Qué es una red neuronal? https://aws.amazon.com/es/what-is/neural-network/<br></p>
+<p>BME Exchange. (s.f.).&nbsp;<em>Calificación crediticia</em>.&nbsp;<a href="https://www.bmexchange.com/">https://www.bmexchange.com</a><br></p>
+<p>Cloudflare. (2023). What is a neural network? <a href="https://www.cloudflare.com/learning/ddos/glossary/neural-network/" class="uri">https://www.cloudflare.com/learning/ddos/glossary/neural-network/</a><br></p>
+<p>De Lara Haro, F. (2004).&nbsp;<em>Gestión del riesgo crediticio</em>. Editorial Universitaria.<br></p>
+<p>Finance Strategists. (2023). Credit risk: Definition, types, and management. <a href="https://www.financestrategists.com/" class="uri">https://www.financestrategists.com/</a><br></p>
+<p>Financionario. (2025). ¿Qué es el riesgo de crédito? <a href="https://www.financionario.com/" class="uri">https://www.financionario.com/</a></p>
+<p>GAMCO. (2023). Qué es Arquitectura de red neuronal Concepto y definición. Glosario. https://gamco.es/glosario/arquitectura-de-red-neuronal/<br></p>
+<p>Hosmer, D. W., &amp; Lemeshow, S. (2000).&nbsp;<em>Applied logistic regression</em>&nbsp;(2nd ed.). Wiley.<br></p>
+<p>IBM. (2021). El modelo de redes neuronales. https://www.ibm.com/docs/es/spss-modeler/saas?topic=networks-neural-model<br></p>
+<p>IBM. (2025). What are artificial neural networks? <a href="https://www.ibm.com/cloud/learn/neural-networks" class="uri">https://www.ibm.com/cloud/learn/neural-networks</a><br></p>
+<p>Ince, H., &amp; Aktan, B. (2009).&nbsp;<em>Credit risk evaluation with discriminant analysis</em>. Journal of Financial Studies.<br></p>
+<p>Interactive Chaos. (2023). Estructura de una red neuronal. https://interactivechaos.com/es/manual/tutorial-de-machine-learning/estructura-de-una-red-neuronal<br></p>
+<p>ListenData. (2019). A complete guide to credit risk modelling. <a href="https://www.listendata.com/2019/08/credit-risk-modelling.html" class="uri">https://www.listendata.com/2019/08/credit-risk-modelling.html</a><br></p>
+<p>Pirani Risk. (2022).&nbsp;<em>Gestión integral del riesgo crediticio</em>.&nbsp;<a href="https://www.piranirisk.com/">https://www.piranirisk.com</a><br></p>
+<p>R_G. (2021). Credit risk analysis [Dataset]. Kaggle. <a href="https://www.kaggle.com/datasets/ranadeep/credit-risk-dataset/data" class="uri">https://www.kaggle.com/datasets/ranadeep/credit-risk-dataset/data</a><br></p>
+<p>Sánchez Cerón, F. (2001).&nbsp;<em>Modelos estructurales para la gestión del riesgo de crédito</em>. Editorial Financiera.<br></p>
+<p>Towards Data Science. (2020). How to prepare data for credit risk modeling. <a href="https://towardsdatascience.com/how-to-prepare-data-for-credit-risk-modeling-5523641882f2/" class="uri">https://towardsdatascience.com/how-to-prepare-data-for-credit-risk-modeling-5523641882f2/</a><br></p>
+<p>UNIR. (2021). Redes neuronales artificiales: Qué son y para qué sirven. <a href="https://www.unir.net/tecnologia/revista/redes-neuronales-artificiales/" class="uri">https://www.unir.net/tecnologia/revista/redes-neuronales-artificiales/</a><br></p>
+<p>Zhang, A., Lipton, Z. C., Li, M., &amp; Smola, A. J. (2024).&nbsp;<em>Dive into deep learning</em>. Cambridge University Press.&nbsp;<a href="https://d2l.ai/index.html" class="uri">https://d2l.ai/index.html</a><br></p>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

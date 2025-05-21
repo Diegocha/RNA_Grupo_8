@@ -1,0 +1,12 @@
+ggplot2
+plotly
+reshape2
+viridisLite
+viridis
+foreach
+iterators
+GA
+pso
+DEoptim
+knitr
+kableExtra
